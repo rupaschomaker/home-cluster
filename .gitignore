@@ -8,3 +8,6 @@ clustertool
 sopssecret.yaml
 sopssecret*
 *sopssecret*
+
+apps-pending
+truenas_exports
