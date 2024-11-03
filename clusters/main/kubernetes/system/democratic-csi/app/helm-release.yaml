@@ -35,6 +35,9 @@ spec:
       parameters:
         fsType: nfs
         detachedVolumesFromSnapshots: "false"
+      mountOptions:
+        - noatime
+        - nfsvers=4
       secrets:
         provisioner-secret:
         controller-publish-secret:
@@ -46,6 +49,9 @@ spec:
     - name: nfs-snapshot
       parameters:
         detachedSnapshots: "true"
+      mountOptions:
+        - noatime
+        - nfsvers=4
     driver:
       config:
         driver: freenas-api-nfs
