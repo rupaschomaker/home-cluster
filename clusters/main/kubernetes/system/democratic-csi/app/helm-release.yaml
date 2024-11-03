@@ -51,10 +51,10 @@ spec:
         driver: freenas-api-nfs
         instance_id:
         httpConnection:
-          protocol: https
+          protocol: http
           host: ${CONFIG_TRUENAS_IP}
-          port: 443
-          allowInsecure: false
+          port: 80
+          allowInsecure: true
           apiKey: ${TRUENAS_API_KEY}
         zfs:
           datasetParentName: data/k8s-democratic-csi/nfs/v
