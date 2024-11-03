@@ -1,0 +1,49 @@
+csiDriver:
+    name: "nfs"
+storageClasses:
+- name: nfs
+  defaultClass: true
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  allowVolumeExpansion: true
+  parameters:
+    fsType: nfs
+    detachedVolumesFromSnapshots: "false"
+  secrets:
+    provisioner-secret:
+    controller-publish-secret:
+    node-stage-secret:
+    node-publish-secret:
+    controller-expand-secret:
+# if you want to use snapshots
+volumeSnapshotClasses:
+- name: nfs-snapshot
+    parameters:
+        detachedSnapshots: "true"
+driver:
+  config:
+    driver: freenas-api-nfs
+    instance_id:
+    httpConnection:
+        protocol: https
+        host: ${CONFIG_TRUENAS_IP}
+        port: 443
+        allowInsecure: false
+        apiKey: ${TRUENAS_API_KEY}
+    zfs:
+        datasetParentName: data/k8s-democratic-csi/nfs/v
+        detachedSnapshotsDatasetParentName: data/k8s-democratic-csi/nfs/s
+        datasetEnableQuotas: true
+        datasetEnableReservation: false
+        datasetPermissionsMode: "0770"
+        datasetPermissionsUser: 0
+        datasetPermissionsGroup: 0
+    nfs:
+        shareHost: ${CONFIG_TRUENAS_IP}
+        shareAlldirs: false
+        shareAllowedHosts: []
+        shareAllowedNetworks: []
+        shareMaprootUser: root
+        shareMaprootGroup: root
+        shareMapallUser: ""
+        shareMapallGroup: ""
