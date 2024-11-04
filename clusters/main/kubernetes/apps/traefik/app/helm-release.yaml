@@ -28,8 +28,6 @@ spec:
           middlwares:
             - name: local
               namespace: traefik
-            - name: bouncer
-              namespace: traefik
           certManager:
             enabled: true
             certificateIssuer: rupa 
@@ -39,6 +37,11 @@ spec:
             - path: /
               pathType: prefix
     middlewares:
+      customResponseHeaders:
+        - headers:
+          - name: X-Source
+            value: rupa.com
+          name: rupa
       ipWhiteList:
         - name: local
           sourceRange:
@@ -49,7 +52,6 @@ spec:
         - name: bouncer
           enabled: true
           logLevel: INFO
-          forwardedHeadersTrustedIPs: []
     logs:
       access:
         enabled: true
@@ -67,105 +69,7 @@ spec:
       general:
         format: common
         level: INFO
-    metrics:
-      main:
-        enabled: true
-        endpoints:
-          - path: /metrics
-            port: metrics
-        prometheusRule:
-          enabled: true
-        targetSelector: metrics
-        type: servicemonitor
-    middlewares:
-      customResponseHeaders:
-        - headers:
-          - name: X-Source
-            value: rupa.com
-          name: rupa
-    operator:
-      register: true
-    persistence:
-      crowdsec-bouncer-tls:
-        enabled: '{{ if .Values.middlewares.bouncer }}true{{ else }}false{{ end }}'
-        expandObjectName: false
-        mountPath: /etc/traefik/crowdsec-certs
-        objectName: crowdsec-bouncer-tls
-        type: secret
-      plugins:
-        enabled: true
-        mountPath: /plugins-storage
-        type: emptyDir
-    podOptions:
-      automountServiceAccountToken: true
-    portalhook:
-      enabled: true
-    providers:
-      kubernetesCRD:
-        enabled: true
-      kubernetesIngress:
-        enabled: true
-        publishedService:
-          enabled: true
-    rbac:
-      main:
-        clusterWide: true
-        enabled: true
-        primary: true
-        rules:
-          - apiGroups:
-            - ""
-            resources:
-            - services
-            - endpoints
-            - secrets
-            verbs:
-            - get
-            - list
-            - watch
-          - apiGroups:
-            - extensions
-            - networking.k8s.io
-            resources:
-            - ingresses
-            - ingressclasses
-            verbs:
-            - get
-            - list
-            - watch
-          - apiGroups:
-            - extensions
-            - networking.k8s.io
-            resources:
-            - ingresses/status
-            verbs:
-            - update
-          - apiGroups:
-            - traefik.containo.us
-            - traefik.io
-            resources:
-            - middlewares
-            - middlewaretcps
-            - ingressroutes
-            - traefikservices
-            - ingressroutetcps
-            - ingressrouteudps
-            - tlsoptions
-            - tlsstores
-            - serverstransports
-            verbs:
-            - get
-            - list
-            - watch
-    release_name: traefik
-    resources: {}
-    securityContext:
-      container:
-        UMASK: "0022"
-        runAsGroup: 568
-        runAsUser: 568
-      pod:
-        fsGroupChangePolicy: OnRootMismatch
+
     service:
       main:
         enabled: true
