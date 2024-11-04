@@ -18,7 +18,7 @@ spec:
         clusterIssuer:
             ACME:
                 - cfapitoken: ${CF_API_TOKEN}
-        #          email: ${CF_API_EMAIL} # Shouldn't be needed
+                  email: ${CLUSTERISSUER_EMAIL} # Shouldn't be needed
                   name: ${CLUSTERISSUER_NAME}
                   server: ${CF_API_SERVER}
                   type: ${CLUSTERISSUER_TYPE}
