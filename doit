@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+if [ -z "$1" ]; then
+  echo "Must specify a commit log"
+  exit 2
+fi
+
+clustertool genconfig
+git add clusters
+git commit -m "$1"
+git push
