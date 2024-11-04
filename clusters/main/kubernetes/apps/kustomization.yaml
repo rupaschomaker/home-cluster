@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - kubernetes-dashboard/ks.yaml
   - smtp-relay/ks.yaml
+  - clusterissuer/ks.yaml
