@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
     name: resilio-sync
     namespace: resilio-sync
+    annotations:
+        metallb.universe.tf/allow-shared-ip: ${SHARED_IP_KEY}
 spec:
     interval: 15m
     chart:
