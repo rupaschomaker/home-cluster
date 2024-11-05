@@ -67,6 +67,7 @@ spec:
                         port: 55555
                         targetPort: 55555
                 type: LoadBalancer
+                loadBalancerIP: ${LB_IP}
             bt-udp:
                 enabled: true
                 loadBalancerIP: ""
@@ -77,13 +78,15 @@ spec:
                         protocol: udp
                         targetPort: 55555
                 type: LoadBalancer
+                loadBalancerIP: ${LB_IP}
             main:
                 enabled: true
                 ports:
                     main:
                         port: 8888
                         targetPort: 8888
-                type: ClusterIP
+                type: LoadBalancer
+                loadBalancerIP: ${LB_IP}
         workload:
             main:
                 podSpec:

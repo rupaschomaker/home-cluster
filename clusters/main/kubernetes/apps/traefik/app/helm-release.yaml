@@ -45,8 +45,10 @@ spec:
       main:
         enabled: true
         type: LoadBalancer
+        loadBalancerIP: ${LB_IP}
       tcp:
         enabled: true
+        loadBalancerIP: ${LB_IP}
         ports:
           web:
             enabled: true
