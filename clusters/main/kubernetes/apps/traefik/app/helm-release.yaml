@@ -22,12 +22,7 @@ spec:
     ingress:
       main:
         enabled: false
-      integrations:
-        traefik:
-          enabled: true
-          certManager:
-            enabled: true
-            certificateIssuer: rupa 
+
     logs:
       access:
         enabled: true
