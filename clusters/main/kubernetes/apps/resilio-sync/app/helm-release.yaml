@@ -4,7 +4,7 @@ metadata:
     name: resilio-sync
     namespace: resilio-sync
     annotations:
-        metallb.universe.tf/allow-shared-ip: ${SHARED_IP_KEY}
+        metallb.universe.tf/allow-shared-ip: "key-to-share-1"
 spec:
     interval: 15m
     chart:
