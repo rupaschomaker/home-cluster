@@ -25,33 +25,9 @@ spec:
       integrations:
         traefik:
           enabled: true
-          middlwares:
-            - name: local
-              namespace: traefik
           certManager:
             enabled: true
             certificateIssuer: rupa 
-      hosts:
-        - host: traefik.${MY_DOMAIN}
-          paths:
-            - path: /
-              pathType: prefix
-    middlewares:
-      customResponseHeaders:
-        - headers:
-          - name: X-Source
-            value: rupa.com
-          name: rupa
-      ipWhiteList:
-        - name: local
-          sourceRange:
-            - 172.16.0.0/16
-            - 172.17.0.0/16
-            - 192.168.1.0/24
-      bouncer:
-        - name: bouncer
-          enabled: true
-          logLevel: INFO
     logs:
       access:
         enabled: true
