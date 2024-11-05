@@ -60,7 +60,6 @@ spec:
         service:
             bt-tcp:
                 enabled: true
-                loadBalancerIP: ""
                 ports:
                     bt-tcp:
                         enabled: true
@@ -70,7 +69,6 @@ spec:
                 loadBalancerIP: ${LB_IP}
             bt-udp:
                 enabled: true
-                loadBalancerIP: ""
                 ports:
                     bt-udp:
                         enabled: true

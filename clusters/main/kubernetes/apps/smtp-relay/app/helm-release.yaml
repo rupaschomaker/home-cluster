@@ -14,13 +14,14 @@ spec:
                 name: truecharts
                 namespace: flux-system
     releaseName: smtp-relay
-    service:
-      main:
-        type: LoadBalancer
-        loadBalancerIP: ${LB_IP}
     values:
         TZ: America/Chicago
         release_name: smtp-relay
+
+        service:
+            main:
+                type: LoadBalancer
+                loadBalancerIP: ${LB_IP}
 
         smtprelay:
             domains:
