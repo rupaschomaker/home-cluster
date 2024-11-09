@@ -1,11 +1,11 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: resilio-sync
+  name: clusterissuer
   namespace: flux-system
 spec:
   interval: 10m
-  path: clusters/main/kubernetes/apps/resilio-sync/app
+  path: clusters/main/kubernetes/core/clusterissuer/app
   prune: true
   sourceRef:
     kind: GitRepository
