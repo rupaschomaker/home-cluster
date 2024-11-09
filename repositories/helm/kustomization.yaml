@@ -10,7 +10,6 @@ resources:
   - coredns.yaml
   - csi-driver-nfs.yaml
   - descheduler.yaml
-  - democratic-csi.yaml
   - intel.yaml
   - jetstack.yaml
   - kubernetes-sigs-metrics-server.yaml
