@@ -1,0 +1,82 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: deluge
+  namespace: deluge
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: deluge
+      version: 19.0.9
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  releaseName: deluge
+  values:
+    TZ: America/Chicago
+    addons:
+      vpn:
+        env:
+          DOT:
+            name: DOT
+            value: "on"
+          DOT_VERBOSITY:
+            name: DOT_VERBOSITY
+            value: "1"
+          VPN_ENDPOINT_IP:
+            name: VPN_ENDPOINT_IP
+            value: ${VPN_ENDPOINT_IP}
+          VPN_ENDPOINT_PORT:
+            name: VPN_ENDPOINT_PORT
+            value: "${VPN_ENDPOINT_PORT}"
+          VPN_SERVICE_PROVIDER:
+            name: VPN_SERVICE_PROVIDER
+            value: custom
+          VPN_TYPE:
+            name: VPN_TYPE
+            value: wireguard
+          WIREGUARD_ADDRESSES:
+            name: WIREGUARD_ADDRESSES
+            value: ${WIREGUARD_ADDRESSES}
+          WIREGUARD_PRIVATE_KEY:
+            name: WIREGUARD_PRIVATE_KEY
+            value: ${WIREGUARD_PRIVATE_KEY}
+          WIREGUARD_PUBLIC_KEY:
+            name: WIREGUARD_PUBLIC_KEY
+            value: ${WIREGUARD_PUBLIC_KEY}
+        excludedNetworks_IPv4:
+          - 192.168.1.0/24
+        killSwitch: true
+        type: gluetun
+    ingress:
+      main:
+        hosts:
+          - host: deluge.rupa.com
+            paths:
+            - path: /
+              pathType: Prefix
+        integrations:
+          certManager:
+            certificateIssuer: rupa
+            enabled: true
+          traefik:
+            enabled: true
+    persistence:
+    securityContext:
+      container:
+        PUID: "3002"
+        PGID: "3002"
+        UMASK: "0000"
+      torrent:
+        ports:
+          tcp:
+            port: "58846"
+            targetPort: "6881"
+          udp:
+            enabled: true
+            port: '{{ .Values.service.torrent.ports.tcp.port }}'
+            protocol: udp
+            targetPort: '{{ .Values.service.torrent.ports.tcp.targetPort }}'
+        type: LoadBalancer

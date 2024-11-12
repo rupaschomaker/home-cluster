@@ -1,26 +1,30 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: resilio-sync
-  namespace: resilio-sync
+  name: jellyfin
+  namespace: jellyfin
 spec:
   interval: 15m
   chart:
     spec:
-      chart: resilio-sync
-      version: 15.1.7
+      chart: jellyfin
+      version: 19.1.11
       sourceRef:
         kind: HelmRepository
         name: truecharts
         namespace: flux-system
-  releaseName: resilio-sync
+  releaseName: jellyfin
   values:
     TZ: America/Chicago
     ingress:
       main:
         enabled: true
         hosts:
-          - host: sync.rupa.com
+          - host: tv.rupa.com
+            paths:
+            - path: /
+              pathType: Prefix
+          - host: jellyfin.rupa.com
             paths:
             - path: /
               pathType: Prefix
@@ -30,3 +34,12 @@ spec:
             enabled: true
           traefik:
             enabled: true
+    persistence:
+    # resources:
+    #   limits:
+    #     gpu.intel.com/i915: 2
+    securityContext:
+      container:
+        UMASK: "0022"
+        runAsGroup: "3002"
+        runAsUser: "3002"

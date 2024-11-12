@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: lazylibrarian
+  namespace: lazylibrarian
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: lazylibrarian
+      version: 19.0.14
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  releaseName: lazylibrarian
+  values:
+    TZ: America/Chicago
+    ingress:
+      main:
+        enabled: true
+        hosts:
+          - host: lazylibrarian.rupa.com
+            paths:
+            - path: /
+              pathType: Prefix
+        integrations:
+          certManager:
+            certificateIssuer: rupa
+            enabled: true
+          traefik:
+            enabled: true
+    #persistence:
+    securityContext:
+      container:
+        PUID: "3002"
+        GUID: "3002"
+        UMASK: "000"
+    workload:
+      main:
+        podSpec:
+          containers:
+            main:
+              env:
+                DOCKER_MODS:
+                  name: DOCKER_MODS
+                  value: linuxserver/mods:lazylibrarian-ffmpeg
