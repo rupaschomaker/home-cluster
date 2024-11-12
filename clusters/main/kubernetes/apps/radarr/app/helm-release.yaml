@@ -30,6 +30,25 @@ spec:
             enabled: true
           traefik:
             enabled: true
+    persistence:
+      media-vol:
+        enabled: true
+        type: nfs
+        mountPath: /media
+        path: /mnt/data/media
+        server: nas.rupa.com
+      videos-vol:
+        enabled: true
+        type: nfs
+        mountPath: /videos
+        path: /mnt/data/media/Video
+        server: nas.rupa.com
+      downloads-vol:
+        enabled: true
+        type: nfs
+        mountPath: /downloads
+        path: /mnt/data/media/downloads
+        server: nas.rupa.com
     securityContext:
       container:
         UMASK: "0000"

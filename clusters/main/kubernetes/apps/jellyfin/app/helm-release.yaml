@@ -35,6 +35,18 @@ spec:
           traefik:
             enabled: true
     persistence:
+      media-vol:
+        enabled: true
+        type: nfs
+        mountPath: /media
+        path: /mnt/data/media
+        server: nas.rupa.com
+      video-vol:
+        enabled: true
+        type: nfs
+        mountPath: /videos
+        path: /mnt/data/media/Video
+        server: nas.rupa.com
     # resources:
     #   limits:
     #     gpu.intel.com/i915: 2

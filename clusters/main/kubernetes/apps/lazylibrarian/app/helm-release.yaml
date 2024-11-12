@@ -30,7 +30,43 @@ spec:
             enabled: true
           traefik:
             enabled: true
-    #persistence:
+    persistence:
+      media-vol:
+        enabled: true
+        type: nfs
+        mountPath: /media
+        path: /mnt/data/media
+        server: nas.rupa.com
+      downloads-vol:
+        enabled: true
+        type: nfs
+        mountPath: /downloads
+        path: /mnt/data/media/downloads
+        server: nas.rupa.com
+      audiobooks-vol:
+        enabled: true
+        type: nfs
+        mountPath: /audiobooks
+        path: /mnt/data/media/books/audiobooks
+        server: nas.rupa.com
+      ebooks-vol:
+        enabled: true
+        type: nfs
+        mountPath: /books
+        path: /mnt/data/media/books/ebooks
+        server: nas.rupa.com
+      magazines-vol:
+        enabled: true
+        type: nfs
+        mountPath: /magazines
+        path: /mnt/data/media/books/magazines
+        server: nas.rupa.com
+      import-vol:
+        enabled: true
+        type: nfs
+        mountPath: /import
+        path: /mnt/data/media/books/import
+        server: nas.rupa.com
     securityContext:
       container:
         PUID: "3002"

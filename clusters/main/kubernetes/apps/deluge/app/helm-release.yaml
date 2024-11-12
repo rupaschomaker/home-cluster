@@ -61,6 +61,24 @@ spec:
           traefik:
             enabled: true
     persistence:
+      media-vol:
+        enabled: true
+        type: nfs
+        mountPath: /media
+        path: /mnt/data/media
+        server: nas.rupa.com
+      downloads-vol:
+        enabled: true
+        type: nfs
+        mountPath: /downloads
+        path: /mnt/data/media/downloads/torrents"
+        server: nas.rupa.com
+      books-vol:
+        enabled: true
+        type: nfs
+        mountPath: /books
+        path: /mnt/data/media/books
+        server: nas.rupa.com
     securityContext:
       container:
         PUID: "3002"
@@ -71,9 +89,4 @@ spec:
           tcp:
             port: "58846"
             targetPort: "6881"
-          udp:
-            enabled: true
-            port: '{{ .Values.service.torrent.ports.tcp.port }}'
-            protocol: udp
-            targetPort: '{{ .Values.service.torrent.ports.tcp.targetPort }}'
         type: LoadBalancer

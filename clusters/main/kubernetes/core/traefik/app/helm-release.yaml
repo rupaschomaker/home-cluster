@@ -38,3 +38,16 @@ spec:
     service:
       tcp:
         loadBalancerIP: ${TRAEFIK_IP}
+        ports:
+          extwebsecure:
+            enabled: true
+            name: extwebsecure
+            forwardedHeaders:
+              enabled: true
+            port: 444
+            protocol: https
+            proxyProtocol:
+              enabled: false
+              insecureMode: false
+            tls:
+              enabled: true

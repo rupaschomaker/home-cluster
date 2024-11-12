@@ -68,7 +68,13 @@ spec:
             enabled: true
           traefik:
             enabled: true
-    release_name: prowlarr
+    persistence:
+      media-vol:
+        enabled: true
+        type: nfs
+        mountPath: /media
+        path: /mnt/data/media
+        server: nas.rupa.com
     securityContext:
       container:
         UMASK: "0022"
