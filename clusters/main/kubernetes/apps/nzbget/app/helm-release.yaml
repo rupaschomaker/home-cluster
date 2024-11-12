@@ -38,7 +38,7 @@ spec:
         path: /mnt/data/media
         server: nas.rupa.com
       downloads-vol:
-        enabled: true
+        enabled: false
         type: nfs
         mountPath: /downloads/nzbget
         path: /mnt/data/media/downloads/nzbget
