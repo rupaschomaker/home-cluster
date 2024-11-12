@@ -69,8 +69,8 @@ spec:
         server: nas.rupa.com
     securityContext:
       container:
-        PUID: "3002"
-        GUID: "3002"
+        PUID: ${MEDIA_USER}
+        GUID: ${MEDIA_GROUP}
         UMASK: "000"
     workload:
       main:

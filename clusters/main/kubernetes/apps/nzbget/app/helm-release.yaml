@@ -46,5 +46,5 @@ spec:
     securityContext:
       container:
         UMASK: "0000"
-        runAsGroup: 3002
-        runAsUser: 3002
+        runAsGroup: ${MEDIA_USER}
+        runAsUser: ${MEDIA_GROUP}

@@ -51,8 +51,6 @@ spec:
         server: nas.rupa.com
     securityContext:
       container:
+        runAsUser: ${MEDIA_USER}
+        runAsGroup: ${MEDIA_GROUP}
         UMASK: "0000"
-        privileged: false
-        readOnlyRootFilesystem: false
-        runAsGroup: "3002"
-        runAsUser: "3002"
