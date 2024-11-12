@@ -37,6 +37,7 @@ spec:
         mountPath: /media
         path: /mnt/data/media
         server: nas.rupa.com
+      ## does not work?
       # downloads-vol:
       #   enabled: false
       #   type: nfs
