@@ -29,10 +29,5 @@ spec:
           containers:
             main:
               env:
-                DISABLE_IPV6: true
-                GMAIL_PASSWORD:
-                  name: GMAIL_PASSWORD
-                  value: ${GMAIL_PASSWORD}
-                GMAIL_USER:
-                  name: GMAIL_USER
-                  value: ${GMAIL_USER}
+                GMAIL_USER: ${GMAIL_USER}
+                GMAIL_PASSWORD: ${GMAIL_PASSWORD}
