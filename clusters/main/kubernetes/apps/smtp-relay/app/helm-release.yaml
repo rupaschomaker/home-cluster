@@ -20,21 +20,19 @@ spec:
     smtprelay:
       domains:
         - rupa.com
-      generic:
-        port: 587
       networks:
         - 172.16.0.0/16
         - 192.168.1.0/24
-    workload:
-      main:
-        podSpec:
-          containers:
-            main:
-              env:
-                DISABLE_IPV6: true
-                GMAIL_PASSWORD:
-                  name: GMAIL_PASSWORD
-                  value: ${GMAIL_PASSWORD}
-                GMAIL_USER:
-                  name: GMAIL_USER
-                  value: ${GMAIL_USER}
+    # workload:
+    #   main:
+    #     podSpec:
+    #       containers:
+    #         main:
+    #           env:
+    #             DISABLE_IPV6: true
+    #             GMAIL_PASSWORD:
+    #               name: GMAIL_PASSWORD
+    #               value: ${GMAIL_PASSWORD}
+    #             GMAIL_USER:
+    #               name: GMAIL_USER
+    #               value: ${GMAIL_USER}
