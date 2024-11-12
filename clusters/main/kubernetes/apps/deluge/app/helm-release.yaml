@@ -58,9 +58,6 @@ spec:
             - path: /
               pathType: Prefix
         integrations:
-          certManager:
-            certificateIssuer: rupa
-            enabled: true
           traefik:
             enabled: true
     persistence:
