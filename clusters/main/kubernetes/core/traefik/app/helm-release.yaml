@@ -37,6 +37,9 @@ spec:
     defaultCertificate: "domain-0-wildcard"
     service:
       tcp:
+        type: ClusterIP
+      main:
+        type: LoadBalancer
         loadBalancerIP: ${TRAEFIK_IP}
     ingress:
       main:
