@@ -36,6 +36,9 @@ spec:
       stopAll: false
     defaultCertificate: "domain-0-wildcard"
     service:
+      main:
+        type: LoadBalancer
+        loadBalancerIP: ${TRAEFIK_IP}
       tcp:
         loadBalancerIP: ${TRAEFIK_IP}
     ingress:
