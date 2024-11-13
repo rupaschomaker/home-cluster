@@ -40,6 +40,7 @@ spec:
         loadBalancerIP: ${TRAEFIK_IP}
         ports:
           # this is passed through from the router
+          # the app is supposed to auth these!
           extwebsecure:
             enabled: true
             name: extwebsecure
