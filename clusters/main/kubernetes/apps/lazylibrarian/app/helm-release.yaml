@@ -18,55 +18,55 @@ spec:
     TZ: America/Chicago
     ingress:
       main:
-        enabled: true
         hosts:
-          - host: lazylibrarian.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
+          - host: lazylibrarian.${DOMAIN_0}
+          - host: ll.${DOMAIN_0}
         integrations:
-          certManager:
-            certificateIssuer: rupa
-            enabled: true
           traefik:
             enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
     persistence:
       media-vol:
         enabled: true
         type: nfs
         mountPath: /media
         path: /mnt/data/media
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
       downloads-vol:
         enabled: true
         type: nfs
         mountPath: /downloads
         path: /mnt/data/media/downloads
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
       audiobooks-vol:
         enabled: true
         type: nfs
         mountPath: /audiobooks
         path: /mnt/data/media/books/audiobooks
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
       ebooks-vol:
         enabled: true
         type: nfs
         mountPath: /books
         path: /mnt/data/media/books/ebooks
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
       magazines-vol:
         enabled: true
         type: nfs
         mountPath: /magazines
         path: /mnt/data/media/books/magazines
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
       import-vol:
         enabled: true
         type: nfs
         mountPath: /import
         path: /mnt/data/media/books/import
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
     securityContext:
       container:
         PUID: ${MEDIA_USER}

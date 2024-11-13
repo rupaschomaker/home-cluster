@@ -18,25 +18,24 @@ spec:
     TZ: America/Chicago
     ingress:
       main:
-        enabled: true
         hosts:
-          - host: nzbget.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
+          - host: nzbget.${DOMAIN_0}
         integrations:
-          certManager:
-            certificateIssuer: rupa
-            enabled: true
           traefik:
             enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
     persistence:
       media-vol:
         enabled: true
         type: nfs
         mountPath: /media
         path: /mnt/data/media
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
     securityContext:
       container:
         UMASK: "0000"

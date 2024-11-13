@@ -20,16 +20,16 @@ spec:
       main:
         enabled: true
         hosts:
-          - host: vpn.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
+          - host: vpn.${DOMAIN_0}
         integrations:
-          certManager:
-            certificateIssuer: rupa
-            enabled: true
           traefik:
             enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
     workload:
       main:
         podSpec:
@@ -39,4 +39,4 @@ spec:
                 PASSWORD: ${WG_PASSWORD}
                 UI_TRAFFIC_STATS: true
                 WG_DEFAULT_DNS: 192.168.1.1
-                WG_HOST: vpn.rupa.com
+                WG_HOST: vpn.${DOMAIN_0}

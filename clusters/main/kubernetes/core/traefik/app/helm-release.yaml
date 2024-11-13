@@ -53,3 +53,27 @@ spec:
               insecureMode: false
             tls:
               enabled: true
+    ingress:
+      main:
+        enabled: true
+        integrations:
+          traefik:
+            enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+        hosts:
+          - host: traefik.${BASE_DOMAIN}
+            paths:
+              - path: /dashboard
+                pathType: Prefix
+              - path: /api
+                pathType: Prefix          
+    middlewares:
+      ipWhiteList:
+        - name: local
+          sourceRange:
+            - ${PODNET}
+            - ${SVCNET}
+            - 192.168.1.0/24
+            #- 10.6.0.0/24

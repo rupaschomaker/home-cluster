@@ -18,22 +18,21 @@ spec:
     TZ: America/Chicago
     ingress:
       main:
-        enabled: true
         hosts:
-          - host: sync.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
+          - host: sync.${DOMAIN_0}
         integrations:
-          certManager:
-            certificateIssuer: rupa
-            enabled: true
           traefik:
             enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
     persistence:
       media-vol:
         enabled: true
         type: nfs
         mountPath: /sync/media
         path: /mnt/data/media
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}

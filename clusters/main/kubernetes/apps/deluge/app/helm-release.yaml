@@ -53,32 +53,35 @@ spec:
     ingress:
       main:
         hosts:
-          - host: deluge.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
+          - host: deluge.${DOMAIN_0}
         integrations:
           traefik:
             enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
     persistence:
       media-vol:
         enabled: true
         type: nfs
         mountPath: /media
         path: /mnt/data/media
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
       downloads-vol:
         enabled: true
         type: nfs
         mountPath: /downloads
         path: /mnt/data/media/downloads/torrents"
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
       books-vol:
         enabled: true
         type: nfs
         mountPath: /books
         path: /mnt/data/media/books
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
     securityContext:
       container:
         UMASK: "0000"

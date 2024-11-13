@@ -17,25 +17,21 @@ spec:
   values:
     ingress:
       main:
-        enabled: true
         hosts:
-          - host: minecraft.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
+          - host: minecraft.${DOMAIN_0}
         integrations:
-          certManager:
-            certificateIssuer: rupa
-            enabled: true
           traefik:
             enabled: true
             entrypoints:
               - extwebsecure
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
     service:
       main:
         type: ExternalName
         enabled: true
-        externalName: mc.rupa.com
+        externalName: mc.${DOMAIN_0}
         ports:
           main:
             enabled: true

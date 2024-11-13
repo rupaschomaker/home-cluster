@@ -20,35 +20,35 @@ spec:
       main:
         enabled: true
         hosts:
-          - host: sonarr.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
+          - host: sonarr.${DOMAIN_0}
         integrations:
-          certManager:
-            certificateIssuer: rupa
-            enabled: true
           traefik:
             enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
     persistence:
       media-vol:
         enabled: true
         type: nfs
         mountPath: /media
         path: /mnt/data/media
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
       downloads-vol:
         enabled: true
         type: nfs
         mountPath: /downloads
         path: /mnt/data/media/downloads
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
       videos-vol:
         enabled: true
         type: nfs
         mountPath: /videos
         path: /mnt/data/media/Video
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
     securityContext:
       container:
         runAsUser: ${MEDIA_USER}

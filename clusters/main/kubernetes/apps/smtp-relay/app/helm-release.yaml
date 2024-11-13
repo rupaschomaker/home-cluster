@@ -19,10 +19,11 @@ spec:
     release_name: smtp-relay
     smtprelay:
       domains:
-        - rupa.com
+        - ${DOMAIN_0}
       networks:
-        - 172.16.0.0/16
-        - 192.168.1.0/24
+        - ${PODNET}
+        - ${SVCNET}
+        - ${LOCALNET}
     workload:
       main:
         podSpec:

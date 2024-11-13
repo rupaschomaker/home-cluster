@@ -37,3 +37,19 @@ spec:
         ports:
           main:
             port: 80
+    ingress:
+      main:
+        hosts:
+          - host: kdash.${DOMAIN_0}
+            paths:
+            - path: /
+              pathType: Prefix
+        integrations:
+          traefik:
+            enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}

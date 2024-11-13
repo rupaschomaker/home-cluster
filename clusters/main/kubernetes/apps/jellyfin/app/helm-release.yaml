@@ -20,33 +20,30 @@ spec:
       main:
         enabled: true
         hosts:
-          - host: tv.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
-          - host: jellyfin.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
+          - host: tv.${DOMAIN_0}
+          - host: jellyfin.${DOMAIN_0}
         integrations:
-          certManager:
-            certificateIssuer: rupa
-            enabled: true
           traefik:
             enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
     persistence:
       media-vol:
         enabled: true
         type: nfs
         mountPath: /media
         path: /mnt/data/media
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
       video-vol:
         enabled: true
         type: nfs
         mountPath: /videos
         path: /mnt/data/media/Video
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
     # resources:
     #   limits:
     #     gpu.intel.com/i915: 2

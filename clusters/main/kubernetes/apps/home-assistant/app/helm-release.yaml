@@ -17,20 +17,19 @@ spec:
   values:
     ingress:
       main:
-        enabled: true
         hosts:
-          - host: ha.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
+          - host: ha.${DOMAIN_0}
         integrations:
-          certManager:
-            certificateIssuer: rupa
-            enabled: true
           traefik:
             enabled: true
+            # middlewares:
+            #   - name: local
+            #     namespace: traefik
             entrypoints:
               - extwebsecure
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
     service:
       main:
         type: ExternalIP

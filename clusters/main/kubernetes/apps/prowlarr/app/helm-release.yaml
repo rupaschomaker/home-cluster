@@ -56,25 +56,24 @@ spec:
     #   tag: v2.0.1@sha256:727e7bc8f2f0934a2117978c59f4476b954018b849a010ea6cfb380bd6539644
     ingress:
       main:
-        enabled: true
         hosts:
-          - host: prowlarr.rupa.com
-            paths:
-            - path: /
-              pathType: Prefix
+          - host: prowlarr.${DOMAIN_0}
         integrations:
-          certManager:
-            certificateIssuer: rupa
-            enabled: true
           traefik:
             enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
     persistence:
       media-vol:
         enabled: true
         type: nfs
         mountPath: /media
         path: /mnt/data/media
-        server: nas.rupa.com
+        server: nas.${DOMAIN_0}
     securityContext:
       container:
         runAsUser: ${MEDIA_USER}
