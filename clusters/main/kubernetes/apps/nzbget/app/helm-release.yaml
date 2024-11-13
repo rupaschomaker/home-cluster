@@ -37,13 +37,6 @@ spec:
         mountPath: /media
         path: /mnt/data/media
         server: nas.rupa.com
-      ## does not work?
-      # downloads-vol:
-      #   enabled: false
-      #   type: nfs
-      #   mountPath: /downloads/nzbget
-      #   path: /mnt/data/media/downloads/nzbget
-      #   server: nas.rupa.com
     securityContext:
       container:
         UMASK: "0000"

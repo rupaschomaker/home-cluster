@@ -39,6 +39,7 @@ spec:
       tcp:
         loadBalancerIP: ${TRAEFIK_IP}
         ports:
+          # this is passed through from the router
           extwebsecure:
             enabled: true
             name: extwebsecure
