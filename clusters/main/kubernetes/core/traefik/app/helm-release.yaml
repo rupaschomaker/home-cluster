@@ -34,53 +34,7 @@ spec:
     # and/or disable its service
     global:
       stopAll: false
-    defaultCertificate: ${CERT_ISSUER}
+    defaultCertificate: "domain-0-wildcard"
     service:
       tcp:
         loadBalancerIP: ${TRAEFIK_IP}
-        ports:
-          # this is passed through from the router
-          # the app is supposed to auth these!
-          extwebsecure:
-            enabled: true
-            name: extwebsecure
-            forwardedHeaders:
-              enabled: true
-            port: 444
-            protocol: https
-            proxyProtocol:
-              enabled: false
-              insecureMode: false
-            tls:
-              enabled: true
-    ingress:
-      main:
-        enabled: true
-        integrations:
-          traefik:
-            enabled: true
-            middlewares:
-              - name: local
-                namespace: traefik
-        hosts:
-          - host: traefik.${DOMAIN_0}
-            paths:
-              - path: /dashboard
-                pathType: Prefix
-              - path: /api
-                pathType: Prefix          
-    middlewares:
-      ipWhiteList:
-        - name: local
-          sourceRange:
-            - ${PODNET}
-            - ${SVCNET}
-            - ${LOCALNET}
-            #- 10.6.0.0/24
-    # -- Logs
-    # https://docs.traefik.io/observability/logs/
-    logs:
-      # Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
-      general:
-        # By default, the level is set to ERROR. Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
-        level: INFO
