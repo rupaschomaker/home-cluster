@@ -19,41 +19,19 @@ spec:
     addons:
       vpn:
         env:
-          DNS_KEEP_NAMESERVER:
-            name: DNS_KEEP_NAMESERVER
-            value: "on"
-          DOT:
-            name: DOT
-            value: "off"
-          VPN_ENDPOINT_IP:
-            name: VPN_ENDPOINT_IP
-            value: ${VPN_ENDPOINT_IP}
-          VPN_ENDPOINT_PORT:
-            name: VPN_ENDPOINT_PORT
-            value: "${VPN_ENDPOINT_PORT}"
-          VPN_SERVICE_PROVIDER:
-            name: VPN_SERVICE_PROVIDER
-            value: custom
-          VPN_TYPE:
-            name: VPN_TYPE
-            value: wireguard
-          WIREGUARD_ADDRESSES:
-            name: WIREGUARD_ADDRESSES
-            value: ${WIREGUARD_ADDRESSES}
-          WIREGUARD_PRIVATE_KEY:
-            name: WIREGUARD_PRIVATE_KEY
-            value: ${WIREGUARD_PRIVATE_KEY}
-          WIREGUARD_PUBLIC_KEY:
-            name: WIREGUARD_PUBLIC_KEY
-            value: ${WIREGUARD_PUBLIC_KEY}
+          DOT: "on"
+          DOT_VERBOSITY: "1"
+          VPN_ENDPOINT_IP: ${VPN_ENDPOINT_IP}
+          VPN_ENDPOINT_PORT: "${VPN_ENDPOINT_PORT}"
+          VPN_SERVICE_PROVIDER: custom
+          VPN_TYPE: wireguard
+          WIREGUARD_ADDRESSES: ${WIREGUARD_ADDRESSES}
+          WIREGUARD_PRIVATE_KEY: ${WIREGUARD_PRIVATE_KEY}
+          WIREGUARD_PUBLIC_KEY: ${WIREGUARD_PUBLIC_KEY}
         excludedNetworks_IPv4:
           - 192.168.1.0/24
         killSwitch: true
         type: gluetun
-    # exportarrImage:
-    #   pullPolicy: IfNotPresent
-    #   repository: ghcr.io/onedr0p/exportarr
-    #   tag: v2.0.1@sha256:727e7bc8f2f0934a2117978c59f4476b954018b849a010ea6cfb380bd6539644
     ingress:
       main:
         hosts:
