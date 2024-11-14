@@ -52,12 +52,12 @@ spec:
         mountPath: /media
         path: /mnt/data/media
         server: nas.${DOMAIN_0}
-      downloads-vol:
-        enabled: true
-        type: nfs
-        mountPath: /downloads
-        path: /mnt/data/media/downloads/torrents"
-        server: nas.${DOMAIN_0}
+      # downloads-vol:
+      #   enabled: true
+      #   type: nfs
+      #   mountPath: /downloads
+      #   path: /mnt/data/media/downloads/torrents"
+      #   server: nas.${DOMAIN_0}
       books-vol:
         enabled: true
         type: nfs
