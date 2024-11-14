@@ -16,3 +16,4 @@ resources:
   - home-assistant/ks.yaml
   - minecraft-dynmap/ks.yaml
   - generic-device-plugin/ks.yaml
+  - external-dns/ks.yaml
