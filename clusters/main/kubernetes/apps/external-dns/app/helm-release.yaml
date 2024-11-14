@@ -16,7 +16,7 @@ spec:
   releaseName: external-dns
   values:
     externaldns:
-      logLevel: "info"
+      logLevel: "debug"
       sources:
         - "ingress"
       #domainFilters:
