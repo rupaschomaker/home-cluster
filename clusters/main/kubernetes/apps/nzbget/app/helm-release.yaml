@@ -44,9 +44,9 @@ spec:
             type: restic
             credentials: r2
             dest:
-              enabled: false
+              enabled: true
             src:
-              enabled: true 
+              enabled: false 
       media-vol:
         enabled: true
         type: nfs
