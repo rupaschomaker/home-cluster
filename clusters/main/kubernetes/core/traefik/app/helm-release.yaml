@@ -74,4 +74,4 @@ spec:
           sourceRange:
             - ${PODNET}
             - ${SVCNET}
-            #- ${LOCALNET}
+            - ${LOCALNET}
