@@ -19,33 +19,15 @@ spec:
     addons:
       vpn:
         env:
-          DOT:
-            name: DOT
-            value: "on"
-          DOT_VERBOSITY:
-            name: DOT_VERBOSITY
-            value: "1"
-          VPN_ENDPOINT_IP:
-            name: VPN_ENDPOINT_IP
-            value: ${VPN_ENDPOINT_IP}
-          VPN_ENDPOINT_PORT:
-            name: VPN_ENDPOINT_PORT
-            value: "${VPN_ENDPOINT_PORT}"
-          VPN_SERVICE_PROVIDER:
-            name: VPN_SERVICE_PROVIDER
-            value: custom
-          VPN_TYPE:
-            name: VPN_TYPE
-            value: wireguard
-          WIREGUARD_ADDRESSES:
-            name: WIREGUARD_ADDRESSES
-            value: ${WIREGUARD_ADDRESSES}
-          WIREGUARD_PRIVATE_KEY:
-            name: WIREGUARD_PRIVATE_KEY
-            value: ${WIREGUARD_PRIVATE_KEY}
-          WIREGUARD_PUBLIC_KEY:
-            name: WIREGUARD_PUBLIC_KEY
-            value: ${WIREGUARD_PUBLIC_KEY}
+          DOT: "on"
+          DOT_VERBOSITY: "1"
+          VPN_ENDPOINT_IP: ${VPN_ENDPOINT_IP}
+          VPN_ENDPOINT_PORT: "${VPN_ENDPOINT_PORT}"
+          VPN_SERVICE_PROVIDER: custom
+          VPN_TYPE: wireguard
+          WIREGUARD_ADDRESSES: ${WIREGUARD_ADDRESSES}
+          WIREGUARD_PRIVATE_KEY: ${WIREGUARD_PRIVATE_KEY}
+          WIREGUARD_PUBLIC_KEY: ${WIREGUARD_PUBLIC_KEY}
         excludedNetworks_IPv4:
           - 192.168.1.0/24
         killSwitch: true
