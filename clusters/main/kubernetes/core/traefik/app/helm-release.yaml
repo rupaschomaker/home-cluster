@@ -59,7 +59,7 @@ spec:
             enabled: true
             name: smtp
             forwardedHeaders:
-              enabled: true
+              enabled: false
             port: 445
             protocol: http
             proxyProtocol:
