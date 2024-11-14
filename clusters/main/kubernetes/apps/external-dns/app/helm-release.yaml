@@ -23,8 +23,8 @@ spec:
         #- ${DOMAIN_0}
       txtPrefix: external-dns-
       txtOwnerId: foo
-    provider:
-      name: cloudflare
+      provider:
+        name: cloudflare
     workload:
       main:
         podSpec:
