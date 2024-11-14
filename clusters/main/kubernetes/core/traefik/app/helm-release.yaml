@@ -68,3 +68,10 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+    middlewares:
+      ipWhiteList:
+        - name: local
+          sourceRange:
+            - ${PODNET}
+            - ${SVCNET}
+            - ${LOCALNET}
