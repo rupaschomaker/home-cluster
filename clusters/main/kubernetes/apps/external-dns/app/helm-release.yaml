@@ -21,7 +21,6 @@ spec:
         - "ingress"
       #domainFilters:
         #- ${DOMAIN_0}
-      txtOwnerId: edns
       provider: cloudflare
     workload:
       main:
