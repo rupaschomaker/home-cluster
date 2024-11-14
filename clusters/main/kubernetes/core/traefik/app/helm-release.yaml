@@ -61,7 +61,7 @@ spec:
             forwardedHeaders:
               enabled: true
             port: 445
-            protocol: https
+            protocol: http
             proxyProtocol:
               enabled: false
               insecureMode: false
