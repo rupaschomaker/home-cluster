@@ -55,16 +55,6 @@ spec:
               insecureMode: false
             tls:
               enabled: true
-          smtp:
-            enabled: true
-            name: smtp
-            port: 25
-            protocol: https
-            proxyProtocol:
-              enabled: false
-              insecureMode: false
-            tls:
-              enabled: false
     ingress:
       main:
         enabled: true
