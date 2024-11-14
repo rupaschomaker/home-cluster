@@ -4,7 +4,7 @@ metadata:
   name: jellyfin
   namespace: jellyfin
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: tv.${DOMAIN_0}
+    external-dns.alpha.kubernetes.io/hostname: ${DOMAIN_0}
 spec:
   interval: 15m
   chart:
