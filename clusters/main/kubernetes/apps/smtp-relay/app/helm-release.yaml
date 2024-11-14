@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
   name: smtp-relay
   namespace: smtp-relay
+  annotations:
+    metallb.universe.tf/allow-shared-ip: traefik_ip
 spec:
   interval: 15m
   chart:
