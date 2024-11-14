@@ -16,12 +16,12 @@ spec:
   releaseName: external-dns
   values:
     externaldns:
-      logLevel: "debug"
+      logLevel: "info"
       sources:
         - "ingress"
       #domainFilters:
         #- ${DOMAIN_0}
-      txtPrefix: external-dns-
+      txtPrefix: "edns-"
       txtOwnerId: foo
       provider: cloudflare
     workload:
