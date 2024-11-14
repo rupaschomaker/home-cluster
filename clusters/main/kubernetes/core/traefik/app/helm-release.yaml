@@ -59,7 +59,7 @@ spec:
             enabled: true
             name: smtp
             port: 25
-            protocol: http
+            protocol: https
             proxyProtocol:
               enabled: false
               insecureMode: false
