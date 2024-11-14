@@ -16,10 +16,16 @@ spec:
   releaseName: external-dns
   values:
     externaldns:
-      domainFilters:
-        - ${DOMAIN_0}
-      txtPrefix: "external-dns-"
+      #domainFilters:
+        #- ${DOMAIN_0}
+      txtPrefix: external-dns-"
+      txtOwnerId: foo
     provider:
       name: cloudflare
-    env:
-      CF_API_TOKEN: ${DOMAIN_0_CLOUDFLARE_TOKEN}
+    workload:
+      main:
+        podSpec:
+          containers:
+            main:
+              env:
+                CF_API_TOKEN: ${DOMAIN_0_CLOUDFLARE_TOKEN}

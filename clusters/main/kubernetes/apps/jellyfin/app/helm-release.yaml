@@ -3,8 +3,6 @@ kind: HelmRelease
 metadata:
   name: jellyfin
   namespace: jellyfin
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: ${DOMAIN_0}
 spec:
   interval: 15m
   chart:
