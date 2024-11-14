@@ -24,6 +24,13 @@ spec:
         - ${PODNET}
         - ${SVCNET}
         - ${LOCALNET}
+    service:
+      main:
+        type: LoadBalancer
+        loadBalancerIP: ${TRAEFIK_IP}
+        ports:
+          main:
+            port: 25
     workload:
       main:
         podSpec:
