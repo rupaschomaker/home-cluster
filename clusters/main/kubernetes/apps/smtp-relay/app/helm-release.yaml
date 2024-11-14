@@ -44,6 +44,8 @@ spec:
             middlewares:
               - name: local
                 namespace: traefik
+            entrypoints:
+              - smtp
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
