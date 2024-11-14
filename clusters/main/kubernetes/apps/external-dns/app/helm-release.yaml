@@ -18,7 +18,7 @@ spec:
     externaldns:
       domainFilters:
         - ${DOMAIN_0}
-      txtPrefix: "created by external-dns"
+      txtPrefix: "external-dns-"
     provider:
       name: cloudflare
     env:
