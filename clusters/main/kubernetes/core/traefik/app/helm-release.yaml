@@ -55,6 +55,18 @@ spec:
               insecureMode: false
             tls:
               enabled: true
+          smtp:
+            enabled: true
+            name: smtp
+            forwardedHeaders:
+              enabled: true
+            port: 445
+            protocol: https
+            proxyProtocol:
+              enabled: false
+              insecureMode: false
+            tls:
+              enabled: true
     ingress:
       main:
         enabled: true
