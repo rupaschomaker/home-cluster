@@ -4,18 +4,6 @@ metadata:
   name: wg-easy
   namespace: wg-easy
 spec:
-  ## tun hack per https://truecharts.org/guides/vpn-setup/#:~:text=logs%20to%20confirm.-,Talos%20specific%20config,-In%20talos%20in
-  postRenderers:
-  - kustomize:
-      patches:
-        - target:
-            version: v1
-            kind: Deployment
-            name: wg-easy
-          patch: |
-            - op: add
-              path: /spec/template/spec/containers/1/resources/limits/truecharts.org~1tun
-              value: 1
   interval: 15m
   chart:
     spec:
@@ -52,4 +40,3 @@ spec:
                 UI_TRAFFIC_STATS: true
                 WG_DEFAULT_DNS: 192.168.1.1
                 WG_HOST: vpn.${DOMAIN_0}
-# comment to trigger build
