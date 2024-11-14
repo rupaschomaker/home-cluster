@@ -78,6 +78,4 @@ spec:
           containers:
             main:
               env:
-                DOCKER_MODS:
-                  name: DOCKER_MODS
-                  value: linuxserver/mods:lazylibrarian-ffmpeg
+                DOCKER_MODS: linuxserver/mods:lazylibrarian-ffmpeg
