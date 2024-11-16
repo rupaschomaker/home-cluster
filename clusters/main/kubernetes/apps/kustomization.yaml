@@ -18,4 +18,3 @@ resources:
   - generic-device-plugin/ks.yaml
   - external-dns/ks.yaml
   - intel-device-plugin-operator/ks.yaml
-  - node-feature-discovery/ks.yaml
