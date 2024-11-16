@@ -53,11 +53,10 @@ spec:
         runAsGroup: ${MEDIA_GROUP}
         UMASK: "0022"
     workload:
-      workload-name:
-        enabled: true
+      main:
         podSpec:
           containers:
-            container-name:
+            main:
               resources:
                 limits:
                   gpu.intel.com/i915: 1
