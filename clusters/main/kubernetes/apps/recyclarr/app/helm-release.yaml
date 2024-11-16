@@ -21,3 +21,13 @@ spec:
         runAsUser: ${MEDIA_USER}
         runAsGroup: ${MEDIA_GROUP}
         UMASK: "0022"
+    persistence:
+      config:
+        volsync:
+          - name: config
+            type: restic
+            credentials: r2
+            dest:
+              enabled: true
+            src:
+              enabled: false 

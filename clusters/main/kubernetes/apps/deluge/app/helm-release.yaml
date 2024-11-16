@@ -58,6 +58,15 @@ spec:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
     persistence:
+      config:
+        volsync:
+          - name: config
+            type: restic
+            credentials: r2
+            dest:
+              enabled: true
+            src:
+              enabled: false 
       media-vol:
         enabled: true
         type: nfs
