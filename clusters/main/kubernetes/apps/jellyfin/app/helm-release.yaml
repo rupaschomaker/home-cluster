@@ -54,6 +54,7 @@ spec:
         UMASK: "0022"
     workload:
       workload-name:
+        enabled: true
         podSpec:
           containers:
             container-name:
