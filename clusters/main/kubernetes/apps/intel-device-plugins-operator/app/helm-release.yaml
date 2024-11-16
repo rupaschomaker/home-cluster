@@ -1,16 +1,16 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: intel-device-plugin-operator
-  namespace: intel-device-plugin-operator
+  name: intel-device-plugins-operator
+  namespace: intel-device-plugins-operator
 spec:
   interval: 15m
   chart:
     spec:
-      chart: device-plugin-operator
+      chart: intel-device-plugins-operator
       version: 0.31.1
       sourceRef:
         kind: HelmRepository
         name: intel
         namespace: flux-system
-  releaseName: intel-device-plugin-operator
+  releaseName: intel-device-plugins-operator
