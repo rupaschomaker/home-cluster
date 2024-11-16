@@ -17,4 +17,3 @@ resources:
   - minecraft-dynmap/ks.yaml
   - generic-device-plugin/ks.yaml
   - external-dns/ks.yaml
-  - intel-device-plugins-operator/ks.yaml
