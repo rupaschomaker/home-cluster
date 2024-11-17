@@ -102,8 +102,8 @@ spec:
         mountPath: /books
         path: /mnt/data/media/books
         server: nas.${DOMAIN_0}
-    securityContext:
-      container:
-        UMASK: "0000"
-        PUID: ${MEDIA_USER}
-        PGID: ${MEDIA_GROUP}
+    # securityContext:
+    #   container:
+    #     UMASK: "0000"
+    #     PUID: ${MEDIA_USER}
+    #     PGID: ${MEDIA_GROUP}
