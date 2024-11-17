@@ -85,11 +85,11 @@ spec:
         mountPath: /import
         path: /mnt/data/media/books/import
         server: nas.${DOMAIN_0}
-    securityContext:
-      container:
-        PUID: ${MEDIA_USER}
-        GUID: ${MEDIA_GROUP}
-        UMASK: "000"
+    # securityContext:
+    #   container:
+    #     PUID: ${MEDIA_USER}
+    #     GUID: ${MEDIA_GROUP}
+    #     UMASK: "000"
     workload:
       main:
         podSpec:
