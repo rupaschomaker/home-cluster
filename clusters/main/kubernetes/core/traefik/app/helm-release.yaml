@@ -39,7 +39,7 @@ spec:
     defaultCertificate: ${CERT_ISSUER}
     service:
       main:
-        loadBalancerIP: 192.168.1.17
+        type: clusterIP
       tcp:
         loadBalancerIP: ${TRAEFIK_IP}
         ports:
@@ -59,21 +59,21 @@ spec:
               enabled: true
     ingress:
       main:
-        enabled: true
+        enabled: false
         integrations:
           ## NOTE: traefik integration must be set to false if installing traefik
           ##       for the first time!
           traefik:
             enabled: false
-        tls:
-          - hosts:
-              - traefik.${DOMAIN_0}
-            clusterIssuer: ${CERT_ISSUER}
         hosts:
           - host: traefik.${DOMAIN_0}
             paths:
               - path: /
                 pathType: Prefix
+        tls:
+          - hosts:
+              - traefik.${DOMAIN_0}
+            clusterIssuer: ${CERT_ISSUER}
     middlewares:
       ipWhiteList:
         - name: local
