@@ -32,23 +32,23 @@ spec:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
     persistence:
-    credentials:
-      r2:
-        type: s3
-        url: ${VOLSYNC_S3_URL}
-        bucket: ${VOLSYNC_S3_BUCKET}
-        accessKey: ${VOLSYNC_S3_ACCESSKEY}
-        secretKey: ${VOLSYNC_S3_SECRETKEY}
-        encrKey: ${VOLSYNC_ENC_KEY}
-      config:
-        volsync:
-          - name: config
-            type: restic
-            credentials: r2
-            dest:
-              enabled: true
-            src:
-              enabled: false 
+      credentials:
+        r2:
+          type: s3
+          url: ${VOLSYNC_S3_URL}
+          bucket: ${VOLSYNC_S3_BUCKET}
+          accessKey: ${VOLSYNC_S3_ACCESSKEY}
+          secretKey: ${VOLSYNC_S3_SECRETKEY}
+          encrKey: ${VOLSYNC_ENC_KEY}
+        config:
+          volsync:
+            - name: config
+              type: restic
+              credentials: r2
+              dest:
+                enabled: true
+              src:
+                enabled: false 
       media-vol:
         enabled: true
         type: nfs
@@ -63,7 +63,7 @@ spec:
         server: nas.${DOMAIN_0}
     # resources:
     #   limits:
-    #     gpu.intel.com/i915: 2
+    #     gpu.intel.com/i915: 1
     securityContext:
       container:
         runAsUser: ${MEDIA_USER}
