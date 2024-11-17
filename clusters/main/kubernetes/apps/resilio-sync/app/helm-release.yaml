@@ -54,3 +54,9 @@ spec:
         mountPath: /sync/media
         path: /mnt/data/media
         server: nas.${DOMAIN_0}
+
+    securityContext:
+      container:
+        UMASK: "0000"
+        PUID: ${MEDIA_USER}
+        PGID: ${MEDIA_GROUP}
