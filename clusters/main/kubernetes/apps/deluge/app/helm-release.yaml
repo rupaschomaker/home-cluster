@@ -50,8 +50,6 @@ spec:
           tcp:
             port: "58846"
             targetPort: "6881"
-        type: LoadBalancer
-        loadBalancerIP: ${TRAEFIK_IP}
     ingress:
       main:
         enabled: true
