@@ -46,6 +46,7 @@ spec:
         type: gluetun
     ingress:
       main:
+        enabled: true
         hosts:
           - host: deluge.${DOMAIN_0}
         integrations:
