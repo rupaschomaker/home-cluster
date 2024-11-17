@@ -44,6 +44,14 @@ spec:
           - 192.168.1.0/24
         killSwitch: true
         type: gluetun
+    service:
+      torrent:
+        ports:
+          tcp:
+            port: "58846"
+            targetPort: "6881"
+        type: LoadBalancer
+        loadBalancerIP: ${TRAEFIK_IP}
     ingress:
       main:
         enabled: true
@@ -99,9 +107,3 @@ spec:
         UMASK: "0000"
         PUID: ${MEDIA_USER}
         PGID: ${MEDIA_GROUP}
-      torrent:
-        ports:
-          tcp:
-            port: "58846"
-            targetPort: "6881"
-        type: LoadBalancer
