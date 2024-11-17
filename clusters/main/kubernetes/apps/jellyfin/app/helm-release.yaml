@@ -64,11 +64,11 @@ spec:
     # resources:
     #   limits:
     #     gpu.intel.com/i915: 1
-    securityContext:
-      container:
-        runAsUser: ${MEDIA_USER}
-        runAsGroup: ${MEDIA_GROUP}
-        UMASK: "0022"
+    # securityContext:
+    #   container:
+    #     runAsUser: ${MEDIA_USER}
+    #     runAsGroup: ${MEDIA_GROUP}
+    #     UMASK: "0022"
     workload:
       main:
         podSpec:
