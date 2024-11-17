@@ -18,6 +18,7 @@ spec:
     TZ: America/Chicago
     ingress:
       main:
+        enabled: true
         hosts:
           - host: sync.${DOMAIN_0}
         integrations:
