@@ -47,7 +47,7 @@ spec:
             dest:
               enabled: true
             src:
-              enabled: false 
+              enabled: true 
     persistence:
       media-vol:
         enabled: true
