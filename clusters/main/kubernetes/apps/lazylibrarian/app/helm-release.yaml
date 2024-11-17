@@ -18,6 +18,7 @@ spec:
     TZ: America/Chicago
     ingress:
       main:
+        enabled: true
         hosts:
           - host: lazylibrarian.${DOMAIN_0}
           - host: ll.${DOMAIN_0}
