@@ -30,7 +30,6 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
-    persistence:
     credentials:
       r2:
         type: s3
@@ -48,6 +47,7 @@ spec:
               enabled: true
             src:
               enabled: false 
+    persistence:
       media-vol:
         enabled: true
         type: nfs
