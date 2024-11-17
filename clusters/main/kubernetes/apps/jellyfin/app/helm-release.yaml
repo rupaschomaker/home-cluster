@@ -39,6 +39,7 @@ spec:
         accessKey: ${VOLSYNC_S3_ACCESSKEY}
         secretKey: ${VOLSYNC_S3_SECRETKEY}
         encrKey: ${VOLSYNC_ENC_KEY}
+    persistence:
       config:
         volsync:
           - name: config
@@ -48,7 +49,6 @@ spec:
               enabled: true
             src:
               enabled: false 
-    persistence:
       media-vol:
         enabled: true
         type: nfs
