@@ -20,7 +20,7 @@ spec:
   chart:
     spec:
       chart: deluge
-      version: 19.0.9
+      version: 20.2.2
       sourceRef:
         kind: HelmRepository
         name: truecharts
