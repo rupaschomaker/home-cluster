@@ -38,8 +38,10 @@ spec:
       stopAll: false
     defaultCertificate: ${CERT_ISSUER}
     service:
+      main:
+        loadBalancerIP: 192.168.1.17
       tcp:
-        # loadBalancerIP: ${TRAEFIK_IP}
+        loadBalancerIP: ${TRAEFIK_IP}
         ports:
           # this is passed through from the router
           # the app is supposed to auth these!
