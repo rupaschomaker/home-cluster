@@ -18,7 +18,7 @@ spec:
     TZ: America/Chicago
     ingress:
       main:
-        enabled: false
+        enabled: true
         hosts:
           - host: tv.${DOMAIN_0}
           - host: jellyfin.${DOMAIN_0}
