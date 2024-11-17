@@ -39,7 +39,7 @@ spec:
     defaultCertificate: ${CERT_ISSUER}
     service:
       main:
-        type: clusterIP
+        type: ClusterIP
       tcp:
         loadBalancerIP: ${TRAEFIK_IP}
         ports:
