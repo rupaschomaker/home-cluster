@@ -74,6 +74,6 @@ spec:
         podSpec:
           containers:
             main:
-              # resources:
-              #   limits:
-              #     gpu.intel.com/i915: 1
+              resources:
+                limits:
+                  gpu.intel.com/i915: 1
