@@ -39,8 +39,8 @@ spec:
     defaultCertificate: ${CERT_ISSUER}
     service:
       main:
-        type: LoadBalancer
-        loadBalancerIP: 192.168.1.17
+        #type: LoadBalancer
+        #loadBalancerIP: 192.168.1.17
       tcp:
         loadBalancerIP: ${TRAEFIK_IP}
         ports:
@@ -60,7 +60,7 @@ spec:
               enabled: true
     ingress:
       main:
-        enabled: false
+        enabled: true
         integrations:
           ## NOTE: traefik integration must be set to false if installing traefik
           ##       for the first time!

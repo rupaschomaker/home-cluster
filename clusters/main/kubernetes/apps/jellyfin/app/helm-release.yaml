@@ -48,7 +48,7 @@ spec:
             dest:
               enabled: true
             src:
-              enabled: false 
+              enabled: true 
       media-vol:
         enabled: true
         type: nfs
