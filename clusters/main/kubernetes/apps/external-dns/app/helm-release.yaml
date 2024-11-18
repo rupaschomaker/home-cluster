@@ -17,7 +17,7 @@ spec:
   values:
     externaldns:
       logLevel: "debug"
-      sources:
+      #sources:
         #- "ingress"
       domainFilters:
         - ${DOMAIN_0}
