@@ -17,8 +17,9 @@ spec:
   values:
     externaldns:
       logLevel: "debug"
-      #sources:
-        #- "ingress"
+      sources:
+        - "service"
+        - "ingress"
       domainFilters:
         - ${DOMAIN_0}
       provider: cloudflare
