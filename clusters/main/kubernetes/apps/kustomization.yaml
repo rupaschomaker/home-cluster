@@ -17,3 +17,4 @@ resources:
   - minecraft-dynmap/ks.yaml
   - generic-device-plugin/ks.yaml
   - external-dns/ks.yaml
+  - homepage/ks.yaml

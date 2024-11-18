@@ -1,26 +1,26 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: radarr
-  namespace: radarr
+  name: homepage
+  namespace: homepage
 spec:
   interval: 15m
   chart:
     spec:
-      chart: radarr
-      version: 23.11.1
+      chart: homepage
+      version: 9.3.4
       sourceRef:
         kind: HelmRepository
         name: truecharts
         namespace: flux-system
-  releaseName: radarr
+  releaseName: homepage
   values:
     TZ: America/Chicago
     ingress:
       main:
         enabled: true
         hosts:
-          - host: radarr.${DOMAIN_0}
+          - host: homepage.${DOMAIN_0}
         integrations:
           traefik:
             enabled: true
@@ -30,8 +30,6 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
-          homepage:
-            enabled: true
     credentials:
       r2:
         type: s3
@@ -50,26 +48,3 @@ spec:
               enabled: true
             src:
               enabled: true 
-      media-vol:
-        enabled: true
-        type: nfs
-        mountPath: /media
-        path: /mnt/data/media
-        server: nas.${DOMAIN_0}
-      videos-vol:
-        enabled: true
-        type: nfs
-        mountPath: /videos
-        path: /mnt/data/media/Video
-        server: nas.${DOMAIN_0}
-      downloads-vol:
-        enabled: true
-        type: nfs
-        mountPath: /downloads
-        path: /mnt/data/media/downloads
-        server: nas.${DOMAIN_0}
-    securityContext:
-      container:
-        runAsUser: ${MEDIA_USER}
-        runAsGroup: ${MEDIA_GROUP}
-        UMASK: "0000"
