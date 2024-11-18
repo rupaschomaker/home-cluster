@@ -32,6 +32,7 @@ spec:
             certificateIssuer: ${CERT_ISSUER}
           homepage:
             enabled: true
+            group: Arr
     credentials:
       r2:
         type: s3
