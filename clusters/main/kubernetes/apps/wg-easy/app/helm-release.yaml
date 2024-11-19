@@ -15,6 +15,7 @@ spec:
         namespace: flux-system
   releaseName: wg-easy
   values:
+    stopAll: true
     TZ: America/Chicago
     ingress:
       main:
