@@ -12,7 +12,6 @@ resources:
   - radarr/ks.yaml
   - recyclarr/ks.yaml
   - sonarr/ks.yaml
-  - wg-easy/ks.yaml
   - home-assistant/ks.yaml
   - minecraft-dynmap/ks.yaml
   - generic-device-plugin/ks.yaml
