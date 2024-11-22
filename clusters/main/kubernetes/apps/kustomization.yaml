@@ -17,3 +17,4 @@ resources:
   - generic-device-plugin/ks.yaml
   - external-dns/ks.yaml
   - homepage/ks.yaml
+  - democratic-csi/ks.yaml
