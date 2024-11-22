@@ -89,8 +89,8 @@ spec:
       container:
         # runAsUser: ${MEDIA_USER}
         # runAsGroup: ${MEDIA_GROUP}
-        PUID: ${MEDIA_USER}
-        GUID: ${MEDIA_GROUP}
+        PUID: 568
+        GUID: 568
         UMASK: "000"
     workload:
       main:
