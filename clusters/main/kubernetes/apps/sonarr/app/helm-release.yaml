@@ -36,6 +36,8 @@ spec:
         # runAsGroup: ${MEDIA_GROUP}
         runAsUser: 0
         runAsGroup: 0
+        PUID: 0
+        GUID: 0
     credentials:
       r2:
         type: s3
