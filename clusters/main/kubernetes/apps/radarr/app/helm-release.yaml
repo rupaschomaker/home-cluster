@@ -31,7 +31,7 @@ spec:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
           homepage:
-            enabled: true
+            enabled: false
             group: Arr
     credentials:
       r2:
