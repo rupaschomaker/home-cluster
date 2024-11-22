@@ -32,12 +32,8 @@ spec:
             certificateIssuer: ${CERT_ISSUER}
     securityContext:
         UMASK: "0000"
-        # runAsUser: ${MEDIA_USER}
-        # runAsGroup: ${MEDIA_GROUP}
-        runAsUser: 0
-        runAsGroup: 0
-        PUID: 0
-        GUID: 0
+        runAsUser: ${MEDIA_USER}
+        runAsGroup: ${MEDIA_GROUP}
     credentials:
       r2:
         type: s3
