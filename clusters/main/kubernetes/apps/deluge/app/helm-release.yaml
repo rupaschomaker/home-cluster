@@ -103,5 +103,7 @@ spec:
     securityContext:
       container:
         UMASK: "0000"
-        PUID: ${MEDIA_USER}
-        PGID: ${MEDIA_GROUP}
+        runAsUser: ${MEDIA_USER}
+        runAsGroup: ${MEDIA_GROUP}
+        # PUID: ${MEDIA_USER}
+        # PGID: ${MEDIA_GROUP}
