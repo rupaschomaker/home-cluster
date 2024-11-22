@@ -102,8 +102,8 @@ spec:
         server: nas.${DOMAIN_0}
     securityContext:
       container:
-        # UMASK: "0000"
-        # runAsUser: 3002
-        # runAsGroup: 3002
+        UMASK: "0000"
+        runAsUser: 0
+        runAsGroup: 0
         # PUID: ${MEDIA_USER}
         # PGID: ${MEDIA_GROUP}
