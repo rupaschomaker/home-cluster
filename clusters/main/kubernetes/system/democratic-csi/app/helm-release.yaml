@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: democratic-csi
-  namespace: democratic-csi
+  namespace: storage
 spec:
   interval: 5m
   releaseName: democratic-csi
@@ -35,9 +35,9 @@ spec:
     parameters:
       fsType: nfs
       detachedVolumesFromSnapshots: "false"
-    mountOptions:
-      - noatime
-      - nfsvers=4
+    #mountOptions:
+      #- noatime
+      #- nfsvers=4
     # if you want to use snapshots
     volumeSnapshotClasses:
       - name: nfs-snapshot
@@ -54,8 +54,8 @@ spec:
           allowInsecure: true
           apiKey: ${TRUENAS_API_KEY}
         zfs:
-          datasetParentName: /mnt/data/k8s-democratic-csi/nfs/v
-          detachedSnapshotsDatasetParentName: /mnt/data/k8s-democratic-csi/nfs/s
+          datasetParentName: data/k8s-democratic-csi/nfs/v
+          detachedSnapshotsDatasetParentName: data/k8s-democratic-csi/nfs/s
           datasetEnableQuotas: true
           datasetEnableReservation: false
           datasetPermissionsMode: "0770"
