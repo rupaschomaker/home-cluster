@@ -61,13 +61,8 @@ spec:
         mountPath: /videos
         path: /mnt/data/media/Video
         server: nas.${DOMAIN_0}
-    # resources:
-    #   limits:
-    #     gpu.intel.com/i915: 1
     securityContext:
       container:
-        # runAsUser: ${MEDIA_USER}
-        # runAsGroup: ${MEDIA_GROUP}
         UMASK: "0022"
     workload:
       main:
