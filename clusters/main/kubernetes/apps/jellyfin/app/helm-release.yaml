@@ -66,8 +66,8 @@ spec:
     #     gpu.intel.com/i915: 1
     securityContext:
       container:
-        runAsUser: ${MEDIA_USER}
-        runAsGroup: ${MEDIA_GROUP}
+        # runAsUser: ${MEDIA_USER}
+        # runAsGroup: ${MEDIA_GROUP}
         UMASK: "0022"
     workload:
       main:
