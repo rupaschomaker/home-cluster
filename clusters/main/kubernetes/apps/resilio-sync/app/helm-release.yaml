@@ -56,9 +56,6 @@ spec:
         server: nas.${DOMAIN_0}
 
     securityContext:
-      # container:
-      #   runAsUser: ${MEDIA_USER}
-      #   runAsGroup: ${MEDIA_GROUP}
-      #   UMASK: "0000"
-      #   PUID: ${MEDIA_USER}
-      #   PGID: ${MEDIA_GROUP}
+        UMASK: "0000"
+        PUID: ${MEDIA_USER}
+        PGID: ${MEDIA_GROUP}
