@@ -18,10 +18,8 @@ spec:
     TZ: America/Chicago
     securityContext:
       container:
-        # runAsUser: ${MEDIA_USER}
-        # runAsGroup: ${MEDIA_GROUP}
-        runAsUser: 0
-        runAsGroup: 0
+        runAsUser: ${MEDIA_USER}
+        runAsGroup: ${MEDIA_GROUP}
         UMASK: "0022"
     credentials:
       r2:
