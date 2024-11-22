@@ -105,5 +105,5 @@ spec:
         UMASK: "0000"
         runAsUser: ${MEDIA_USER}
         runAsGroup: ${MEDIA_GROUP}
-        # PUID: ${MEDIA_USER}
-        # PGID: ${MEDIA_GROUP}
+        PUID: ${MEDIA_USER}
+        PGID: ${MEDIA_GROUP}
