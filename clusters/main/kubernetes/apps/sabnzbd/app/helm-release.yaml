@@ -1,0 +1,61 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sabnzbd
+  namespace: sabnzbd
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: sabnzbd
+      version: 21.2.5
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  releaseName: sabnzbd
+  values:
+    TZ: America/Chicago
+    ingress:
+      main:
+        enabled: true
+        hosts:
+          - host: sabnzbd.${DOMAIN_0}
+        integrations:
+          traefik:
+            enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
+    credentials:
+      r2:
+        type: s3
+        url: ${VOLSYNC_S3_URL}
+        bucket: ${VOLSYNC_S3_BUCKET}
+        accessKey: ${VOLSYNC_S3_ACCESSKEY}
+        secretKey: ${VOLSYNC_S3_SECRETKEY}
+        encrKey: ${VOLSYNC_ENC_KEY}
+    persistence:
+      config:
+        volsync:
+          - name: config
+            type: restic
+            credentials: r2
+            dest:
+              enabled: true
+            src:
+              enabled: true 
+      media-vol:
+        enabled: true
+        type: nfs
+        mountPath: /media
+        path: /mnt/data/media
+        server: nas.${DOMAIN_0}
+    securityContext:
+      container:
+        UMASK: "0000"
+        runAsGroup: ${MEDIA_USER}
+        runAsUser: ${MEDIA_GROUP}
