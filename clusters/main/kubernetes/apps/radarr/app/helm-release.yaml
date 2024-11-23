@@ -71,8 +71,9 @@ spec:
         server: nas.${DOMAIN_0}
     securityContext:
       container:
-        # runAsUser: ${MEDIA_USER}
-        # runAsGroup: ${MEDIA_GROUP}
-        runAsUser: 0
-        runAsGroup: 0
+        runAsUser: ${MEDIA_USER}
+        runAsGroup: ${MEDIA_GROUP}
+        # if you need root
+        # runAsUser: 0
+        # runAsGroup: 0
         UMASK: "0000"
