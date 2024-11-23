@@ -64,6 +64,8 @@ spec:
     securityContext:
       container:
         UMASK: "0022"
+        runAsUser: 0
+        runAsGroup: 0
     workload:
       main:
         podSpec:
