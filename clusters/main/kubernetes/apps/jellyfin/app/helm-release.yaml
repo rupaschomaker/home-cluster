@@ -55,12 +55,12 @@ spec:
         mountPath: /media
         path: /mnt/data/media
         server: nas.${DOMAIN_0}
-      video-vol:
-        enabled: true
-        type: nfs
-        mountPath: /videos
-        path: /mnt/data/media/Video
-        server: nas.${DOMAIN_0}
+      # video-vol:
+      #   enabled: true
+      #   type: nfs
+      #   mountPath: /videos
+      #   path: /mnt/data/media/Video
+      #   server: nas.${DOMAIN_0}
     securityContext:
       container:
         UMASK: "0022"
