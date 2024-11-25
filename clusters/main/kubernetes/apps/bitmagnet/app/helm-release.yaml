@@ -66,13 +66,13 @@ spec:
         accessKey: ${VOLSYNC_S3_ACCESSKEY}
         secretKey: ${VOLSYNC_S3_SECRETKEY}
         encrKey: ${VOLSYNC_ENC_KEY}
-    persistence:
-      config:
-        volsync:
-          - name: config
-            type: restic
-            credentials: r2
-            dest:
-              enabled: true
-            src:
-              enabled: true 
+    # persistence:
+    #   config:
+    #     volsync:
+    #       - name: config
+    #         type: restic
+    #         credentials: r2
+    #         dest:
+    #           enabled: true
+    #         src:
+    #           enabled: true 
