@@ -35,6 +35,7 @@ spec:
             main:
               env:
                 TMDB_API_KEY: ${TMDB_API_KEY}
+                CLASSIFIER_DELETE_XXX: true
     addons:
       vpn:
         env:
