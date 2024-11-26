@@ -52,7 +52,7 @@ nodes:
         # suffix is the adapter mac adres.
         - interface: eth0
           addresses:
-            - ${MASTER1IP_CIDR}
+            - ${MASTER2IP_CIDR}
           routes:
             - network: 0.0.0.0/0
               gateway: ${GATEWAY}
