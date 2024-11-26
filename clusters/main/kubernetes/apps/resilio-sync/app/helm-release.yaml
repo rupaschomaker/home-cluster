@@ -57,5 +57,5 @@ spec:
 
     securityContext:
         UMASK: "0000"
-        PUID: ${MEDIA_USER}
-        PGID: ${MEDIA_GROUP}
+        # PUID: ${MEDIA_USER}
+        # PGID: ${MEDIA_GROUP}
