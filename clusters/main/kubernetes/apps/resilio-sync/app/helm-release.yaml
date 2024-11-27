@@ -41,13 +41,13 @@ spec:
     persistence:
       config:
         volsync:
-          - name: config
+          - name: config2
             type: restic
             credentials: r2
             dest:
               enabled: true
             src:
-              enabled: false 
+              enabled: true 
       media-vol:
         enabled: true
         type: nfs
