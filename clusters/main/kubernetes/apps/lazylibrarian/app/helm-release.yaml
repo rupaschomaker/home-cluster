@@ -87,10 +87,6 @@ spec:
         server: nas.${DOMAIN_0}
     securityContext:
       container:
-        #PUID: ${MEDIA_USER}
-        #GUID: ${MEDIA_GROUP}
-        # runAsUser: 0
-        # runAsGroup: 0
         UMASK: "000"
     workload:
       main:

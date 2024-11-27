@@ -4,5 +4,3 @@ metadata:
     name: bitmagnet
     labels:
         pod-security.kubernetes.io/enforce: privileged
-    # annotations:
-    #         volsync.backube/privileged-movers: "true"

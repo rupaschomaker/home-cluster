@@ -56,6 +56,4 @@ spec:
         server: nas.${DOMAIN_0}
     securityContext:
       container:
-        # runAsUser: ${MEDIA_USER}
-        # runAsGroup: ${MEDIA_GROUP}
         UMASK: "0022"

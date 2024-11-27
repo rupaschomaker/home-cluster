@@ -33,10 +33,6 @@ spec:
     securityContext:
       container:
         UMASK: "0000"
-        # runAsUser: ${MEDIA_USER}
-        # runAsGroup: ${MEDIA_GROUP}
-        # runAsUser: 0
-        # runAsGroup: 0
     credentials:
       r2:
         type: s3
