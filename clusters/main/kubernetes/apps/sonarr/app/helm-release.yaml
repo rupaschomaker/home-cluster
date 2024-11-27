@@ -33,8 +33,8 @@ spec:
     securityContext:
       container:
         UMASK: "0000"
-        runAsUser: ${MEDIA_USER}
-        runAsGroup: ${MEDIA_GROUP}
+        # runAsUser: ${MEDIA_USER}
+        # runAsGroup: ${MEDIA_GROUP}
         # runAsUser: 0
         # runAsGroup: 0
     credentials:
@@ -60,16 +60,4 @@ spec:
         type: nfs
         mountPath: /media
         path: /mnt/data/media
-        server: nas.${DOMAIN_0}
-      downloads-vol:
-        enabled: true
-        type: nfs
-        mountPath: /downloads
-        path: /mnt/data/media/downloads
-        server: nas.${DOMAIN_0}
-      videos-vol:
-        enabled: true
-        type: nfs
-        mountPath: /videos
-        path: /mnt/data/media/Video
         server: nas.${DOMAIN_0}
