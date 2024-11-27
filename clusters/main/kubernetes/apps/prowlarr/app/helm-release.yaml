@@ -47,7 +47,7 @@ spec:
             dest:
               enabled: true
             src:
-              enabled: false 
+              enabled: true 
       media-vol:
         enabled: true
         type: nfs
@@ -56,6 +56,6 @@ spec:
         server: nas.${DOMAIN_0}
     securityContext:
       container:
-        runAsUser: ${MEDIA_USER}
-        runAsGroup: ${MEDIA_GROUP}
+        # runAsUser: ${MEDIA_USER}
+        # runAsGroup: ${MEDIA_GROUP}
         UMASK: "0022"
