@@ -34,6 +34,9 @@ spec:
             type: restic
             credentials: r2
             dest:
+              # can't restore directly, INIT goes into infinite loop
+              # instead, restore using restic and then replace
+              # recyclarr.yml with the version in the backup.
               enabled: false
             src:
-              enabled: false 
+              enabled: true 
