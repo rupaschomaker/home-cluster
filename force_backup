@@ -1,0 +1,20 @@
+if [ $# = 1 ]; then
+	wanted_namespace=$1
+else
+	wanted_namespace=""
+fi
+
+# Get all replicationsource names and namespaces
+replicationsources=$(kubectl get replicationsource -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}')
+
+# Loop through each replicationsource and apply the patch
+while IFS= read -r line; do
+    namespace=$(echo $line | awk '{print $1}')
+    if [ -z "${wanted_namespace}" -o "${wanted_namespace}" == "${namespace}" ]; then
+	    name=$(echo $line | awk '{print $2}')
+	    if [ -z "$app" -o "$namespace" == "${app}" ]; then
+		echo "Patching replicationsource $name in namespace $namespace..."
+		kubectl patch replicationsource ${name} -n ${namespace} --type='merge' -p '{"spec":{"restic":{"copyMethod":"Direct"}, "trigger":{"manual":"'`date --iso-8601=seconds`'"}}}'
+	    fi
+    fi
+done <<< "$replicationsources"
