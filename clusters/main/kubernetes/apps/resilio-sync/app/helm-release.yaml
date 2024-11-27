@@ -41,7 +41,7 @@ spec:
     persistence:
       config:
         volsync:
-          - name: config2
+          - name: config3
             type: restic
             credentials: r2
             dest:
