@@ -45,9 +45,9 @@ spec:
             type: restic
             credentials: r2
             dest:
-              enabled: true
+              enabled: false
             src:
-              enabled: true 
+              enabled: false 
       media-vol:
         enabled: true
         type: nfs
@@ -56,8 +56,8 @@ spec:
         server: nas.${DOMAIN_0}
 
     securityContext:
-        runAsUser: 0
-        runAsGroup: 0
         UMASK: "0000"
-        PUID: 0
-        PGID: 0
+        # runAsUser: 0
+        # runAsGroup: 0
+        # PUID: 0
+        # PGID: 0
