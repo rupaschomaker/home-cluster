@@ -18,8 +18,6 @@ spec:
     TZ: America/Chicago
     securityContext:
       container:
-        # runAsUser: ${MEDIA_USER}
-        # runAsGroup: ${MEDIA_GROUP}
         UMASK: "0022"
     credentials:
       r2:
@@ -36,6 +34,6 @@ spec:
             type: restic
             credentials: r2
             dest:
-              enabled: true
+              enabled: false
             src:
-              enabled: true 
+              enabled: false 
