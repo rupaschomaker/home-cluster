@@ -57,7 +57,3 @@ spec:
 
     securityContext:
         UMASK: "0000"
-        # runAsUser: 0
-        # runAsGroup: 0
-        # PUID: 0
-        # PGID: 0

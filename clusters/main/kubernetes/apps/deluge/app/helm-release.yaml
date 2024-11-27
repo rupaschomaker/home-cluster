@@ -102,6 +102,4 @@ spec:
         server: nas.${DOMAIN_0}
     securityContext:
       container:
-        runAsUser: 0
-        runAsGroup: 0
         UMASK: "0000"
