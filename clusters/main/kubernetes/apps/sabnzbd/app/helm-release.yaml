@@ -64,5 +64,3 @@ spec:
     securityContext:
       container:
         UMASK: "0000"
-        # runAsGroup: ${MEDIA_USER}
-        # runAsUser: ${MEDIA_GROUP}
