@@ -56,8 +56,8 @@ spec:
         server: nas.${DOMAIN_0}
 
     securityContext:
-        # runAsUser: 0
-        # runAsGroup: 0
+        runAsUser: 0
+        runAsGroup: 0
         UMASK: "0000"
-        PUID: 3002
-        PGID: 3002
+        PUID: 0
+        PGID: 0
