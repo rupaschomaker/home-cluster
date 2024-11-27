@@ -45,7 +45,7 @@ spec:
             type: restic
             credentials: r2
             dest:
-              enabled: false
+              enabled: true
             src:
               enabled: false 
       media-vol:
