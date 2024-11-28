@@ -9,7 +9,8 @@ clustertool genconfig
 git add clusters
 clustertool encrypt
 git commit -m "$1"
+git pull
 git push
+clustertool decrypt
 sleep 1
 flux reconcile source git cluster -n flux-system
-clustertool decrypt
