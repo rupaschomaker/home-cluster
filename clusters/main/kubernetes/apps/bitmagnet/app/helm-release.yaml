@@ -28,7 +28,7 @@ spec:
   releaseName: bitmagnet
   values:
     global:
-      stopAll: true
+      stopAll: false
     TZ: America/Chicago
     workload:
       main:
