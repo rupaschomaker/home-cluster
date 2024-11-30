@@ -14,3 +14,11 @@ spec:
         name: truecharts
         namespace: flux-system
   releaseName: generic-device-plugin
+  values:
+    workload:
+      main:
+        podSpec:
+          containers:
+            main:
+              env:
+                LOG_LEVEL: debug
