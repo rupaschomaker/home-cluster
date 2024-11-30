@@ -5,17 +5,17 @@ metadata:
   namespace: bitmagnet
 spec:
   ## tun hack per https://truecharts.org/guides/vpn-setup/#:~:text=logs%20to%20confirm.-,Talos%20specific%20config,-In%20talos%20in
-  postRenderers:
-  - kustomize:
-      patches:
-        - target:
-            version: v1
-            kind: Deployment
-            name: bitmagnet
-          patch: |
-            - op: add
-              path: /spec/template/spec/containers/1/resources/limits/truecharts.org~1tun
-              value: 1
+  # postRenderers:
+  # - kustomize:
+  #     patches:
+  #       - target:
+  #           version: v1
+  #           kind: Deployment
+  #           name: bitmagnet
+  #         patch: |
+  #           - op: add
+  #             path: /spec/template/spec/containers/1/resources/limits/truecharts.org~1tun
+  #             value: 1
   interval: 15m
   chart:
     spec:
@@ -37,21 +37,21 @@ spec:
                 TMDB_API_KEY: ${TMDB_API_KEY}
                 CLASSIFIER_DELETE_XXX: true
     addons:
-      vpn:
-        env:
-          DOT: "on"
-          DOT_VERBOSITY: "1"
-          VPN_ENDPOINT_IP: ${BM_VPN_ENDPOINT_IP}
-          VPN_ENDPOINT_PORT: "${BM_VPN_ENDPOINT_PORT}"
-          VPN_SERVICE_PROVIDER: custom
-          VPN_TYPE: wireguard
-          WIREGUARD_ADDRESSES: ${BM_WIREGUARD_ADDRESSES}
-          WIREGUARD_PRIVATE_KEY: ${BM_WIREGUARD_PRIVATE_KEY}
-          WIREGUARD_PUBLIC_KEY: ${BM_WIREGUARD_PUBLIC_KEY}
-        excludedNetworks_IPv4:
-          - 192.168.1.0/24
-        killSwitch: true
-        type: gluetun
+      # vpn:
+      #   env:
+      #     DOT: "on"
+      #     DOT_VERBOSITY: "1"
+      #     VPN_ENDPOINT_IP: ${BM_VPN_ENDPOINT_IP}
+      #     VPN_ENDPOINT_PORT: "${BM_VPN_ENDPOINT_PORT}"
+      #     VPN_SERVICE_PROVIDER: custom
+      #     VPN_TYPE: wireguard
+      #     WIREGUARD_ADDRESSES: ${BM_WIREGUARD_ADDRESSES}
+      #     WIREGUARD_PRIVATE_KEY: ${BM_WIREGUARD_PRIVATE_KEY}
+      #     WIREGUARD_PUBLIC_KEY: ${BM_WIREGUARD_PUBLIC_KEY}
+      #   excludedNetworks_IPv4:
+      #     - 192.168.1.0/24
+      #   killSwitch: true
+      #   type: gluetun
     ingress:
       main:
         enabled: true
