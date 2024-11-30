@@ -16,7 +16,7 @@ spec:
   releaseName: generic-device-plugin
   values:
     global:
-      stopAll: true
+      stopAll: false
     workload:
       main:
         podSpec:
