@@ -18,4 +18,3 @@ resources:
   - external-dns/ks.yaml
   - homepage/ks.yaml
   - sabnzbd/ks.yaml
-  - bitmagnet/ks.yaml
