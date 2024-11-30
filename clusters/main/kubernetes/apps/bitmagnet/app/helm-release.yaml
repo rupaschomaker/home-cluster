@@ -36,7 +36,7 @@ spec:
               env:
                 TMDB_API_KEY: ${TMDB_API_KEY}
                 CLASSIFIER_DELETE_XXX: true
-    addons:
+    # addons:
       # vpn:
       #   env:
       #     DOT: "on"
@@ -66,14 +66,14 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
-    credentials:
-      r2:
-        type: s3
-        url: ${VOLSYNC_S3_URL}
-        bucket: ${VOLSYNC_S3_BUCKET}
-        accessKey: ${VOLSYNC_S3_ACCESSKEY}
-        secretKey: ${VOLSYNC_S3_SECRETKEY}
-        encrKey: ${VOLSYNC_ENC_KEY}
+    # credentials:
+    #   r2:
+    #     type: s3
+    #     url: ${VOLSYNC_S3_URL}
+    #     bucket: ${VOLSYNC_S3_BUCKET}
+    #     accessKey: ${VOLSYNC_S3_ACCESSKEY}
+    #     secretKey: ${VOLSYNC_S3_SECRETKEY}
+    #     encrKey: ${VOLSYNC_ENC_KEY}
     # persistence:
     #   config:
     #     volsync:
