@@ -27,6 +27,8 @@ spec:
         namespace: flux-system
   releaseName: bitmagnet
   values:
+    global:
+      stopAll: true
     TZ: America/Chicago
     workload:
       main:

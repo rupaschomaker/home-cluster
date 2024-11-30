@@ -30,20 +30,20 @@ spec:
     TZ: America/Chicago
     addons:
       vpn:
+        excludedNetworks_IPv4:
+          - 192.168.1.0/24
+        killSwitch: true
+        type: gluetun
         env:
+          VPN_TYPE: wireguard
           DOT: "on"
           DOT_VERBOSITY: "1"
           VPN_ENDPOINT_IP: ${VPN_ENDPOINT_IP}
           VPN_ENDPOINT_PORT: "${VPN_ENDPOINT_PORT}"
           VPN_SERVICE_PROVIDER: custom
-          VPN_TYPE: wireguard
           WIREGUARD_ADDRESSES: ${WIREGUARD_ADDRESSES}
           WIREGUARD_PRIVATE_KEY: ${WIREGUARD_PRIVATE_KEY}
           WIREGUARD_PUBLIC_KEY: ${WIREGUARD_PUBLIC_KEY}
-        excludedNetworks_IPv4:
-          - 192.168.1.0/24
-        killSwitch: true
-        type: gluetun
     service:
       torrent:
         ports:
