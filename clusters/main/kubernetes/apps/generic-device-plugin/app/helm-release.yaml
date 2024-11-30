@@ -22,3 +22,4 @@ spec:
             main:
               env:
                 LOG_LEVEL: debug
+                VERSION: true
