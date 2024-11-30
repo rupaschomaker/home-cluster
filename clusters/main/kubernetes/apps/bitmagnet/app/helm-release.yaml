@@ -1,0 +1,88 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: bitmagnet
+  namespace: bitmagnet
+spec:
+  ## tun hack per https://truecharts.org/guides/vpn-setup/#:~:text=logs%20to%20confirm.-,Talos%20specific%20config,-In%20talos%20in
+  postRenderers:
+  - kustomize:
+      patches:
+        - target:
+            version: v1
+            kind: Deployment
+            name: bitmagnet
+          patch: |
+            - op: add
+              path: /spec/template/spec/containers/1/resources/limits/truecharts.org~1tun
+              value: 1
+  interval: 15m
+  chart:
+    spec:
+      chart: bitmagnet
+      version: 3.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  releaseName: bitmagnet
+  values:
+    global:
+      stopAll: true
+    TZ: America/Chicago
+    workload:
+      main:
+        podSpec:
+          containers:
+            main:
+              env:
+                TMDB_API_KEY: ${TMDB_API_KEY}
+                CLASSIFIER_DELETE_XXX: true
+    addons:
+      vpn:
+        excludedNetworks_IPv4:
+          - 192.168.1.0/24
+        killSwitch: true
+        type: gluetun
+        env:
+          VPN_TYPE: wireguard
+          DOT: "on"
+          DOT_VERBOSITY: "1"
+          VPN_ENDPOINT_IP: ${BM_VPN_ENDPOINT_IP}
+          VPN_ENDPOINT_PORT: "${BM_VPN_ENDPOINT_PORT}"
+          VPN_SERVICE_PROVIDER: custom
+          WIREGUARD_ADDRESSES: ${BM_WIREGUARD_ADDRESSES}
+          WIREGUARD_PRIVATE_KEY: ${BM_WIREGUARD_PRIVATE_KEY}
+          WIREGUARD_PUBLIC_KEY: ${BM_WIREGUARD_PUBLIC_KEY}
+    ingress:
+      main:
+        enabled: true
+        hosts:
+          - host: bitmagnet.${DOMAIN_0}
+        integrations:
+          traefik:
+            enabled: true
+            middlewares:
+              - name: local
+                namespace: traefik
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
+    # credentials:
+    #   r2:
+    #     type: s3
+    #     url: ${VOLSYNC_S3_URL}
+    #     bucket: ${VOLSYNC_S3_BUCKET}
+    #     accessKey: ${VOLSYNC_S3_ACCESSKEY}
+    #     secretKey: ${VOLSYNC_S3_SECRETKEY}
+    #     encrKey: ${VOLSYNC_ENC_KEY}
+    # persistence:
+    #   config:
+    #     volsync:
+    #       - name: config
+    #         type: restic
+    #         credentials: r2
+    #         dest:
+    #           enabled: true
+    #         src:
+    #           enabled: true 
