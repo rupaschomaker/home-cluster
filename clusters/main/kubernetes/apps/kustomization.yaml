@@ -19,4 +19,3 @@ resources:
   - homepage/ks.yaml
   - sabnzbd/ks.yaml
   - bitmagnet/ks.yaml
-  - democratic-csi/ks.yaml
