@@ -1,0 +1,74 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: democratic-csi
+  namespace: democratic
+spec:
+  interval: 5m
+  releaseName: democratic-csi
+  chart:
+    spec:
+      chart: democratic-csi
+      version: 0.14.7
+      sourceRef:
+        name: democratic-csi
+        kind: HelmRepository
+        namespace: flux-system
+  install:
+    createNamespace: true
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  values:
+    csiDriver:
+        name: "nfs"
+    storageClasses:
+      - name: nfs
+        defaultClass: false
+        reclaimPolicy: Delete
+        volumeBindingMode: Immediate
+        allowVolumeExpansion: true
+        parameters:
+          fsType: nfs
+          detachedVolumesFromSnapshots: "false"
+        mountOptions:
+          - noatime
+          - nfsvers=4
+    # if you want to use snapshots
+    volumeSnapshotClasses:
+      - name: nfs-snapshot
+        enabled: false
+        parameters:
+          fsType: nfs
+          detachedSnapshots: "true"
+    driver:
+      config:
+        driver: freenas-api-nfs
+        instance_id:
+        httpConnection:
+          protocol: http
+          host: ${CONFIG_TRUENAS_IP}
+          port: 80
+          allowInsecure: true
+          apiKey: ${TRUENAS_API_KEY}
+        zfs:
+          datasetParentName: data/k8s-democratic-csi/nfs/v
+          detachedSnapshotsDatasetParentName: data/k8s-democratic-csi/nfs/s
+          datasetEnableQuotas: true
+          datasetEnableReservation: false
+          datasetPermissionsMode: "0770"
+          datasetPermissionsUser: 0
+          datasetPermissionsGroup: 0
+        nfs:
+          shareHost: ${CONFIG_TRUENAS_IP}
+          shareAlldirs: false
+          shareAllowedHosts: []
+          shareAllowedNetworks: []
+          shareMaprootUser: root
+          shareMaprootGroup: root
+          shareMapallUser: ""
+          shareMapallGroup: ""
