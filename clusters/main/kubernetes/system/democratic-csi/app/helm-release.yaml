@@ -28,7 +28,7 @@ spec:
         name: "nfs"
     storageClasses:
       - name: nfs
-        defaultClass: true
+        defaultClass: false
         reclaimPolicy: Delete
         volumeBindingMode: Immediate
         allowVolumeExpansion: true
@@ -42,8 +42,6 @@ spec:
     # if you want to use snapshots
     volumeSnapshotClasses:
       - name: nfs-snapshot
-        annotations:
-          snapshot.storage.kubernetes.io/is-default-class: "true"
         parameters:
           fsType: nfs
         detachedSnapshots: "true"

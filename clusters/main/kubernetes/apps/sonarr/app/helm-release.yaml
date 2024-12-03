@@ -48,10 +48,10 @@ spec:
             type: restic
             credentials: r2
             dest:
-              volumeSnapshotClassName: nfs-snapshot
+              #volumeSnapshotClassName: nfs-snapshot
               enabled: true
             src:
-              volumeSnapshotClassName: nfs-snapshot
+              #volumeSnapshotClassName: nfs-snapshot
               enabled: true 
       media-vol:
         enabled: true

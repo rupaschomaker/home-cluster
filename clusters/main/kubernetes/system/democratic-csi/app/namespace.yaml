@@ -3,8 +3,8 @@ kind: Namespace
 metadata:
   name: democratic
   annotations:
-    storageclass.kubernetes.io/is-default-class: 'true'
-    snapshot.storage.kubernetes.io/is-default-class: 'true'
+    storageclass.kubernetes.io/is-default-class: 'false'
+    snapshot.storage.kubernetes.io/is-default-class: 'false'
   labels:
     pod-security.kubernetes.io/enforce: privileged
     topolvm.io/webhook: ignore
