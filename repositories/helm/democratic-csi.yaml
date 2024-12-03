@@ -7,5 +7,5 @@ metadata:
   namespace: flux-system
 spec:
   interval: 2h
-  url: https://democratic-csi.github.io/charts/
+  url: https://democratic-csi.github.io/charts
 
