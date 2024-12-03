@@ -1,7 +1,10 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-    name: democratic
-    labels:
-        pod-security.kubernetes.io/enforce: privileged
-        topolvm.io/webhook: ignore
+  name: democratic
+  annotations:
+    storageclass.kubernetes.io/is-default-class: 'true'
+    snapshot.storage.kubernetes.io/is-default-class: 'true'
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    topolvm.io/webhook: ignore
