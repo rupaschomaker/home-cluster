@@ -48,6 +48,8 @@ spec:
               enabled: true
             src:
               enabled: true 
+              trigger:
+                schedule: 00 1 * * *
       media-vol:
         enabled: true
         type: nfs

@@ -55,6 +55,8 @@ spec:
               enabled: true
             src:
               enabled: true 
+              trigger:
+                schedule: 30 1 * * *
       media-vol:
         enabled: true
         type: nfs

@@ -41,6 +41,7 @@ spec:
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
       config:
+
         volsync:
           - name: config
             type: restic
@@ -49,6 +50,8 @@ spec:
               enabled: true
             src:
               enabled: true 
+              trigger:
+                schedule: 30 0 * * *
       media-vol:
         enabled: true
         type: nfs
