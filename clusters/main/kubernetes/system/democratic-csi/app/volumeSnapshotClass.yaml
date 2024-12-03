@@ -1,12 +1,12 @@
----
-kind: VolumeSnapshotClass
-apiVersion: snapshot.storage.k8s.io/v1
-metadata:
-  name: nfs-snapshot
-  annotations:
-    snapshot.storage.kubernetes.io/is-default-class: 'false'
-driver: freenas-api-nfs
-deletionPolicy: Delete
-parameters:
-  fsType: nfs
+# ---
+# kind: VolumeSnapshotClass
+# apiVersion: snapshot.storage.k8s.io/v1
+# metadata:
+#   name: nfs-snapshot
+#   annotations:
+#     snapshot.storage.kubernetes.io/is-default-class: 'false'
+# driver: freenas-api-nfs
+# deletionPolicy: Delete
+# parameters:
+#   fsType: nfs
 # detachedSnapshots: "true"
