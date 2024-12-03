@@ -40,11 +40,12 @@ spec:
           - noatime
           - nfsvers=4
     # if you want to use snapshots
-    # volumeSnapshotClasses:
-    #   - name: nfs-snapshot
-    #     parameters:
-    #       fsType: nfs
-    #     detachedSnapshots: "true"
+    volumeSnapshotClasses:
+      - name: nfs-snapshot
+        driver: freenas-api-nfs
+        parameters:
+          fsType: nfs
+        detachedSnapshots: "true"
     driver:
       config:
         driver: freenas-api-nfs
