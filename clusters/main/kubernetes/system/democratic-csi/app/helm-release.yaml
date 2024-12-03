@@ -35,17 +35,16 @@ spec:
         parameters:
           fsType: nfs
           detachedVolumesFromSnapshots: "false"
-        detachedSnapshots: "true"
         mountOptions:
           - noatime
           - nfsvers=4
     # if you want to use snapshots
     volumeSnapshotClasses:
       - name: nfs-snapshot
-        driver: freenas-api-nfs
+        enabled: false
         parameters:
           fsType: nfs
-        detachedSnapshots: "true"
+          detachedSnapshots: "true"
     driver:
       config:
         driver: freenas-api-nfs
