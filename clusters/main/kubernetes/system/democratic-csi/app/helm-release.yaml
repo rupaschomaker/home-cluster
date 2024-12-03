@@ -4,7 +4,7 @@ metadata:
   name: democratic-csi
   namespace: democratic
 spec:
-  interval: 30m
+  interval: 5m
   releaseName: democratic-csi
   chart:
     spec:
