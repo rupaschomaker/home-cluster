@@ -28,16 +28,16 @@ spec:
         name: "nfs"
     storageClasses:
       - name: nfs
-    defaultClass: true
-    reclaimPolicy: Delete
-    volumeBindingMode: Immediate
-    allowVolumeExpansion: true
-    parameters:
-      fsType: nfs
-      detachedVolumesFromSnapshots: "false"
-    mountOptions:
-      - noatime
-      - nfsvers=4
+        defaultClass: true
+        reclaimPolicy: Delete
+        volumeBindingMode: Immediate
+        allowVolumeExpansion: true
+        parameters:
+          fsType: nfs
+          detachedVolumesFromSnapshots: "false"
+        mountOptions:
+          - noatime
+          - nfsvers=4
     # if you want to use snapshots
     volumeSnapshotClasses:
       - name: nfs-snapshot
