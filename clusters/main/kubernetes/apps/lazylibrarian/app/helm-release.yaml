@@ -41,16 +41,16 @@ spec:
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
       config:
-        storageClass: nfs
+        # storageClass: nfs
         volsync:
           - name: config
             type: restic
             credentials: r2
             dest:
-              volumeSnapshotClassName: nfs-snapshot
+              # volumeSnapshotClassName: nfs-snapshot
               enabled: true
             src:
-              volumeSnapshotClassName: nfs-snapshot
+              # volumeSnapshotClassName: nfs-snapshot
               enabled: true 
               trigger:
                 schedule: 30 0 * * *
