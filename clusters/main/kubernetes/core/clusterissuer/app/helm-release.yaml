@@ -65,3 +65,4 @@ spec:
           hosts:
             - ${DOMAIN_0}
             - '*.${DOMAIN_0}'
+            - foo.${DOMAIN_0}
