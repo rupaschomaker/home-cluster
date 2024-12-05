@@ -78,6 +78,7 @@ spec:
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
       config:
+        enabled: true
         volsync:
           - name: config
             type: restic
