@@ -34,7 +34,7 @@ spec:
       container:
         UMASK: "0000"
     credentials:
-      r2:
+      s3creds:
         type: s3
         url: ${VOLSYNC_S3_URL}
         bucket: ${VOLSYNC_S3_BUCKET}
@@ -47,7 +47,7 @@ spec:
         volsync:
           - name: config
             type: restic
-            credentials: r2
+            credentials: s3creds
             dest:
               volumeSnapshotClassName: nfs-snapshot
               enabled: true
