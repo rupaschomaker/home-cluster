@@ -34,7 +34,7 @@ spec:
         allowVolumeExpansion: true
         parameters:
           fsType: nfs
-          detachedVolumesFromSnapshots: "true"
+          detachedVolumesFromSnapshots: "false"
         mountOptions:
           - noatime
           - nfsvers=4
