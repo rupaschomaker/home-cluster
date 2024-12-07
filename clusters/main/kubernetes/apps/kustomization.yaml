@@ -7,7 +7,6 @@ resources:
   - deluge/ks.yaml
   - jellyfin/ks.yaml
   - lazylibrarian/ks.yaml
-  - nzbget/ks.yaml
   - prowlarr/ks.yaml
   - radarr/ks.yaml
   - recyclarr/ks.yaml
