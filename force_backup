@@ -1,3 +1,5 @@
+#!/bin/bash -e
+
 if [ $# = 1 ]; then
 	wanted_namespace=$1
 else
@@ -5,16 +7,25 @@ else
 fi
 
 # Get all replicationsource names and namespaces
-replicationsources=$(kubectl get replicationsource -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}')
+if [ -z ${wanted_namespace} ]; then 
+	replicationsources=$(kubectl get replicationsource -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}')
+else
+	replicationsources=$(kubectl get replicationsource -n "${wanted_namespace}" -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}')
+fi
 
-# Loop through each replicationsource and apply the patch
+# Loop through each replicationsource and set spec
 while IFS= read -r line; do
     namespace=$(echo $line | awk '{print $1}')
     if [ -z "${wanted_namespace}" -o "${wanted_namespace}" == "${namespace}" ]; then
 	    name=$(echo $line | awk '{print $2}')
 	    if [ -z "$app" -o "$namespace" == "${app}" ]; then
-		echo "Patching replicationsource $name in namespace $namespace..."
-		kubectl patch replicationsource ${name} -n ${namespace} --type='merge' -p '{"spec":{"restic":{"copyMethod":"Direct"}, "trigger":{"manual":"'`date --iso-8601=seconds`'"}}}'
+			echo "Patching replicationsource $name in namespace $namespace..."
+			trigger=$(kubectl get replicationsource ${name} -n ${namespace} -o jsonpath='{.spec.trigger.manual}')
+
+			MANUAL=$(date --iso-8601=seconds | sed 's/://g')
+
+			# patch to trigger a manual backup
+			kubectl patch replicationsource ${name} -n ${namespace} --type='merge' -p '{"spec":{"trigger":{"manual":"'${MANUAL}'"}}}'
 	    fi
     fi
 done <<< "$replicationsources"
