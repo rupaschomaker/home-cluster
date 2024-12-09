@@ -29,7 +29,7 @@ spec:
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
       config:
-        # storageClass: nfs
+        storageClass: nfs
         volsync:
           - name: config
             type: restic
@@ -38,10 +38,10 @@ spec:
               # can't restore directly, INIT goes into infinite loop
               # instead, restore using restic and then replace
               # recyclarr.yml with the version in the backup.
-              enabled: false
-              # volumeSnapshotClassName: nfs-snapshot
+              enabled: true
+              volumeSnapshotClassName: nfs-snapshot
             src:
               enabled: true 
-              # volumeSnapshotClassName: nfs-snapshot
+              volumeSnapshotClassName: nfs-snapshot
               trigger:
                 schedule: 00 1 * * *

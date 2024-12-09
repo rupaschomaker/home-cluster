@@ -40,14 +40,14 @@ spec:
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
       config:
-        # storageClass: nfs
+        storageClass: nfs
         volsync:
           - name: config
             type: restic
             credentials: s3creds
             dest:
-              # volumeSnapshotClassName: nfs-snapshot
+              volumeSnapshotClassName: nfs-snapshot
               enabled: true
             src:
-              # volumeSnapshotClassName: nfs-snapshot
+              volumeSnapshotClassName: nfs-snapshot
               enabled: true 
