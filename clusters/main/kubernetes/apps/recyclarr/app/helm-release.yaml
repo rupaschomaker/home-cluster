@@ -38,7 +38,7 @@ spec:
               # can't restore directly, INIT goes into infinite loop
               # instead, restore using restic and then replace
               # recyclarr.yml with the version in the backup.
-              enabled: true
+              enabled: false
               volumeSnapshotClassName: nfs-snapshot
             src:
               enabled: true 
