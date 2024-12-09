@@ -26,6 +26,10 @@ while IFS= read -r line; do
 
 			# patch to trigger a manual backup
 			kubectl patch replicationsource ${name} -n ${namespace} --type='merge' -p '{"spec":{"trigger":{"manual":"'${MANUAL}'"}}}'
+
+			sleep 30
+
+			kubectl patch replicationsource ${name} -n ${namespace} --type=json -p='[{"op": "remove", "path": "/spec/trigger/manual"}]' 
 	    fi
     fi
 done <<< "$replicationsources"
