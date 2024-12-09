@@ -19,6 +19,12 @@ spec:
     securityContext:
       container:
         UMASK: "0022"
+    workload:
+      main:
+        podSpec:
+          initContainers:
+            initconfig:
+              enabled: false
     credentials:
       s3creds:
         type: s3
@@ -38,7 +44,7 @@ spec:
               # can't restore directly, INIT goes into infinite loop
               # instead, restore using restic and then replace
               # recyclarr.yml with the version in the backup.
-              enabled: false
+              enabled: true
               volumeSnapshotClassName: nfs-snapshot
             src:
               enabled: true 
