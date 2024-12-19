@@ -39,6 +39,8 @@ nodes:
                       - siderolabs/qemu-guest-agent
                       - siderolabs/i915-ucode
                       - siderolabs/intel-ucode
+              extraKernelArgs:
+                  - net.ifnames=0
       networkInterfaces:
         # suffix is the adapter mac adres.
         - interface: eth0
