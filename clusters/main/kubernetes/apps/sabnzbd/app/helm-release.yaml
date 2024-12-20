@@ -15,6 +15,8 @@ spec:
         namespace: flux-system
   releaseName: sabnzbd
   values:
+    image:
+      tag: sabnzbd:4.4.1@sha256:4188d3c29c53de1018edcfd5dc2d0a0c7955b9a239b91ff6c859626abd3494dc
     TZ: America/Chicago
     workload:
       main:
