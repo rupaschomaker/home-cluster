@@ -39,6 +39,8 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
+          homepage:
+            enabled: true
     credentials:
       s3creds:
         type: s3
