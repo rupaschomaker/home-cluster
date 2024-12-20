@@ -15,6 +15,8 @@ spec:
         namespace: flux-system
   releaseName: lazylibrarian
   values:
+    image:
+      tag: latest@sha256:c7c63cacdaab1f01a0f0170ba74cb55135c4197997c9ce50f7e3ee45daf22036
     TZ: America/Chicago
     ingress:
       main:
