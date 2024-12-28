@@ -15,6 +15,7 @@ spec:
         namespace: flux-system
   releaseName: sonarr
   values:
+    enabled: false
     TZ: America/Chicago
     ingress:
       main:
