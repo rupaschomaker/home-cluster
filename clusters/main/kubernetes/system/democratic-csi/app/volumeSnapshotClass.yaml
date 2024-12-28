@@ -5,7 +5,7 @@ metadata:
   name: nfs-snapshot
   annotations:
     snapshot.storage.kubernetes.io/is-default-class: 'true'
-driver: freenas-api-nfs
+driver: nfs
 deletionPolicy: Delete
 parameters:
   fsType: nfs
