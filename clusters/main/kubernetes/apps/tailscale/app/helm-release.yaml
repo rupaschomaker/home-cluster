@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: truecharts
-        namespace: tailscale
+        namespace: flux-system
   releaseName: tailscale
   values:
     TZ: America/Chicago
