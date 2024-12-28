@@ -40,7 +40,7 @@ spec:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
           homepage:
-            enabled: true
+            enabled: false
     credentials:
       s3creds:
         type: s3
