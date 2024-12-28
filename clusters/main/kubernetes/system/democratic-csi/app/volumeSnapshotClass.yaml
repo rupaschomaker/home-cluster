@@ -9,4 +9,4 @@ driver: freenas-api-nfs
 deletionPolicy: Delete
 parameters:
   fsType: nfs
-detachedSnapshots: "true"
+  detachedSnapshots: "true"
