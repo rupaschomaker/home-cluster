@@ -19,7 +19,7 @@ spec:
     release_name: tailscale
     tailscale:
       authkey: ${TAILSCALE_AUTH_KEY}
-      routes: "192.168.1.0/24"
+      routes: ${LOCALNET}
       hostname: k8s
       advertise_as_exit_node: true
     credentials:
