@@ -61,7 +61,12 @@ spec:
       certificates:
         - name: domain-0-wildcard
           enabled: true
-          # certificateIssuer: domain-0-le-prod
+          certificateIssuer: domain-0-le-prod
+          hosts:
+            - ${DOMAIN_0}
+            - '*.${DOMAIN_0}'
+        - name: domain-0-wildcard-staging
+          enabled: true
           certificateIssuer: domain-0-le-staging
           hosts:
             - ${DOMAIN_0}
