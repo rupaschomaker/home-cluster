@@ -18,3 +18,4 @@ resources:
   - homepage/ks.yaml
   - sabnzbd/ks.yaml
   - bitmagnet/ks.yaml
+  - tailscale/ks.yaml
