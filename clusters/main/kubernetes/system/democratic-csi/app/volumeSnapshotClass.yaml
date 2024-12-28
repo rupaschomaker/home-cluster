@@ -9,4 +9,4 @@
  deletionPolicy: Delete
  parameters:
    fsType: nfs
-   detachedSnapshots: "true"
+ detachedSnapshots: "true"
