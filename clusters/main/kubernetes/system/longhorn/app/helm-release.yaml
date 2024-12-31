@@ -37,4 +37,4 @@ spec:
         # Increase to 3 for a multi-node cluster
         defaultClassReplicaCount: 1
         # want data checksums while having issues
-        defaultFsType: xfs
+        defaultFsType: btrfs
