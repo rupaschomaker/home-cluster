@@ -37,7 +37,7 @@ nodes:
                       - siderolabs/util-linux-tools
                       - siderolabs/iscsi-tools
                       - siderolabs/qemu-guest-agent
-                      - siderolabs/i915-ucode
+                      - siderolabs/i915
                       - siderolabs/intel-ucode
               extraKernelArgs:
                   - net.ifnames=0
