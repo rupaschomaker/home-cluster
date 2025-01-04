@@ -19,3 +19,4 @@ resources:
   - sabnzbd/ks.yaml
   - bitmagnet/ks.yaml
   - tailscale/ks.yaml
+  - qbittorrent/ks.yaml

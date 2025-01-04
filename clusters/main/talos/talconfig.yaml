@@ -52,6 +52,36 @@ nodes:
               gateway: ${GATEWAY}
           vip:
             ip: ${VIP}
+    - hostname: k8s-node-2
+      ipAddress: ${MASTER1IP_IP}
+      controlPlane: true
+      nodeTaints:
+        controlpane: true:NoSchedule
+      nameservers:
+        - 1.1.1.1
+        - 8.8.8.8
+      installDiskSelector:
+        size: <= 500GB
+      schematic:
+          customization:
+              systemExtensions:
+                  officialExtensions:
+                      - siderolabs/util-linux-tools
+                      - siderolabs/iscsi-tools
+                      - siderolabs/qemu-guest-agent
+                      - siderolabs/btrfs
+              extraKernelArgs:
+                  - net.ifnames=0
+      networkInterfaces:
+        # suffix is the adapter mac adres.
+        - interface: eth0
+          addresses:
+            - ${MASTER2IP_CIDR}
+          routes:
+            - network: 0.0.0.0/0
+              gateway: ${GATEWAY}
+          vip:
+            ip: ${VIP}
 controlPlane:
     patches:
         - '@./patches/controlplane.yaml'

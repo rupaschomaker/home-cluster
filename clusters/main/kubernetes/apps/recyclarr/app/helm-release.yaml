@@ -24,6 +24,7 @@ spec:
         podSpec:
           initContainers:
             initconfig:
+              # set this after initial setup if using volsync
               enabled: false
     credentials:
       s3creds:
@@ -35,19 +36,13 @@ spec:
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
       config:
-        storageClass: nfs
         volsync:
           - name: config
             type: restic
             credentials: s3creds
             dest:
-              # can't restore directly, INIT goes into infinite loop
-              # instead, restore using restic and then replace
-              # recyclarr.yml with the version in the backup.
               enabled: true
-              volumeSnapshotClassName: nfs-snapshot
             src:
               enabled: true 
-              volumeSnapshotClassName: nfs-snapshot
               trigger:
                 schedule: 00 1 * * *
