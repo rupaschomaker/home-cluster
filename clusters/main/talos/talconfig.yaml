@@ -53,7 +53,7 @@ nodes:
           vip:
             ip: ${VIP}
     - hostname: k8s-node-2
-      ipAddress: ${MASTER1IP_IP}
+      ipAddress: ${MASTER2IP_IP}
       controlPlane: true
       nodeTaints:
         controlpane: true:NoSchedule
@@ -61,7 +61,7 @@ nodes:
         - 1.1.1.1
         - 8.8.8.8
       installDiskSelector:
-        size: <= 500GB
+        size: <= 2000GB
       schematic:
           customization:
               systemExtensions:
