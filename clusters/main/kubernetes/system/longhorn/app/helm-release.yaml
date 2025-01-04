@@ -25,20 +25,6 @@ spec:
     remediation:
       retries: 3
   values:
-    ingress:
-      main:
-        enabled: true
-        hosts:
-          - host: longhorn.${DOMAIN_0}
-        integrations:
-          traefik:
-            enabled: true
-            middlewares:
-              - name: local
-                namespace: traefik
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
     defaultSettings:
     # Increase to 3 for a multi-node cluster
     defaultReplicaCount: 1
