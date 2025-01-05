@@ -28,7 +28,7 @@ spec:
   releaseName: qbittorrent
   values:
     global:
-      stopAll: true
+      stopAll: false
     TZ: America/Chicago
     addons:
       vpn:

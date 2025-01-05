@@ -27,6 +27,8 @@ spec:
         namespace: flux-system
   releaseName: deluge
   values:
+    global:
+      stopAll: true
     TZ: America/Chicago
     addons:
       vpn:
