@@ -50,7 +50,10 @@ spec:
       torrent:
         ports:
           tcp:
-            port: "58846"
+            port: "57519"
+            targetPort: "6881"
+          udp:
+            port: "57519"
             targetPort: "6881"
     ingress:
       main:
