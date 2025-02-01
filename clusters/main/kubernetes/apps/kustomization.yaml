@@ -4,7 +4,6 @@ resources:
   - kubernetes-dashboard/ks.yaml
   - resilio-sync/ks.yaml
   - smtp-relay/ks.yaml
-  - deluge/ks.yaml
   - jellyfin/ks.yaml
   - lazylibrarian/ks.yaml
   - prowlarr/ks.yaml
