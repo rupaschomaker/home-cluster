@@ -18,7 +18,7 @@ spec:
     ingress:
       main:
         hosts:
-          - host: minecraft.${DOMAIN_0}
+          - host: mc.${DOMAIN_0}
         integrations:
           traefik:
             enabled: true
@@ -29,9 +29,10 @@ spec:
             certificateIssuer: ${CERT_ISSUER}
     service:
       main:
-        type: ExternalName
+        type: ExternalIP
         enabled: true
-        externalName: mc.${DOMAIN_0}
+        #externalName: mc.${DOMAIN_0}
+        externalIP: 192.168.1.227
         ports:
           main:
             enabled: true
