@@ -9,8 +9,8 @@ resources:
   - cloudnative-pg.yaml
   - coredns.yaml
   - csi-driver-nfs.yaml
-  - democratic-csi.yaml
   - descheduler.yaml
+  - home-ops-mirror.yaml
   - intel.yaml
   - jetstack.yaml
   - kubernetes-sigs-metrics-server.yaml
