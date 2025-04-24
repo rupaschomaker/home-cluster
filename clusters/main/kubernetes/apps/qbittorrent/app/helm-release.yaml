@@ -63,6 +63,8 @@ spec:
           - host: qb.${DOMAIN_0}
           - host: qbittorrent.${DOMAIN_0}
         integrations:
+          traefik:
+            enabled: true
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}

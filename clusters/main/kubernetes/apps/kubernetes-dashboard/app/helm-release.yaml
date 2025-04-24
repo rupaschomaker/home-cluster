@@ -47,6 +47,8 @@ spec:
             - path: /
               pathType: Prefix
         integrations:
+          traefik:
+            enabled: true
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}

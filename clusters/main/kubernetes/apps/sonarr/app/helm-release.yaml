@@ -23,6 +23,8 @@ spec:
         hosts:
           - host: sonarr.${DOMAIN_0}
         integrations:
+          traefik:
+            enabled: true
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
