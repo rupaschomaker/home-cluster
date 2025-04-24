@@ -5,3 +5,5 @@ resources:
   - clustersettings.secret.yaml
   - flux.yaml
   - upgradesettings.yaml
+  - deploykey.secret.yaml
+  - sopssecret.secret.yaml
