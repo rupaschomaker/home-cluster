@@ -1,21 +1,21 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - kubernetes-dashboard/ks.yaml
-  - resilio-sync/ks.yaml
-  - smtp-relay/ks.yaml
+  - bitmagnet/ks.yaml
+  - external-dns/ks.yaml
+  - generic-device-plugin/ks.yaml
+  - home-assistant/ks.yaml
+  - homepage/ks.yaml
   - jellyfin/ks.yaml
+  - kubernetes-dashboard/ks.yaml
   - lazylibrarian/ks.yaml
+  - minecraft-dynmap/ks.yaml
   - prowlarr/ks.yaml
+  - qbittorrent/ks.yaml
   - radarr/ks.yaml
   - recyclarr/ks.yaml
-  - sonarr/ks.yaml
-  - home-assistant/ks.yaml
-  - minecraft-dynmap/ks.yaml
-  - generic-device-plugin/ks.yaml
-  - external-dns/ks.yaml
-  - homepage/ks.yaml
+  - resilio-sync/ks.yaml
   - sabnzbd/ks.yaml
-  - bitmagnet/ks.yaml
+  - smtp-relay/ks.yaml
+  - sonarr/ks.yaml
   - tailscale/ks.yaml
-  - qbittorrent/ks.yaml

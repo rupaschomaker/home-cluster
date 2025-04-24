@@ -18,16 +18,10 @@ spec:
     ingress:
       main:
         enabled: true
+        ingressClassName: external
         hosts:
           - host: ha.${DOMAIN_0}
         integrations:
-          traefik:
-            enabled: true
-            # middlewares:
-            #   - name: local
-            #     namespace: traefik
-            entrypoints:
-              - extwebsecure
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}

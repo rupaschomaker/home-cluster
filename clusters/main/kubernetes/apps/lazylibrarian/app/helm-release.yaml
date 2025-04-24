@@ -21,15 +21,11 @@ spec:
     ingress:
       main:
         enabled: true
+        ingressClassName: internal
         hosts:
           - host: lazylibrarian.${DOMAIN_0}
           - host: ll.${DOMAIN_0}
         integrations:
-          traefik:
-            enabled: true
-            middlewares:
-              - name: local
-                namespace: traefik
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}

@@ -16,14 +16,12 @@ spec:
   releaseName: minecraft-dynmap
   values:
     ingress:
+      enabled: true
+      ingressClassName: external
       main:
         hosts:
           - host: mc.${DOMAIN_0}
         integrations:
-          traefik:
-            enabled: true
-            entrypoints:
-              - extwebsecure
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
