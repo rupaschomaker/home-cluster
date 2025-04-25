@@ -62,6 +62,8 @@ spec:
         hosts:
           - host: bitmagnet.${DOMAIN_0}
         integrations:
+          traefik:
+            enabled: false
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
