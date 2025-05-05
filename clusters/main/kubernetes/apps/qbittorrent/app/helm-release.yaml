@@ -89,6 +89,7 @@ spec:
               trigger:
                 schedule: 30 0 * * *
       vuetorrent:
+        enabled: true
         mountPath: /config/vuetorrent
         volsync:
           - name: vuetorrent
