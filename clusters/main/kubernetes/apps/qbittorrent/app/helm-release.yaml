@@ -88,6 +88,18 @@ spec:
               enabled: true 
               trigger:
                 schedule: 30 0 * * *
+      vuetorrent:
+        mountPath: /config/vuetorrent
+        volsync:
+          - name: vuetorrent
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            src:
+              enabled: true 
+              trigger:
+                schedule: 30 0 * * *
       media-vol:
         enabled: true
         type: nfs
