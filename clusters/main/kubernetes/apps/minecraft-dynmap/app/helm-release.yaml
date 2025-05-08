@@ -16,9 +16,9 @@ spec:
   releaseName: minecraft-dynmap
   values:
     ingress:
-      enabled: true
-      ingressClassName: external
       main:
+        enabled: true
+        ingressClassName: external
         hosts:
           - host: mc.${DOMAIN_0}
         integrations:
