@@ -20,4 +20,3 @@ resources:
   - sonarr/ks.yaml
   - tailscale/ks.yaml
   - sunshine/ks.yaml
-  - nginx-proxy-manager/ks.yaml
