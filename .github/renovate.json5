@@ -3,5 +3,6 @@
   "extends": [
     "config:recommended",
     "github>truecharts/public//.github/renovate/main.json5"
-  ]
+  ],
+  "automerge": false // Add this line to disable automerge globally
 }
