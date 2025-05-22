@@ -50,6 +50,8 @@ spec:
           fsType: nfs
           detachedSnapshots: "true"
     driver:
+      image: next
+      pullPolicy: Always
       config:
         driver: freenas-api-nfs
         instance_id:
