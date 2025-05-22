@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: democratic-csi
-      version: next
+      version: 0.15.0
       sourceRef:
         name: democratic-csi
         kind: HelmRepository
@@ -24,8 +24,6 @@ spec:
     remediation:
       retries: 3
   values:
-    image:
-      pullPolicy: Always
     csiDriver:
         name: "nfs"
     storageClasses:
