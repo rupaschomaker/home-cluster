@@ -12,5 +12,5 @@ git commit -m "$1"
 git pull
 git push
 clustertool decrypt
-sleep 1
-flux reconcile source git cluster -n flux-system
+# sleep 1
+# flux reconcile source git cluster -n flux-system
