@@ -53,6 +53,7 @@ spec:
     service:
       torrent:
         ports:
+          enabled: true
           tcp:
             port: "${VPN_INBOUND_PORT}"
             targetPort: "6881"
