@@ -51,11 +51,11 @@ spec:
         ports:
           torrent:
             enabled: true
-            port: "57519"
+            port: "${VPN_INBOUND_PORT}"
             targetPort: "6881"
           torrentudp:
             enabled: true
-            port: "57519"
+            port: "${VPN_INBOUND_PORT}"
             targetPort: "6881"
             protocol: udp
     ingress:
