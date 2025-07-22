@@ -45,19 +45,17 @@ spec:
     workload:
       qbitportforward:
         enabled: true
-    # service:
-      # torrent:
-      #   enabled: true
-      #   ports:
-      #     torrent:
-      #       enabled: true
-      #       port: "${VPN_INBOUND_PORT}"
-      #       targetPort: "6881"
-      #     torrentudp:
-      #       enabled: true
-      #       port: "${VPN_INBOUND_PORT}"
-      #       targetPort: "6881"
-      #       protocol: udp
+    service:
+      torrent:
+        enabled: true
+        ports:
+          torrent:
+            enabled: true
+            port: "${VPN_INBOUND_PORT}"
+          torrentudp:
+            enabled: true
+            port: "${VPN_INBOUND_PORT}"
+            protocol: udp
     ingress:
       main:
         enabled: true
