@@ -52,12 +52,14 @@ spec:
               truechart.org/tun: 1
     service:
       torrent:
+        enabled: true
         ports:
-          enabled: true
-          tcp:
+          torrent:
+            enabled: true
             port: "${VPN_INBOUND_PORT}"
             targetPort: "6881"
-          udp:
+          torrentudp:
+            enabled: true
             port: "${VPN_INBOUND_PORT}"
             targetPort: "6881"
     ingress:
