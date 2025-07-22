@@ -4,18 +4,6 @@ metadata:
   name: qbittorrent
   namespace: qbittorrent
 spec:
-  ## tun hack per https://truecharts.org/guides/vpn-setup/#:~:text=logs%20to%20confirm.-,Talos%20specific%20config,-In%20talos%20in
-  postRenderers:
-  - kustomize:
-      patches:
-        - target:
-            version: v1
-            kind: Deployment
-            name: qbittorrent
-          patch: |
-            - op: add
-              path: /spec/template/spec/containers/1/resources/limits/truecharts.org~1tun
-              value: 1
   interval: 15m
   chart:
     spec:
@@ -26,7 +14,11 @@ spec:
         name: truecharts
         namespace: flux-system
   releaseName: qbittorrent
+
   values:
+    portal:
+      open:
+        enabled: false
     global:
       stopAll: false
     TZ: America/Chicago
@@ -34,35 +26,38 @@ spec:
       gluetun:
         enabled: true
         container:
+          resources:
+            limits:
+              truechart.org/tun: 1
           env:
             FIREWALL: "on"
             FIREWALL_OUTBOUND_SUBNETS: ${LOCALNET}
             FIREWALL_VPN_INPUT_PORTS: "${VPN_INBOUND_PORT}"
             VPN_TYPE: wireguard
+            VPN_SERVICE_PROVIDER: "custom"
             DOT: "on"
             DOT_VERBOSITY: "1"
             WIREGUARD_ENDPOINT_IP: ${VPN_ENDPOINT_IP}
             WIREGUARD_ENDPOINT_PORT: "${VPN_ENDPOINT_PORT}"
-            VPN_SERVICE_PROVIDER: custom
             WIREGUARD_ADDRESSES: ${WIREGUARD_ADDRESSES}
             WIREGUARD_PRIVATE_KEY: ${WIREGUARD_PRIVATE_KEY}
             WIREGUARD_PUBLIC_KEY: ${WIREGUARD_PUBLIC_KEY}
-          resources:
-            limits:
-              truechart.org/tun: 1
-    service:
-      torrent:
+    workload:
+      qbitportforward:
         enabled: true
-        ports:
-          torrent:
-            enabled: true
-            port: "${VPN_INBOUND_PORT}"
-            targetPort: "6881"
-          torrentudp:
-            enabled: true
-            port: "${VPN_INBOUND_PORT}"
-            targetPort: "6881"
-            protocol: udp
+    # service:
+      # torrent:
+      #   enabled: true
+      #   ports:
+      #     torrent:
+      #       enabled: true
+      #       port: "${VPN_INBOUND_PORT}"
+      #       targetPort: "6881"
+      #     torrentudp:
+      #       enabled: true
+      #       port: "${VPN_INBOUND_PORT}"
+      #       targetPort: "6881"
+      #       protocol: udp
     ingress:
       main:
         enabled: true
@@ -71,11 +66,11 @@ spec:
           - host: qb.${DOMAIN_0}
           - host: qbittorrent.${DOMAIN_0}
         integrations:
-          traefik:
-            enabled: false
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
+          nginx:
+            enabled: true
     credentials:
       s3creds:
         type: s3
