@@ -62,6 +62,7 @@ spec:
             enabled: true
             port: "${VPN_INBOUND_PORT}"
             targetPort: "6881"
+            protocol: udp
     ingress:
       main:
         enabled: true
