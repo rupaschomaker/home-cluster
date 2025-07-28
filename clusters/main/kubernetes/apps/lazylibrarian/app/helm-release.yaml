@@ -19,7 +19,7 @@ spec:
     #   tag: latest@sha256:5128ec8fdc5153b4b996833103e96bd0c0b799b4615f587f88a5f221ccf9fe45
     resources:
       requests:
-        cpu: 20m
+        cpu: 10m
     TZ: America/Chicago
     ingress:
       main:
