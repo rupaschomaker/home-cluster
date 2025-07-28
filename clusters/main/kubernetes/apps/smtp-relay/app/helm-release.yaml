@@ -18,6 +18,9 @@ spec:
   releaseName: smtp-relay
   values:
     TZ: America/Chicago
+    resources:
+      requests:
+        cpu: 20m
     release_name: smtp-relay
     smtprelay:
       domains:

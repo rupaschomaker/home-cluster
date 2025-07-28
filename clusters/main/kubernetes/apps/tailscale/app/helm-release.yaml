@@ -16,6 +16,9 @@ spec:
   releaseName: tailscale
   values:
     TZ: America/Chicago
+    resources:
+      requests:
+        cpu: 10m
     release_name: tailscale
     tailscale:
       authkey: ${TAILSCALE_AUTH_KEY}

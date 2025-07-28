@@ -16,6 +16,9 @@ spec:
   releaseName: sonarr
   values:
     TZ: America/Chicago
+    resources:
+      requests:
+        cpu: 30m
     ingress:
       main:
         enabled: true

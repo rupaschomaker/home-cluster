@@ -16,6 +16,9 @@ spec:
   releaseName: recyclarr
   values:
     TZ: America/Chicago
+    resources:
+      requests:
+        cpu: 10m
     securityContext:
       container:
         UMASK: "0022"

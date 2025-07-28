@@ -16,6 +16,9 @@ spec:
   releaseName: radarr
   values:
     TZ: America/Chicago
+    resources:
+      requests:
+        cpu: 30m
     ingress:
       main:
         enabled: true

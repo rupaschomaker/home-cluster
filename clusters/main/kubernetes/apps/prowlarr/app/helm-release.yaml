@@ -16,6 +16,9 @@ spec:
   releaseName: prowlarr
   values:
     TZ: America/Chicago
+    resources:
+      requests:
+        cpu: 20m
     ingress:
       main:
         enabled: true

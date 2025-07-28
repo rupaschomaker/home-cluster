@@ -16,6 +16,9 @@ spec:
   releaseName: qbittorrent
 
   values:
+    resources:
+      requests:
+        cpu: 50m
     portal:
       open:
         enabled: false

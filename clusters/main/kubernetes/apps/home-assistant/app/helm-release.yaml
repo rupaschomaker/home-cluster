@@ -15,6 +15,9 @@ spec:
         namespace: flux-system
   releaseName: home-assistant
   values:
+    resources:
+      requests:
+        cpu: 10m
     ingress:
       main:
         enabled: true
