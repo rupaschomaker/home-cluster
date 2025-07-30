@@ -15,6 +15,10 @@ spec:
         namespace: flux-system
   releaseName: homepage
   values:
+    enabled: false
+    resources:
+      requests:
+        cpu: 10m
     TZ: America/Chicago
     ingress:
       main:
