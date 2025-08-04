@@ -16,7 +16,7 @@ spec:
   releaseName: bitmagnet
   values:
     global:
-      stopAll: false
+      stopAll: true
     TZ: America/Chicago
     workload:
       qbitportforward:
