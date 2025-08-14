@@ -22,8 +22,6 @@ spec:
       stopAll: false
     TZ: America/Chicago
     workload:
-      # qbitportforward:
-      #   enabled: true
       main:
         podSpec:
           containers:
@@ -31,9 +29,9 @@ spec:
               env:
                 TMDB_API_KEY: ${TMDB_API_KEY}
                 CLASSIFIER_DELETE_XXX: true
-    # service:
-    #   torrent:
-    #     enabled: true
+    service:
+      torrent:
+        enabled: true
     #     ports:
     #       tcp:
     #         enabled: true
