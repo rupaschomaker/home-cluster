@@ -31,21 +31,21 @@ spec:
     service:
       torrent:
         enabled: true
-        ports:
-          torrent:
-            enabled: true
-            # port: "${VPN_INBOUND_PORT}"
-            port: "57520"
-            targetPort: "6881"
-          torrentudp:
-            enabled: true
-            # port: "${VPN_INBOUND_PORT}"
-            port: "57520"
-            targetPort: "6881"
-            protocol: udp
+        # ports:
+        #   torrent:
+        #     enabled: true
+        #     # port: "${VPN_INBOUND_PORT}"
+        #     port: "57520"
+        #     targetPort: "6881"
+        #   torrentudp:
+        #     enabled: true
+        #     # port: "${VPN_INBOUND_PORT}"
+        #     port: "57520"
+        #     targetPort: "6881"
+        #     protocol: udp
     addons:
       gluetun:
-        enabled: false
+        enabled: true
         container:
           resources:
             limits:
