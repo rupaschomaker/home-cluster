@@ -42,7 +42,7 @@ spec:
       codeserver:
         enabled: false
       gluetun:
-        enabled: true
+        enabled: false
         container:
           resources:
             limits:
@@ -61,7 +61,6 @@ spec:
             WIREGUARD_PRIVATE_KEY: ${BM_WIREGUARD_PRIVATE_KEY}
             WIREGUARD_PUBLIC_KEY: ${BM_WIREGUARD_PUBLIC_KEY}
             WIREGUARD_PERSISTENT_KEEPALIVE_INTERVAL: "25s"
-            TESTVAR: "rupa"
     ingress:
       main:
         enabled: true
