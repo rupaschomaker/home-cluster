@@ -32,17 +32,11 @@ spec:
       torrent:
         enabled: true
         ports:
-          torrent:
+          tcp:
             enabled: true
             # port: "${VPN_INBOUND_PORT}"
-            port: "57520"
-            targetPort: "6881"
-          torrentudp:
-            enabled: true
-            # port: "${VPN_INBOUND_PORT}"
-            port: "57520"
-            targetPort: "6881"
-            protocol: udp
+            port: 57520
+            targetPort: 6881
     addons:
       gluetun:
         enabled: true
