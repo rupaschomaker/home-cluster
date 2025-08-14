@@ -16,7 +16,7 @@ spec:
   releaseName: bitmagnet
   values:
     global:
-      stopAll: true
+      stopAll: false
     TZ: America/Chicago
     workload:
       qbitportforward:
@@ -45,7 +45,7 @@ spec:
             protocol: udp
     addons:
       gluetun:
-        enabled: true
+        enabled: false
         container:
           resources:
             limits:
