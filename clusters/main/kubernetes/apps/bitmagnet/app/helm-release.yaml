@@ -15,6 +15,9 @@ spec:
         namespace: flux-system
   releaseName: bitmagnet
   values:
+    resources:
+      requests:
+        cpu: 20m
     global:
       stopAll: false
     TZ: America/Chicago
@@ -38,6 +41,8 @@ spec:
     #         # port: 57520
     #         targetPort: 6881
     addons:
+      codeserver:
+        enabled: false
       gluetun:
         enabled: true
         container:
