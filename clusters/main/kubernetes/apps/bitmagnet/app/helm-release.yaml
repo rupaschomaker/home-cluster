@@ -34,8 +34,8 @@ spec:
         ports:
           tcp:
             enabled: true
-            # port: "${VPN_INBOUND_PORT}"
-            port: 57520
+            port: ${BM_VPN_INBOUND_PORT}
+            # port: 57520
             targetPort: 6881
     addons:
       gluetun:
