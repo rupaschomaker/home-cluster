@@ -32,12 +32,12 @@ spec:
     service:
       torrent:
         enabled: true
-    #     ports:
-    #       tcp:
-    #         enabled: true
-    #         port: ${BM_VPN_INBOUND_PORT}
-    #         # port: 57520
-    #         targetPort: 6881
+        ports:
+          tcp:
+            enabled: true
+            port: ${BM_VPN_INBOUND_PORT}
+            # port: 57520
+            targetPort: 6881
     addons:
       codeserver:
         enabled: false
