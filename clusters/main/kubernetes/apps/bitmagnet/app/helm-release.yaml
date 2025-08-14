@@ -83,6 +83,14 @@ spec:
         accessKey: ${VOLSYNC_S3_ACCESSKEY}
         secretKey: ${VOLSYNC_S3_SECRETKEY}
         encrKey: ${VOLSYNC_ENC_KEY}
+    cnpg:
+      main:
+        mode: recovery
+        backups:
+          enabled: true
+          credentials: s3creds
+        recovery:
+          credentials: s3creds
     # persistence:
     #   config:
     #     enabled: true
