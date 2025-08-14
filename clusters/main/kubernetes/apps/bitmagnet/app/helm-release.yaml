@@ -28,15 +28,15 @@ spec:
               env:
                 TMDB_API_KEY: ${TMDB_API_KEY}
                 CLASSIFIER_DELETE_XXX: true
-    service:
-      torrent:
-        enabled: true
-        ports:
-          tcp:
-            enabled: true
-            port: ${BM_VPN_INBOUND_PORT}
-            # port: 57520
-            targetPort: 6881
+    # service:
+    #   torrent:
+    #     enabled: true
+    #     ports:
+    #       tcp:
+    #         enabled: true
+    #         port: ${BM_VPN_INBOUND_PORT}
+    #         # port: 57520
+    #         targetPort: 6881
     addons:
       gluetun:
         enabled: true
