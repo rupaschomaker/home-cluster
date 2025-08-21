@@ -14,7 +14,6 @@ spec:
         name: truecharts
         namespace: flux-system
   releaseName: qbittorrent
-
   values:
     resources:
       requests:
@@ -45,6 +44,7 @@ spec:
             WIREGUARD_ADDRESSES: ${WIREGUARD_ADDRESSES}
             WIREGUARD_PRIVATE_KEY: ${WIREGUARD_PRIVATE_KEY}
             WIREGUARD_PUBLIC_KEY: ${WIREGUARD_PUBLIC_KEY}
+            WIREGUARD_PERSISTENT_KEEPALIVE_INTERVAL: "25s"
     workload:
       qbitportforward:
         enabled: true
@@ -54,13 +54,13 @@ spec:
         ports:
           torrent:
             enabled: true
-            # port: "${VPN_INBOUND_PORT}"
-            port: "57519"
+            port: "${VPN_INBOUND_PORT}"
+            # port: "57519"
             targetPort: "6881"
           torrentudp:
             enabled: true
-            # port: "${VPN_INBOUND_PORT}"
-            port: "57519"
+            port: "${VPN_INBOUND_PORT}"
+            # port: "57519"
             targetPort: "6881"
             protocol: udp
     ingress:
