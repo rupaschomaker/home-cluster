@@ -1,0 +1,54 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ladder
+  namespace: ladder
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 15.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  releaseName: ladder
+  values:
+    image:
+      repository: ghcr.io/everywall/ladder
+      pullPolicy: IfNotPresent
+      tag: v0.0.21
+    resources:
+      requests:
+        cpu: 10m
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: internal
+        hosts:
+          - host: ladder.${DOMAIN_0}
+        integrations:
+          traefik:
+            enabled: false
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
+    workload:
+      main:
+        podSpec:
+          containers:
+            main:
+              env:
+                PORT: 8080
+                PREFORK: "false"
+                USER_AGENT: "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+                X_FORWARDED_FOR:
+                USERPASS: ""
+                LOG_URLS: "true"
+                DISABLE_FORM: "false"
+                FORM_PATH: ""
+                RULESET: "https://raw.githubusercontent.com/everywall/ladder/main/ruleset.yaml"
+                EXPOSE_RULESET: "true"
+                ALLOWED_DOMAINS: ""
+                ALLOWED_DOMAINS_RULESET: "false"

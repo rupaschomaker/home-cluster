@@ -20,3 +20,4 @@ resources:
   - sonarr/ks.yaml
   - tailscale/ks.yaml
   - sunshine/ks.yaml
+  - ladder/ks.yaml
