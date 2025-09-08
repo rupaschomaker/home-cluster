@@ -47,7 +47,7 @@ spec:
           containers:
             main:
               env:
-                PORT: 8080
+                PORT: 34541
                 PREFORK: "false"
                 USER_AGENT: "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
                 X_FORWARDED_FOR:
