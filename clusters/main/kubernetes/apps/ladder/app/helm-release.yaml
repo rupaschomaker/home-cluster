@@ -34,6 +34,13 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
+    service:
+      main:
+        ports:
+          main:
+            protocol: http
+            port: 34541
+            #targetPort: 8080
     workload:
       main:
         podSpec:
