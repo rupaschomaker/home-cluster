@@ -39,7 +39,7 @@ spec:
         ports:
           main:
             protocol: http
-            port: 34541
+            port: 8080
             #targetPort: 8080
     workload:
       main:
@@ -47,7 +47,7 @@ spec:
           containers:
             main:
               env:
-                PORT: 34541
+                PORT: 8080
                 PREFORK: "false"
                 USER_AGENT: "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
                 X_FORWARDED_FOR:
