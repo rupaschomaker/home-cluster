@@ -1,13 +1,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: flaresolver
-  namespace: flaresolver
+  name: flaresolverr
+  namespace: flaresolverr
 spec:
   interval: 15m
   chart:
     spec:
-      chart: flaresolver
+      chart: flaresolverr
       version: 16.12.2
       sourceRef:
         kind: HelmRepository
