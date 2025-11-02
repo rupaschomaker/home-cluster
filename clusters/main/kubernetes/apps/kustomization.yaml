@@ -21,5 +21,4 @@ resources:
   - tailscale/ks.yaml
   - sunshine/ks.yaml
   - ladder/ks.yaml
-  - flaresolver/ks.yaml
   - flaresolverr/ks.yaml
