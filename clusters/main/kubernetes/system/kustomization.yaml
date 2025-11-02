@@ -13,5 +13,4 @@ resources:
   - spegel/ks.yaml
   - system-upgrade-controller/ks.yaml
   - volsync/ks.yaml
-  - intel-device-plugin-operator/ks.yaml
   - intel-gpu-plugin/ks.yaml
