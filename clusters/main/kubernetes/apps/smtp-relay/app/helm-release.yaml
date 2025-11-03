@@ -33,6 +33,9 @@ spec:
       main:
         type: LoadBalancer
         loadBalancerIP: ${SMTP_RELAY_IP}
+        integrations:
+          metallb:
+            enabled: true
         ports:
           main:
             port: 25
