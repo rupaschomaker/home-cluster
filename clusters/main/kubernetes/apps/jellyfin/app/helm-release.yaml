@@ -52,6 +52,19 @@ spec:
               enabled: true 
               trigger:
                 schedule: 31 0 * * *
+      metadata:
+        enabled: true
+        mountPath: "/config/metadata"          
+        volsync:
+          - name: metadata
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            src:
+              enabled: true 
+              trigger:
+                schedule: 31 0 * * *
       media-vol:
         enabled: true
         type: nfs
