@@ -32,17 +32,20 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
-          codeserver:
-            enabled: true
-            ingress:
+
+    addons:
+      codeserver:
+        enabled: true
+        ingress:
+          enabled: true
+          ingressClassName: internal
+          hosts:
+            - host: cs-homepage.${DOMAIN_0}
+          integrations:
+            certManager:
               enabled: true
-              ingressClassName: internal
-              hosts:
-                - host: cs-homepage.${DOMAIN_0}
-              integrations:
-                certManager:
-                  enabled: true
-                  certificateIssuer: ${CERT_ISSUER}
+              certificateIssuer: ${CERT_ISSUER}
+
     credentials:
       s3creds:
         type: s3
