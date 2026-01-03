@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - ext-homeassistant/ks.yaml
   - ext-truenas/ks.yaml
+  - ext-proxmox/ks.yaml

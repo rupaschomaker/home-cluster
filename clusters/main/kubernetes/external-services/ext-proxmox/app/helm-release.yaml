@@ -1,0 +1,53 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ext-proxmox
+  namespace: external-services
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: external-service
+      version: 16.14.4
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  values:
+    resources:
+      requests:
+        cpu: 10m
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: internal
+        annotations:
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        hosts:
+          - host: proxmox.${DOMAIN_0}
+        integrations:
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
+          homepage:
+            enabled: true
+            group: Infra
+            name: "Proxmox"
+            description: "Virtualization Server"
+            widget:
+              custom:
+                type: "proxmox"
+                username: root@pam!homepage
+                key: ${HP_API_PROXMOX}
+                node: pve
+    service:
+      main:
+        type: ExternalIP
+        enabled: true
+        externalIP: 192.168.1.176
+        ports:
+          main:
+            enabled: true
+            port: 8006
+            protocol: https
