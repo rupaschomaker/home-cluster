@@ -39,7 +39,11 @@ spec:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
           homepage:
-            enabled: false
+            enabled: true
+            group: Arr
+            widget:
+              custom:
+                key: ${HP_API_SABNZBD}
     credentials:
       s3creds:
         type: s3

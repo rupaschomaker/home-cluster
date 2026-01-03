@@ -31,6 +31,9 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
+          homepage:
+            enabled: true
+            group: Arr
     credentials:
       s3creds:
         type: s3

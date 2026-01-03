@@ -76,6 +76,9 @@ spec:
             certificateIssuer: ${CERT_ISSUER}
           nginx:
             enabled: true
+          homepage:
+            enabled: true
+            group: Arr
     credentials:
       s3creds:
         type: s3

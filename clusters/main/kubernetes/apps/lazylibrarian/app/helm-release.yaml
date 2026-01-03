@@ -34,6 +34,9 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
+          homepage:
+            enabled: true
+            group: Media
     credentials:
       s3creds:
         type: s3
