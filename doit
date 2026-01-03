@@ -5,7 +5,7 @@ if [ -z "$1" ]; then
   exit 2
 fi
 
-clustertool genconfig
+# clustertool genconfig
 git add clusters
 clustertool encrypt
 git commit -m "$1"
