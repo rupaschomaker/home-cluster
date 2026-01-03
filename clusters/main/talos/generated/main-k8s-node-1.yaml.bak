@@ -1,0 +1,274 @@
+version: v1alpha1
+debug: false
+persist: true
+machine:
+  type: controlplane
+  token: w6w2oc.1t9xvs89b7nwi9we
+  ca:
+    crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJQekNCOHFBREFnRUNBaEVBcHh3N3FuMDFDRGJYdjRJdnFqU0xXVEFGQmdNclpYQXdFREVPTUF3R0ExVUUKQ2hNRmRHRnNiM013SGhjTk1qUXhNVEV3TURNeU9EQTRXaGNOTXpReE1UQTRNRE15T0RBNFdqQVFNUTR3REFZRApWUVFLRXdWMFlXeHZjekFxTUFVR0F5dGxjQU1oQUx0SXI5ZTJxR2l5bFUrTHI1SHNmbVdqbGdIamQrNHhkNXlHCldKOWwva2pBbzJFd1h6QU9CZ05WSFE4QkFmOEVCQU1DQW9Rd0hRWURWUjBsQkJZd0ZBWUlLd1lCQlFVSEF3RUcKQ0NzR0FRVUZCd01DTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRktvOENMWVBCQ2FhREN2RQp2bmxNSjlyUTg1c0RNQVVHQXl0bGNBTkJBTUN2cG5yTzhUSUNvL040MG1vUHFDZEJwMVd1Y0gzbm12ODBCdFhZCjJVT01OK3U5eFp5dFVsVUFicHJmdDBwVWJkdjlaTU1DaVducU9YalRhZWVHK2d3PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+    key: LS0tLS1CRUdJTiBFRDI1NTE5IFBSSVZBVEUgS0VZLS0tLS0KTUM0Q0FRQXdCUVlESzJWd0JDSUVJT3RYV0NzbzJwRUk1RVo5d1BCVHUzdTRTS0Z3ek9scEVjRElLT2gzREdkRAotLS0tLUVORCBFRDI1NTE5IFBSSVZBVEUgS0VZLS0tLS0K
+  certSANs:
+    - 127.0.0.1
+    - 192.168.1.5
+  kubelet:
+    image: ghcr.io/siderolabs/kubelet:v1.34.3
+    extraArgs:
+      rotate-server-certificates: "true"
+    extraMounts:
+      - destination: /var/openebs/local
+        type: bind
+        source: /var/openebs/local
+        options:
+          - bind
+          - rshared
+          - rw
+      - destination: /var/lib/longhorn
+        type: bind
+        source: /var/lib/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
+    extraConfig:
+      maxPods: 250
+      shutdownGracePeriod: 15s
+      shutdownGracePeriodCriticalPods: 10s
+    defaultRuntimeSeccompProfileEnabled: true
+    disableManifestsDirectory: true
+  network:
+    hostname: k8s-node-1
+    interfaces:
+      - interface: eth0
+        addresses:
+          - 192.168.1.9/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.1.1
+        vip:
+          ip: 192.168.1.5
+    nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+  install:
+    diskSelector:
+      size: <= 1600GB
+    extraKernelArgs:
+      - net.ifnames=0
+    image: factory.talos.dev/metal-installer/0f1ce15ac3b4e7ab471fbe5dce06a92745cf753c1e8d289e91b01b3859b1ba8f:v1.11.3
+    wipe: false
+  files:
+    - content: |
+        [plugins."io.containerd.grpc.v1.cri"]
+          enable_unprivileged_ports = true
+          enable_unprivileged_icmp = true
+        [plugins."io.containerd.grpc.v1.cri".containerd]
+          discard_unpacked_layers = false
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          discard_unpacked_layers = false
+      permissions: 0o0
+      path: /etc/cri/conf.d/20-customization.part
+      op: create
+    - content: |
+        [ NFSMount_Global_Options ]
+        nfsvers=4.2
+        hard=True
+        noatime=True
+        nodiratime=True
+        rsize=131072
+        wsize=131072
+        nconnect=8
+      permissions: 0o644
+      path: /etc/nfsmount.conf
+      op: overwrite
+  time:
+    disabled: false
+    servers:
+      - time.cloudflare.com
+  sysctls:
+    fs.inotify.max_queued_events: "65536"
+    fs.inotify.max_user_instances: "8192"
+    fs.inotify.max_user_watches: "524288"
+    net.core.default_qdisc: fq
+    net.core.rmem_max: "7500000"
+    net.core.wmem_max: "7500000"
+    net.ipv4.tcp_congestion_control: bbr
+    net.ipv4.tcp_fastopen: "3"
+    net.ipv4.tcp_mtu_probing: "1"
+    net.ipv4.tcp_rmem: 4096 87380 33554432
+    net.ipv4.tcp_window_scaling: "1"
+    net.ipv4.tcp_wmem: 4096 65536 33554432
+    user.max_user_namespaces: "11255"
+    vm.nr_hugepages: "1024"
+  registries:
+    mirrors:
+      cgr.dev:
+        endpoints:
+          - https://cgr.dev
+      docker.io:
+        endpoints:
+          - https://mirror.gcr.io
+          - https://registry-1.docker.io
+          - https://docker.io
+      factory.talos.dev:
+        endpoints:
+          - https://factory.talos.dev
+      gcr.io:
+        endpoints:
+          - https://gcr.io
+      ghcr.io:
+        endpoints:
+          - https://ghcr.io
+      k8s.gcr.io:
+        endpoints:
+          - https://k8s.gcr.io
+      mcr.microsoft.com:
+        endpoints:
+          - https://mcr.microsoft.com
+      public.ecr.aws:
+        endpoints:
+          - https://public.ecr.aws
+      quay.io:
+        endpoints:
+          - https://quay.io
+      registry-1.docker.io:
+        endpoints:
+          - https://mirror.gcr.io
+          - https://registry-1.docker.io
+      registry.k8s.io:
+        endpoints:
+          - https://registry.k8s.io
+      tccr.io:
+        endpoints:
+          - https://quay.io
+          - https://tccr.io
+  features:
+    rbac: true
+    stableHostname: true
+    kubernetesTalosAPIAccess:
+      enabled: true
+      allowedRoles:
+        - os:admin
+      allowedKubernetesNamespaces:
+        - system-upgrade
+    apidCheckExtKeyUsage: true
+    diskQuotaSupport: true
+    kubePrism:
+      enabled: true
+      port: 7445
+    hostDNS:
+      enabled: true
+      forwardKubeDNSToHost: true
+      resolveMemberNames: true
+  kernel:
+    modules:
+      - name: nvme_tcp
+      - name: vfio_pci
+      - name: uio_pci_generic
+  nodeLabels:
+    node.kubernetes.io/exclude-from-external-load-balancers: ""
+cluster:
+  id: Tu2FVxTsnfpfgTsRrmdu-2ZmubZAQ3mbuAc3vy1yj0Y=
+  secret: bQiBP9ZHS0pwh04C/QZltaoN1e6pxFKz2YdE+q+WIMg=
+  controlPlane:
+    endpoint: https://192.168.1.5:6443
+  clusterName: main
+  network:
+    cni:
+      name: none
+    dnsDomain: cluster.local
+    podSubnets:
+      - 172.16.0.0/16
+    serviceSubnets:
+      - 172.17.0.0/16
+  token: l6tdnb.8ul35djv1bedukbw
+  secretboxEncryptionSecret: 686BXhpI0uiW6UyrDMKbEAx4wiy9YsFaXb9KzTX83Yk=
+  ca:
+    crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJpekNDQVRDZ0F3SUJBZ0lSQU5sUy9uSXhEWXpyN3BCelo5b2lJOWd3Q2dZSUtvWkl6ajBFQXdJd0ZURVQKTUJFR0ExVUVDaE1LYTNWaVpYSnVaWFJsY3pBZUZ3MHlOREV4TVRBd016STRNRGRhRncwek5ERXhNRGd3TXpJNApNRGRhTUJVeEV6QVJCZ05WQkFvVENtdDFZbVZ5Ym1WMFpYTXdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CCkJ3TkNBQVRVazhBVnF5NHJ4NGlySDNHWkxxUTAwRWFtaWo2QVBpWkVuQ3BrUGJkNUorTHBURllrSmdKYTh0UEwKQTd1YVE4Q0c4RU0xVlVkWWo4ZngxNGpFejlsNm8yRXdYekFPQmdOVkhROEJBZjhFQkFNQ0FvUXdIUVlEVlIwbApCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ01BOEdBMVVkRXdFQi93UUZNQU1CQWY4d0hRWURWUjBPCkJCWUVGQnhCYWs1YWdXald4c1pnMHFLcDRzUkRua1hhTUFvR0NDcUdTTTQ5QkFNQ0Ewa0FNRVlDSVFETUVNTzcKR2tJWEhxK2NkTThxVTF1Tk1HdXpUM1VrREttRDR1YUVoSGNqRVFJaEFQcFlGSkZFRXkvekJ2Snp4S3M0YzlyRwpQRkNPNy96UzhOMFJMdTBaMDhSbQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+    key: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUI1cEVYSEFtNVpPODBBMlF3RFpONXlEQ01yTGV1RXBHSHdpSzc0dTdDVTJvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFMUpQQUZhc3VLOGVJcXg5eG1TNmtOTkJHcG9vK2dENG1SSndxWkQyM2VTZmk2VXhXSkNZQwpXdkxUeXdPN21rUEFodkJETlZWSFdJL0g4ZGVJeE0vWmVnPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
+  aggregatorCA:
+    crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJZRENDQVFhZ0F3SUJBZ0lSQVBYRGNDNlV3eXVzTDRVbkljTDkybXd3Q2dZSUtvWkl6ajBFQXdJd0FEQWUKRncweU5ERXhNVEF3TXpJNE1EZGFGdzB6TkRFeE1EZ3dNekk0TURkYU1BQXdXVEFUQmdjcWhrak9QUUlCQmdncQpoa2pPUFFNQkJ3TkNBQVMzdXVUdDlBcWVIbDBxN1RZVDR5ZGJxYndONnN1dURWVkxTTEhSMzcvV21IQ1o4eWVkCjluVHJaeDgxZU5IWE5xUEhvR0NTNGFlREd0VjZybkZ2cm43Y28yRXdYekFPQmdOVkhROEJBZjhFQkFNQ0FvUXcKSFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ01BOEdBMVVkRXdFQi93UUZNQU1CQWY4dwpIUVlEVlIwT0JCWUVGQUhBdHpoOXhaRlpvVFRHaTJYMVRHT1FMZ0VITUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDCklRRFZuY3REa1lpNkdlTnVjR0tpMzhnRUMwNllSVm1PODFyUEdLNE5SNmphTXdJZ2MweW5GaTlDMkhRZGNtQUEKUFByU2lUOWw2M2o5R1dqRVdCMW1mSTFGZkZzPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+    key: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUZqWEk2ZUxkaE1keWs0bXdEUUFybEVQS09yY0ZBWmc5Z25USHFlNlpWVDZvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFdDdyazdmUUtuaDVkS3UwMkUrTW5XNm04RGVyTHJnMVZTMGl4MGQrLzFwaHdtZk1ubmZaMAo2MmNmTlhqUjF6YWp4NkJna3VHbmd4clZlcTV4YjY1KzNBPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
+  serviceAccount:
+    key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlKS0FJQkFBS0NBZ0VBeE04c29HUkVzcVFpNTlVRTZFdWw1eitzT2diQWNVQml1WngvV01rdlp4b3BmNmpTClhsZ3BvVFJpY0VvVE1PVkFxWGtQUnVlMFpKeGQzeHh0ajZRWkZPNFp5MUZlWEJyVXNvc0ovZUkyWXp4djd2NWIKWUpSem9tdlhvaUJ6UTZYL2MwWTBFZW9odFpYeGt5b1pRK2NXMk5nc0hEbHFKZEMxTkRqNi82QW9DWjNqK2w4aAo0VkJBOGFvVmlOakV6K0toaHVtUk10ekFuQkZPbElPV2I2MzlaTXhsb21vY0VyN1hIM3hRMWhzclJMTzNkOW90CmtuTDBSYkltc2cxWXJDT0oxSDhzODE3aEx1d1R6NXVKRDAwbVAzcWt6ZGhCNUFPaitSa0xWcDRHbjlMUnMveDcKaU02U3hDam1RcWRaOXltd1ZUbkRmTkI4eFVxTDBDZTMrMmdzZEdYY1phUS9sWWRpVkE3RkFRTk5lRkdzb1hoRApIWG93by9NcWgvZVN3NWRHNzY1VGZWOS80OUp4ODR2anhDRjFrMHBSTnNNMVRDem52R1M3RFRJKzlJZ1QxVjlzClREWC93NU9YS3lnMXcyaGlaN2VkWTVVbmhWWWdjOUo1d21VSDdCMkVxbWJCd3E2T1FaK1BJM05Ma3BxUERjSFIKbGNsdHdmN1BxMmsvZzY5cDdGRitsUEN0MU9SRkxENXFJMGJoV1Z6NVBveWNnMjNaN3hpMGIwbi9VcFU5c2J0bgpQc0dNNkdFTVluNjQ2UjhqcFROMlA1eHNHMjl1TUlka0NkVERDa3JlQ1RUYmxpa2lkclhGdUhvV29WU2lwbkJPCm1lcUhTMTFEM0wvL3M2UGp6T0JpN01mcGM1N2U3azhlYWZXNGZ1eDZrR1pRS0s2cktRQmhwMkl2OXA4Q0F3RUEKQVFLQ0FnRUF1WjY0ZFZIOFpReGZpNDRpd2NEUGFXcHBVcFVabmZiZTVqYk8rUHRQQlF2c3hlV0ErOUJrK3hEQQpJeTRLS1p5ZlB2Zlp5OE12SlpGQkMvUHc5WUFNMCt1NVVrU2RIWHVFemh4S3dUUkFuWm5iN0duajN4UkVkNVVFCjNIbUVuUElNR3puRVZIMGhhL1ZPMGNEcjhWb2I5MHJ6VjI5alNPVXVjbUduZ2I4WTQvRVJtd3RzbGVndVNIOWwKTGh0Y2pNRXdIV0ZmTzd4dXdRT2x2SGJiUk51eDJRYmFlTE5oWk9DdlhwZk9XaEZuM3JVdHZoRjkxOWtwd0M1RgpScnRGdlowTEd1c1Roem9lWWpYd2ZXY3hmc2dCNGU4WFRybS9jNEZuZnNIN0txZUNrZXl4TWZOWXcvQXBCbStZCnRKYklTRS8rYW5NL2lCSFBDL2pDSXdIRENZLzRFK3hySVBibGk4OUJVd0xuYUxBSVhLRUFJaXVTODMvRnh2M3IKSEluTTZvVkVYNlhIR0trMmdYWWV2SVlKN2cxWjNWV2N0QmhLU1Q1THUzZEJUUlk5b25weERhNzhzU21kUGV4YgoxNFY0MnFXeWpERzdadmRFaVN5Y1hwVlZtL1ZxMFpMbVVlZXJuSGNUQjF1RnBGRkJDdFU4SUNDZG9objREeWljCjFGNVNZWFl6dkFLSzNjZkk3WVhuNXpPcTFHUzNZeURReWxOTFdnYVI4cFNudFJ6QTQ4OTB6YUpSMFJHZTRKL1QKSWxnOG5xZ2c0VzVjbTN4TURUQ2ZYK3RxMVc5YmlLZ3ljNGczaytWZ0NGOEJqZVZDRGE2SHhiMnlablNveC9lQQp6NDBTMDh0ZG9xYkY3M0ptSFVrZWo3Q1NrZVYxYWF1RjVKU21UN3JJWnFLUEJQMHo3WGtDZ2dFQkFPaTU0aFdJCnBtWGQxK1ZmUVpCZ0NTeTFzbkw5cTZvcHFBUWROTDRwOE0wQ1hVVEtqQjR2Zi8reHdzdVNvV2g5YkJZa0x5VzEKdDZXMmlybXAyRXJDbVpZNDVTbHpuUjdnbzJIZHBlcHl6RDk0WVpRQVg1MjI2bVRUVFZmcElKLy9BRDJpSkIxTwoxQlZ3MzVRODhxS3JVbHpPYzU2M1prc0xTTU1JUTVWVklVbTNxYXlHbzhRMTloVGxhUXNLbTNKTUhYQWVuSTlOCnB0ZFIzR09rR2tjTVRTREl2SzRvVjJEN0pERHQwRTBPaDczdkJnTk9RcjJyWWhTcDdTVDV4RG5vQkZYVWZEdXgKaFljWHNqb3hiZnRma3VMSEwwc2NPd1BKQnptMGpjNDBwU2I1UWZUVkt1NEJPVnNCS1RTblh2RDMrajVwZGZYRQpZZmxxWjdVN2FkNExxNVVDZ2dFQkFOaDl4UVFxYmZsaVlhbVZpMVVuSkNxZFl0MHM1WXhZNlVYUzBHS3hEb1UwCnhxZU1qVmNyT21xZjMrTGt6VXFaUWJNOTVtSHhvcFVjeExKM0Zmd0pycVNvRzNRbUNOT0xiSG9ZMUN2eVh0R3YKbHZ2eEs4eGFKS2tPWWZkMHN3ay90aDhETDcwZGNwa2lLU0dsQkNiWWMrK3RtbElIUEFZYktvYmM4MWZSOHhFcwpMV3ZoWTdFbHY0L2JHTExkbldUTTdvWnJNMjEyR2tEajlJTVkvMVRGbWYrSCs4OTNoZGJoVmJvZjVVeUphY25QCkpoNUFiSmQ4TDVWcklOeEZvWnBPQ29zSkI2ckpnWUtKYVlQa1VoWmc3aysxR3JCckFkckgrTHdWNWt3M2FEUW8KYkUvRVdnWEpJaUtFcndUK1czcDZORytEVlhzWmNiVlpBTExIZXlXekxHTUNnZ0VBUm5Ub05uNjlhYitrK2lOQgpsVFVOOGdROE4wWUhMNmdXM3MvOHhNbXJ4bFU5NlhLc3d3SzhiS3ZqZm9Bdzc1SnhJNjdtdXpMdG0zVE5RUEpqCnNoYUNLeEdraDAwaU4xUHBBdHI0dlNidUlSVVA3Wi9EVXRzcTBVV0xkOTd6YXB6bjlNRGUwQ1NxWHFkaWVOMk8KMDZLc2Q3NWxFSnNUbEFxaGg3STd5NzBQSytNM3NpeTg3YzBzYUIwZ0ZTQ3IrUW1FTEFxSWVYWVgyYjVGeThERgoxOWFvanhGVzFoOE9mU1RyU3dqa2REKys1c2l6ZUZLOEwvSHY2ck9iUVFPQTNjc1piT2E4aWRIdnkvdG5rT2lnCkZHZFY3K1EvdEN5aXpUMlNPMjBuTlZPSTRHaThDQ1IxTDhNZEd5a1owWUFPWlVPZDlrRTFYaWVMUmRocDkxczYKYk9mNWxRS0NBUUFQMVRyb2NCWDA3QzRLVWdhTHByNHRZNjlNVDdGR0QyYVlGYS9wMTlzaEFOZ2FmdHdEYVFUdgpzVnVWWTNoa0lVczl5YVFrdTZCUldYWkZPeEpmaVhHOVZ4SVM3NGtydDRHcWVGQmtHbWkyMnltbXFWK3pwVkFUCkVSczNGdERWTjFTaGRnRXl5b21NQzRTSWttSDRXVkk1VUMvK0djdFpBdm1jUFdLS3BLOHJMVmp4RDkzVG9kZ2QKdEQ5ZExYb0tXamFEbkNsNXN1NSttbTFTZlN5SFRhQlNvT1pZcVB3ZjJBRUdDTGtqWE5WZ3pnYVNwZEdMVHFqSQpPN3ArZ1pVdEROSVdrd1Y5aHhreXE4d011bEVLay9JNTRCdmdsU0xnbGtscHNBeFV2S1NoVStkLytmTS9neE05CkJRa3J5MUp6WmFhYUZUZldOZWtzQXlOYTc5M2d4dmJUQW9JQkFDeDUzSHRyN0V5amlvOWFGaWlrazVOdzlnanUKSlc3ZU5yekhVRFdWN1dQSVRtc3Rtc0ZaSVl1UXVvd2xVQm9mU1c5ZTY2WFJFL2F5Smg5eStLYkNnYzFuMHR4Kwp6TEZqTUo3aG9VVjNrWE9TZ0wxZ3NVSTdXbWY1MGg3Um0xTW8vK0VCOFAvWDJhVlFOUVNKQTdxRytwVTYvNVdSCjZqZWxYSWZLZHFxK0xmQWpTZmVBVGx5WXVIVjM1d0FBUStBMnlqTXZNYkJlVi9iUDk5L0VnU0JKek53RUd5RWEKV2d2REVpUnBpUE1oUTN2Qm04dFlvNGJPdE1SVVpuNEphM1hUM29EVXB4eDIwOXRoVCtYY0d5MVhzTEJzTFBOdgp2YlZ5SmtEalV5RGxYcDR2MkJMUzloV3RhUUVZVW5aUmFJcHVzaVREWkxCRjRWVDhoMVlpc3ZWSnZsMD0KLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0K
+  apiServer:
+    image: registry.k8s.io/kube-apiserver:v1.34.3
+    extraArgs:
+      enable-aggregator-routing: "true"
+    certSANs:
+      - 192.168.1.5
+      - 127.0.0.1
+      - 192.168.1.5
+    disablePodSecurityPolicy: true
+    admissionControl:
+      - name: PodSecurity
+        configuration:
+          apiVersion: pod-security.admission.config.k8s.io/v1alpha1
+          defaults:
+            audit: restricted
+            audit-version: latest
+            enforce: baseline
+            enforce-version: latest
+            warn: restricted
+            warn-version: latest
+          exemptions:
+            namespaces:
+              - kube-system
+              - metallb
+              - metallb-config
+              - topolvm-system
+              - longhorn-system
+              - kyverno
+              - system-upgrade
+              - openebs
+              - snapshot-controller
+              - volsync
+              - flux-system
+            runtimeClasses: []
+            usernames: []
+          kind: PodSecurityConfiguration
+    auditPolicy:
+      apiVersion: audit.k8s.io/v1
+      kind: Policy
+      rules:
+        - level: Metadata
+  controllerManager:
+    image: registry.k8s.io/kube-controller-manager:v1.34.3
+    extraArgs:
+      bind-address: 0.0.0.0
+  proxy:
+    disabled: true
+    image: registry.k8s.io/kube-proxy:v1.34.3
+    extraArgs:
+      metrics-bind-address: 0.0.0.0:10249
+  scheduler:
+    image: registry.k8s.io/kube-scheduler:v1.34.3
+    extraArgs:
+      bind-address: 0.0.0.0
+    config:
+      apiVersion: kubescheduler.config.k8s.io/v1
+      kind: KubeSchedulerConfiguration
+      profiles:
+        - pluginConfig:
+            - args:
+                defaultConstraints:
+                  - maxSkew: 1
+                    topologyKey: kubernetes.io/hostname
+                    whenUnsatisfiable: ScheduleAnyway
+                defaultingType: List
+              name: PodTopologySpread
+          plugins:
+            score:
+              disabled:
+                - name: ImageLocality
+          schedulerName: default-scheduler
+  discovery:
+    enabled: true
+    registries:
+      kubernetes:
+        disabled: true
+      service: {}
+  etcd:
+    ca:
+      crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJmakNDQVNPZ0F3SUJBZ0lRYXM2MHp5SmhQOFhVMEdxaUJXeWdZVEFLQmdncWhrak9QUVFEQWpBUE1RMHcKQ3dZRFZRUUtFd1JsZEdOa01CNFhEVEkwTVRFeE1EQXpNamd3TjFvWERUTTBNVEV3T0RBek1qZ3dOMW93RHpFTgpNQXNHQTFVRUNoTUVaWFJqWkRCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkU4SzhuN3cvWXlCCklkMlZqNThaU1J4aStrVHpmVU1TRlRtNjhuKyticjZwaHYzaVJLWndzWG1qWDgwNHBCYnYramhEdzhDdHZ3NnoKMk1JTUpxOHZFVWlqWVRCZk1BNEdBMVVkRHdFQi93UUVBd0lDaERBZEJnTlZIU1VFRmpBVUJnZ3JCZ0VGQlFjRApBUVlJS3dZQkJRVUhBd0l3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFkQmdOVkhRNEVGZ1FVYmJETHNaaUNyYWJ4Cng4MHhEQTRYbHhId2F5OHdDZ1lJS29aSXpqMEVBd0lEU1FBd1JnSWhBT3dtaE5FdnVYTE02OUlwUjArSGNkRmkKczFZNmtWN09BTFFLTkVmNEpTL3pBaUVBeUp2aXBpTEhYTmFRQ2VsSmsxaVhIUHFqN1g5ZWV2WHhsdWJ1b1BNTgpNMTA9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+      key: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUZ5UURMd0d3ci9JVmxKZWN6Q29TTzNHL0kwZHh5UGNkL2c3NHhqcVdsRkdvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFVHdyeWZ2RDlqSUVoM1pXUG54bEpIR0w2UlBOOVF4SVZPYnJ5Zjc1dXZxbUcvZUpFcG5DeAplYU5melRpa0Z1LzZPRVBEd0syL0RyUFl3Z3dtcnk4UlNBPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
+  allowSchedulingOnControlPlanes: true
