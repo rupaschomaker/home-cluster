@@ -33,6 +33,8 @@ spec:
           homepage:
             enabled: true
             group: Infra
+            name: "Home Assistant"
+            description: "Home Automation"
             widget:
               custom:
                 type: "homeassistant"
