@@ -32,6 +32,12 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
+          homepage:
+            enabled: true
+            group: Media
+            widget:
+              custom:
+                key: ${HP_API_JELLYFIN}
     credentials:
       s3creds:
         type: s3
