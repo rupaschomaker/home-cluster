@@ -32,8 +32,11 @@ spec:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
           homepage:
-            enabled: false
+            enabled: true
             group: Arr
+            widget:
+              custom:
+                key: ${HP_API_RADARR}
     credentials:
       s3creds:
         type: s3

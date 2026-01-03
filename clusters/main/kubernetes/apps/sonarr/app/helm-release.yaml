@@ -31,6 +31,12 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
+          homepage:
+            enabled: true
+            group: Arr
+            widget:
+              custom:
+                key: ${HP_API_SONARR}
     securityContext:
       container:
         UMASK: "0000"
