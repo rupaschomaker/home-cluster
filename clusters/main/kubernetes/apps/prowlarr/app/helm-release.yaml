@@ -33,7 +33,10 @@ spec:
             certificateIssuer: ${CERT_ISSUER}
           homepage:
             enabled: true
-            group: Arr
+            group: Media
+            widget:
+              custom:
+                key: ${HP_API_PROWLARR}
     credentials:
       s3creds:
         type: s3
