@@ -39,7 +39,7 @@ spec:
               custom:
                 type: "truenas"
                 key: ${HP_API_TRUENAS}
-                enablePools: true
+                enablePools: "true"
     service:
       main:
         type: ExternalIP
