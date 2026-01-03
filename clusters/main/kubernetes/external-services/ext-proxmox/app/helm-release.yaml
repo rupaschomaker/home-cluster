@@ -38,7 +38,7 @@ spec:
             widget:
               custom:
                 type: "proxmox"
-                username: root@pam!homepage
+                username: ${HP_API_PROXMOX_USER}
                 key: ${HP_API_PROXMOX}
                 node: pve
     service:
