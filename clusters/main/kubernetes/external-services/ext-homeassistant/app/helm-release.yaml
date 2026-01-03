@@ -1,0 +1,51 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ext-homeassistant
+  namespace: external-services
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: external-service
+      version: 16.14.4
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  values:
+    resources:
+      requests:
+        cpu: 10m
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: external
+        hosts:
+          - host: ha.${DOMAIN_0}
+        integrations:
+          traefik:
+            enabled: false
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
+          homepage:
+            enabled: true
+            group: Infra
+            name: "Home Assistant"
+            description: "Home Automation"
+            widget:
+              custom:
+                type: "homeassistant"
+                url: https://ha.${DOMAIN_0}
+                key: ${HP_API_HOMEASSISTANT}
+    service:
+      main:
+        type: ExternalIP
+        enabled: true
+        externalIP: 192.168.1.210
+        ports:
+          main:
+            enabled: true
+            port: 8123
+            protocol: http

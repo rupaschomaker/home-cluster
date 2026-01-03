@@ -1,8 +1,8 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: home-assistant
-  namespace: home-assistant
+  name: ext-truenas
+  namespace: external-services
 spec:
   interval: 15m
   chart:
@@ -13,40 +13,40 @@ spec:
         kind: HelmRepository
         name: truecharts
         namespace: flux-system
-  releaseName: home-assistant
   values:
     resources:
       requests:
         cpu: 10m
+
     ingress:
       main:
         enabled: true
-        ingressClassName: external
+        ingressClassName: internal
+        annotations:
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
         hosts:
-          - host: ha.${DOMAIN_0}
+          - host: truenas.${DOMAIN_0}
         integrations:
-          traefik:
-            enabled: false
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
           homepage:
             enabled: true
             group: Infra
-            name: "Home Assistant"
-            description: "Home Automation"
+            name: "TrueNAS"
+            description: "Network Attached Storage"
             widget:
               custom:
-                type: "homeassistant"
-                url: https://ha.${DOMAIN_0}
-                key: ${HP_API_HOMEASSISTANT}
+                type: "truenas"
+                key: ${HP_API_TRUENAS}
+                enablePools: true
     service:
       main:
         type: ExternalIP
         enabled: true
-        externalIP: 192.168.1.210
+        externalIP: 192.168.1.177
         ports:
           main:
             enabled: true
-            port: 8123
-            protocol: http
+            port: 443
+            protocol: https
