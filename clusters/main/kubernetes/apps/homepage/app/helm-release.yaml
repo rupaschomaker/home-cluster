@@ -50,3 +50,11 @@ spec:
               enabled: true
             src:
               enabled: true 
+    workload:
+      main:
+        podSpec:
+          automountServiceAccountToken: true
+          containers:
+            main:
+              env:
+                HOMEPAGE_ALLOWED_HOSTS: "homepage.${BASE_DOMAIN}"
