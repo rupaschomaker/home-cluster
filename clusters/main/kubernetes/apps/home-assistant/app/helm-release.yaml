@@ -30,12 +30,6 @@ spec:
           certManager:
             enabled: true
             certificateIssuer: ${CERT_ISSUER}
-          homepage:
-            enabled: true
-            group: Infra
-            widget:
-              custom:
-                key: ${HP_API_HOMEASSISTANT}
     service:
       main:
         type: ExternalIP
