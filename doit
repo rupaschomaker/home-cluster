@@ -6,10 +6,10 @@ if [ -z "$1" ]; then
 fi
 
 fakeClustertool() {
-  sed -i.bak -e 's/v1\.12\.0/v1.11.3/' -e 's/v1\.35\.0/v1.34.3/' clusters/main/talos/talconfig.yaml
+  sed -i.bak -e 's/v1\.12\.1/v1.11.3/' -e 's/v1\.35\.0/v1.34.3/' clusters/main/talos/talconfig.yaml
 }
 unfakeClustertool() {
-  sed -i.bak -e 's/v1\.11\.3/v1.12.0/' -e 's/v1\.34\.3/v1.35.0/' clusters/main/talos/talconfig.yaml clusters/main/talos/generated/main-k8s-node-1.yaml
+  sed -i.bak -e 's/v1\.11\.3/v1.12.1/' -e 's/v1\.34\.3/v1.35.0/' clusters/main/talos/talconfig.yaml clusters/main/talos/generated/main-k8s-node-1.yaml
 }
 
 fakeClustertool
