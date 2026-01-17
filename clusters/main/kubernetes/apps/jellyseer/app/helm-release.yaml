@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: jellyseer
-      version: 6.13.7
+      version: 13.13.8
       sourceRef:
         kind: HelmRepository
         name: truecharts
@@ -45,9 +45,9 @@ spec:
         secretKey: ${VOLSYNC_S3_SECRETKEY}
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
-      backup:
+      config:
         volsync:
-          - name: backup
+          - name: config
             type: restic
             credentials: s3creds
             dest:
