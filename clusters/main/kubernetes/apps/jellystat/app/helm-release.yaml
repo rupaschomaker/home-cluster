@@ -1,0 +1,58 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: jellystat
+  namespace: jellystat
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: jellystat
+      version: 6.13.7
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  values:
+    resources:
+      requests:
+        cpu: 10m
+    TZ: America/Chicago
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: internal
+        hosts:
+          - host: jellystat.${DOMAIN_0}
+        integrations:
+          traefik:
+            enabled: false
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
+          homepage:
+            enabled: true
+            group: Media
+            widget:
+              custom:
+                key: ${HP_API_JELLYSTAT}
+    credentials:
+      s3creds:
+        type: s3
+        url: ${VOLSYNC_S3_URL}
+        bucket: ${VOLSYNC_S3_BUCKET}
+        accessKey: ${VOLSYNC_S3_ACCESSKEY}
+        secretKey: ${VOLSYNC_S3_SECRETKEY}
+        encrKey: ${VOLSYNC_ENC_KEY}
+    persistence:
+      backup:
+        volsync:
+          - name: backup
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            src:
+              enabled: true 
+              trigger:
+                schedule: 31 0 * * *
