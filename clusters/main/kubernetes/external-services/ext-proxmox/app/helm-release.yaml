@@ -38,8 +38,8 @@ spec:
             widget:
               custom:
                 type: "proxmox"
-                username: ${HP_API_PROXMOX_USER}
-                key: ${HP_API_PROXMOX}
+                username: "${HP_API_PROXMOX_USER}"
+                password: "${HP_API_PROXMOX}"
                 node: pve
     service:
       main:
