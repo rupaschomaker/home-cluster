@@ -1,13 +1,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: jellyserr
-  namespace: jellyserr
+  name: jellyseerr
+  namespace: jellyseerr
 spec:
   interval: 15m
   chart:
     spec:
-      chart: jellyserr
+      chart: jellyseerr
       version: 13.13.8
       sourceRef:
         kind: HelmRepository
@@ -23,7 +23,7 @@ spec:
         enabled: true
         ingressClassName: internal
         hosts:
-          - host: jellyserr.${DOMAIN_0}
+          - host: jellyseerr.${DOMAIN_0}
         integrations:
           traefik:
             enabled: false
@@ -35,7 +35,7 @@ spec:
             group: Media
             widget:
               custom:
-                key: ${HP_API_jellyserr}
+                key: ${HP_API_JELLYSEERR}
     credentials:
       s3creds:
         type: s3
