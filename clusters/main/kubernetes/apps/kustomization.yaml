@@ -22,3 +22,4 @@ resources:
   - ladder/ks.yaml
   - flaresolverr/ks.yaml
   - jellystat/ks.yaml
+  - jellyseer/ks.yaml
