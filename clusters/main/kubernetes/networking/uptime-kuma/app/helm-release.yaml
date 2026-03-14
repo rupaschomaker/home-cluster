@@ -30,7 +30,7 @@ spec:
             certificateIssuer: ${CERT_ISSUER}
           homepage:
             enabled: true
-            group: infra
+            group: Infra
             widget:
               custom:
                 slug: statuspage
