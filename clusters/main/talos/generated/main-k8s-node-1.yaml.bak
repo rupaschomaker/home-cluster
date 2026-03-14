@@ -13,6 +13,8 @@ machine:
   kubelet:
     image: ghcr.io/siderolabs/kubelet:v1.34.3
     extraArgs:
+      image-gc-high-threshold: "20"
+      image-gc-low-threshold: "10"
       rotate-server-certificates: "true"
     extraMounts:
       - destination: /var/openebs/local

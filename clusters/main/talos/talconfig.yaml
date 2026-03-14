@@ -53,6 +53,8 @@ nodes:
               gateway: ${GATEWAY}
           vip:
             ip: ${VIP}
+      patches:
+          - "@./patches/gc.yaml"
 controlPlane:
     patches:
         - '@./patches/controlplane.yaml'
