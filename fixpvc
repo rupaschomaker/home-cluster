@@ -1,0 +1,73 @@
+#!/bin/bash
+
+set -e
+#set -x
+
+if [ -n "$1" ]; then
+  NAMESPACE=$1
+  echo "Processing ${NAMESPACE}"
+  shift
+else
+  echo "Specify NAMESPACE"
+fi
+
+if [ -n "$1" ]; then
+  FILTER=$1
+  shift
+else
+  FILTER='.'
+fi
+
+echo "Filter: ${FILTER}"
+
+if [ -n "$1" ]; then
+  SKIP=true
+  shift
+else
+  SKIP=false
+fi
+
+echo "Skip: ${SKIP}"
+
+NODE=k8s-node-1
+MGR=longhorn-manager-lk2ln
+
+# Get the list of PV names and iterate
+kubectl get pvc -n "$NAMESPACE" -o custom-columns=NAME:.metadata.name,VOL:.spec.volumeName --no-headers | \
+  grep "${FILTER}" | \
+  awk '{print $2}' | \
+  while read -r PVC; do
+  echo "PVC: ${PVC}"
+  if [ -n "$PVC" ]; then
+    echo "Processing Longhorn Volume: $PVC"
+
+    # attach
+    if [ !  "${SKIP}" == "true" ]; then
+      kubectl patch lhv "${PVC}" -n longhorn-system --type merge -p "{\"spec\":{\"nodeID\":\"${NODE}\"}}"
+      sleep 1
+    
+      # This waits for the volume state to equal 'attached'
+      kubectl wait --for=jsonpath='{.status.state}'=attached \
+        volumes.longhorn.io/${PVC} \
+        -n longhorn-system \
+        --timeout=60s
+    
+      kubectl exec -n longhorn-system ${MGR} -- mount -v "/host/dev/longhorn/${PVC}" /mnt
+      kubectl exec -n longhorn-system ${MGR} -- ls /mnt
+      kubectl exec -n longhorn-system ${MGR} -- umount -v /mnt
+    else
+      echo "Skipping mount and operations"
+    fi
+    
+    kubectl patch lhv "${PVC}" -n longhorn-system --type merge -p '{"spec":{"nodeID":""}}'
+    sleep 1
+    # This waits for the volume state to equal 'detached'
+    kubectl wait --for=jsonpath='{.status.state}'=detached \
+      volumes.longhorn.io/${PVC} \
+      -n longhorn-system \
+      --timeout=60s
+ 
+    fi
+  done
+
+echo done
