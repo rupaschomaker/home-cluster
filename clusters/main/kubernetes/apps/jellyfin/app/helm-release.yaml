@@ -57,7 +57,7 @@ spec:
             src:
               enabled: true 
               trigger:
-                schedule: 31 0 * * *
+                schedule: 15 10 * * *
       metadata:
         enabled: true
         mountPath: "/data/metadata"          
@@ -70,7 +70,7 @@ spec:
             src:
               enabled: true 
               trigger:
-                schedule: 31 0 * * *
+                schedule: 31 10 * * *
       data:
         enabled: true
         mountPath: "/data"
@@ -83,7 +83,7 @@ spec:
             src:
               enabled: true 
               trigger:
-                schedule: 31 0 * * *
+                schedule: 46 10 * * *
       media-vol:
         enabled: true
         type: nfs
