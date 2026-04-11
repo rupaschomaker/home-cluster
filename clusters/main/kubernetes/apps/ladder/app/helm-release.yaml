@@ -18,7 +18,7 @@ spec:
     image:
       repository: ghcr.io/everywall/ladder
       pullPolicy: IfNotPresent
-      tag: v0.0.21
+      tag: v0.0.22
     resources:
       requests:
         cpu: 10m
