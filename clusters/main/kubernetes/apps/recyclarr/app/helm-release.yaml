@@ -32,7 +32,7 @@ spec:
           containers:
             main:
               env:
-                API_RADARR: ${API_RADAR}
+                API_RADARR: ${API_RADARR}
                 URL_RADARR: http://radarr.radarr.svc.cluster.local:7878
                 API_SONARR: ${API_SONARR}
                 URL_SONARR: http://sonarr.radarr.svc.cluster.local:8989
