@@ -35,7 +35,7 @@ spec:
                 API_RADARR: ${API_RADARR}
                 URL_RADARR: http://radarr.radarr.svc.cluster.local:7878
                 API_SONARR: ${API_SONARR}
-                URL_SONARR: http://sonarr.radarr.svc.cluster.local:8989
+                URL_SONARR: http://sonarr.sonarr.svc.cluster.local:8989
     credentials:
       s3creds:
         type: s3
