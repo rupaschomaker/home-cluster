@@ -57,6 +57,19 @@ spec:
               enabled: true 
               trigger:
                 schedule: 16 11 * * *
+      cache:
+        enabled: true
+        mountPath: "/data/cache.new"
+        volsync:
+          - name: cache
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            src:
+              enabled: true
+              trigger:
+                schedule: 25 11 * * *
       media-vol:
         enabled: true
         type: nfs
