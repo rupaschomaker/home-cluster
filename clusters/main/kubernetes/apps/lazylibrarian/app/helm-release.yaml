@@ -59,7 +59,7 @@ spec:
                 schedule: 16 11 * * *
       cache:
         enabled: true
-        mountPath: "/config/cache.new"
+        mountPath: "/config/cache"
         volsync:
           - name: cache
             type: restic
