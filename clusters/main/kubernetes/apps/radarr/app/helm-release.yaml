@@ -36,7 +36,7 @@ spec:
             group: Arr
             widget:
               custom:
-                key: ${HP_API_RADARR}
+                key: ${API_RADARR}
     credentials:
       s3creds:
         type: s3

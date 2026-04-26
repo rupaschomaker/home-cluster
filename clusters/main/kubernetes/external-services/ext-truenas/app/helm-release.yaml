@@ -38,7 +38,7 @@ spec:
             widget:
               custom:
                 type: "truenas"
-                key: ${HP_API_TRUENAS}
+                key: ${API_TRUENAS}
                 enablePools: "true"
     service:
       main:

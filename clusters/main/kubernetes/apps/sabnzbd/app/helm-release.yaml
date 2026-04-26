@@ -43,7 +43,7 @@ spec:
             group: Arr
             widget:
               custom:
-                key: ${HP_API_SABNZBD}
+                key: ${API_SABNZBD}
     credentials:
       s3creds:
         type: s3

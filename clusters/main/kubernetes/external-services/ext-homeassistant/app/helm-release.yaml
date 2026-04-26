@@ -38,7 +38,7 @@ spec:
               custom:
                 type: "homeassistant"
                 url: https://ha.${DOMAIN_0}
-                key: ${HP_API_HOMEASSISTANT}
+                key: ${API_HOMEASSISTANT}
     service:
       main:
         type: ExternalIP

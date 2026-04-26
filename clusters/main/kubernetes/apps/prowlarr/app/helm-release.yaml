@@ -36,7 +36,7 @@ spec:
             group: Media
             widget:
               custom:
-                key: ${HP_API_PROWLARR}
+                key: ${API_PROWLARR}
     credentials:
       s3creds:
         type: s3

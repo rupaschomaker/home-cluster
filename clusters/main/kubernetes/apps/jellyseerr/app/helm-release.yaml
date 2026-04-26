@@ -35,7 +35,7 @@ spec:
             group: Media
             widget:
               custom:
-                key: ${HP_API_JELLYSEERR}
+                key: ${API_JELLYSEERR}
     credentials:
       s3creds:
         type: s3

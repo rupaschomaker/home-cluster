@@ -36,7 +36,7 @@ spec:
             group: Arr
             widget:
               custom:
-                key: ${HP_API_SONARR}
+                key: ${API_SONARR}
     securityContext:
       container:
         UMASK: "0000"
