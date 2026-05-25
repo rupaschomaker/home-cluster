@@ -85,7 +85,7 @@ spec:
       main:
         # mode: recovery
         backups:
-          enabled: true
+          enabled: false
           credentials: s3creds
         recovery:
           credentials: s3creds
