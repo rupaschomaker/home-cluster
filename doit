@@ -12,9 +12,9 @@ unfakeClustertool() {
   sed -i.bak -e 's/v1\.11\.3/v1.13.6/' -e 's/v1\.34\.3/v1.36.2/' clusters/main/talos/talconfig.yaml clusters/main/talos/generated/main-k8s-node-1.yaml
 }
 
-fakeClustertool
+# fakeClustertool
 clustertool genconfig
-unfakeClustertool
+# unfakeClustertool
 
 git add clusters repositories
 clustertool encrypt
