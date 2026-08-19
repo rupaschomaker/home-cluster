@@ -3,10 +3,13 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: flux-manifests
+  name: tuppr
   namespace: flux-system
 spec:
   interval: 2h
-  url: oci://ghcr.io/fluxcd/flux-manifests
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  url: oci://ghcr.io/home-operations/charts/tuppr
   ref:
-    tag: v2.7.5
+    tag: 0.1.6
