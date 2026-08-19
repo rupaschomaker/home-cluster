@@ -4,7 +4,6 @@ metadata:
   name: helm-repos
   namespace: flux-system
 resources:
-  - cilium.yaml
   - cloudnative-pg.yaml
   - home-ops-mirror.yaml
   - jetstack.yaml
