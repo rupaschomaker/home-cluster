@@ -6,7 +6,6 @@ resources:
   - generic-device-plugin/ks.yaml
   - homepage/ks.yaml
   - jellyfin/ks.yaml
-  - kubernetes-dashboard/ks.yaml
   - lazylibrarian/ks.yaml
   - minecraft-dynmap/ks.yaml
   - prowlarr/ks.yaml
