@@ -49,6 +49,7 @@ controlPlane:
     - name: nvme_tcp
     - name: vfio_pci
     - name: uio_pci_generic
+    - name: iscsi_tcp
   schematic:
     customization:
       extraKernelArgs:
@@ -86,6 +87,7 @@ worker:
     - name: nvme_tcp
     - name: vfio_pci
     - name: uio_pci_generic
+    - name: iscsi_tcp
   schematic:
     customization:
       systemExtensions:
