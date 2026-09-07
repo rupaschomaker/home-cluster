@@ -16,7 +16,6 @@ resources:
   - smtp-relay/ks.yaml
   - sonarr/ks.yaml
   - tailscale/ks.yaml
-  - sunshine/ks.yaml
   - ladder/ks.yaml
   - flaresolverr/ks.yaml
   - jellystat/ks.yaml
