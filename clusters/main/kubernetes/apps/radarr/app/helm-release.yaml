@@ -19,6 +19,15 @@ spec:
     resources:
       requests:
         cpu: 30m
+    workload:
+      main:
+        podSpec:
+          containers:
+            main:
+              env:
+                RADARR__AUTH__METHOD: External
+                RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+                RADARR__SERVER__TRUSTEDNETWORKS: ${PODNET},${SVCNET}
     ingress:
       main:
         enabled: true
