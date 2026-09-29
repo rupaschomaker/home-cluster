@@ -78,6 +78,5 @@ spec:
 
     securityContext:
       container:
-        UMASK: "000"
         runAsUser: 568
         runAsGroup: 568
