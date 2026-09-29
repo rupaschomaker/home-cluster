@@ -60,6 +60,7 @@ spec:
     persistence:
       config:
         enabled: true
+        mountPath: "/config"
         volsync:
           - name: config
             type: restic
@@ -70,6 +71,8 @@ spec:
               enabled: true 
               trigger:
                 schedule: 17 10 * * *
+        varrun:
+          enabled: true
       media-vol:
         enabled: true
         type: nfs
