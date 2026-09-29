@@ -7,7 +7,7 @@ resources:
   - ./deploykey.secret.yaml
   - ./clustersettings.secret.yaml
   - ./flux.yaml
-  - sopssecret.secret.yaml
+  # - sopssecret.secret.yaml
 patches:
   # Remove the built-in network policies
   - target:
