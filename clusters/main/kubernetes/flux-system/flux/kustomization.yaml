@@ -6,9 +6,9 @@ resources:
   - github.com/fluxcd/flux2/manifests/install?ref=v2.9.5
   - ./deploykey.secret.yaml
   - ./clustersettings.secret.yaml
-  - namespace.yaml
-  - flux.yaml
-  - sopssecret.secret.yaml
+  - ./namespace.yaml
+  - ./flux.yaml
+  - ./sopssecret.secret.yaml
 patches:
   # Remove the built-in network policies
   - target:
