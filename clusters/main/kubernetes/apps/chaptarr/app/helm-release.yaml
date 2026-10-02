@@ -71,7 +71,7 @@ spec:
               enabled: true 
               trigger:
                 schedule: 17 10 * * *
-      MediaCover:
+      mediacover:
         enabled: true
         mountPath: "/config/mediacover"          
         volsync:
