@@ -65,4 +65,4 @@ patches:
   - path: ./namespace.yaml
     target:
       kind: Namespace
-      name: flux-system
+      name: flux-system  - upgradesettings.yaml
