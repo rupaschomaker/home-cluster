@@ -71,11 +71,11 @@ spec:
               enabled: true 
               trigger:
                 schedule: 17 10 * * *
-      mediacover:
+      MediaCover:
         enabled: true
         mountPath: "/config/mediacover"          
         volsync:
-          - name: mediacover
+          - name: MediaCover
             type: restic
             credentials: s3creds
             dest:
