@@ -71,8 +71,19 @@ spec:
               enabled: true 
               trigger:
                 schedule: 17 10 * * *
-        varrun:
-          enabled: true
+      mediacover:
+        enabled: true
+        mountPath: "/config/mediacover"          
+        volsync:
+          - name: mediacover
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            src:
+              enabled: true 
+              trigger:
+                schedule: 17 15 * * *
       media-vol:
         enabled: true
         type: nfs
