@@ -40,6 +40,7 @@ spec:
                 type: "truenas"
                 key: ${API_TRUENAS}
                 enablePools: "true"
+                version: 2
     service:
       main:
         type: ExternalIP
