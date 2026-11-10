@@ -18,7 +18,7 @@ spec:
     image:
       repository: docker.io/chaptarr/chaptarr
       pullPolicy: IfNotPresent
-      tag: 0.9.965
+      tag: 0.9.1000
     resources:
       requests:
         cpu: 10m
