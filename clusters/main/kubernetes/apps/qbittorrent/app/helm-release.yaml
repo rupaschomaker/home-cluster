@@ -4,6 +4,7 @@ metadata:
   name: qbittorrent
   namespace: qbittorrent
 spec:
+  resetValues: true
   interval: 15m
   chart:
     spec:
