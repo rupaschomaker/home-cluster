@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: qbittorrent
-      version: 26.2.5
+      version: 27.0.1
       sourceRef:
         kind: HelmRepository
         name: truecharts
@@ -24,6 +24,8 @@ spec:
     global:
       stopAll: false
     TZ: America/Chicago
+    qbitportforward:
+      enabled: true
     addons:
       gluetun:
         enabled: true
@@ -51,11 +53,8 @@ spec:
             HTTPPROXY_PASSWORD: ${HTTPPROXY_PASSWORD}
             HTTPPROXY_STEALTH: "on"
             HTTPPROXY_LOG: "on"
-    workload:
-      qbitportforward:
-        enabled: true
     service:
-      torrent:
+      gluetun:
         enabled: true
         ports:
           torrent:
@@ -105,29 +104,29 @@ spec:
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
       config:
-        # volsync:
-        #   - name: config
-        #     type: restic
-        #     credentials: s3creds
-        #     dest:
-        #       enabled: true
-        #     src:
-        #       enabled: true 
-        #       trigger:
-        #         schedule: 30 0 * * *
+        volsync:
+          - name: config
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            src:
+              enabled: true 
+              trigger:
+                schedule: 30 0 * * *
       vuetorrent:
         enabled: true
         mountPath: /config/vuetorrent
         volsync:
-          # - name: vuetorrent
-          #   type: restic
-          #   credentials: s3creds
-          #   dest:
-          #     enabled: true
-          #   src:
-          #     enabled: true 
-          #     trigger:
-          #       schedule: 30 0 * * *
+          - name: vuetorrent
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            src:
+              enabled: true 
+              trigger:
+                schedule: 30 0 * * *
       media-vol:
         enabled: true
         type: nfs
