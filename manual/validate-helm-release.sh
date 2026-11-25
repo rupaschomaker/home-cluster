@@ -124,11 +124,26 @@ trap 'rm -rf "$temporary_directory"' EXIT
 
 metadata_file="$temporary_directory/metadata"
 values_file="$temporary_directory/values.yaml"
+substituted_values_file="$temporary_directory/substituted-values.yaml"
 existing_values_file="$temporary_directory/existing-values.yaml"
 resolved_values_file="$temporary_directory/resolved-values.yaml"
 rendered_file="$temporary_directory/rendered.yaml"
+script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+substitution_file="${CLUSTER_ENV_FILE:-$script_directory/../clusters/main/clusterenv.yaml}"
 
-if ! python3 - "$release_file" "$metadata_file" "$values_file" <<'PY'
+if [[ ! -f "$substitution_file" ]]; then
+	echo "error: substitution file not found: $substitution_file" >&2
+	exit 1
+fi
+
+if grep -Eq '^[[:space:]]*sops:[[:space:]]*$|ENC\[' "$substitution_file"; then
+	echo "error: substitution file appears to be SOPS-encrypted: $substitution_file" >&2
+	echo "Run 'clustertool decrypt' and retry validation." >&2
+	exit 1
+fi
+
+if ! python3 - "$release_file" "$metadata_file" "$values_file" "$substitution_file" "$substituted_values_file" <<'PY'
+import re
 import sys
 from pathlib import Path
 
@@ -143,6 +158,8 @@ def fail(message):
 source = Path(sys.argv[1])
 metadata_path = Path(sys.argv[2])
 values_path = Path(sys.argv[3])
+substitution_path = Path(sys.argv[4])
+substituted_values_path = Path(sys.argv[5])
 
 try:
     documents = list(yaml.safe_load_all(source.read_text()))
@@ -189,7 +206,7 @@ if missing:
 if source_ref.get("kind", "HelmRepository") != "HelmRepository":
     fail("spec.chart.spec.sourceRef.kind must be HelmRepository")
 
-values = release.get("values", {})
+values = spec.get("values", {})
 if values is None:
     values = {}
 if not isinstance(values, dict):
@@ -216,6 +233,50 @@ metadata_path.write_text(
     + "\n"
 )
 values_path.write_text(yaml.safe_dump(values, default_flow_style=False, sort_keys=False))
+
+try:
+    substitutions = yaml.safe_load(substitution_path.read_text()) or {}
+except (OSError, yaml.YAMLError) as exc:
+    fail(f"unable to read substitution file {substitution_path}: {exc}")
+
+if not isinstance(substitutions, dict):
+    fail(f"substitution file {substitution_path} must contain a mapping")
+
+placeholder = re.compile(r"^\$\{([^}]+)\}$")
+missing = set()
+
+
+def substitute(value):
+    if isinstance(value, dict):
+        return {key: substitute(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [substitute(item) for item in value]
+    if isinstance(value, str):
+        match = placeholder.fullmatch(value)
+        if match:
+            name = match.group(1)
+            if name in substitutions:
+                return substitutions[name]
+            missing.add(name)
+            return value
+
+        def replace(match):
+            name = match.group(1)
+            if name not in substitutions:
+                missing.add(name)
+                return match.group(0)
+            return str(substitutions[name])
+
+        return re.sub(r"\$\{([^}]+)\}", replace, value)
+    return value
+
+
+substituted = substitute(values)
+if missing:
+    fail("missing substitutions: " + ", ".join(sorted(missing)))
+substituted_values_path.write_text(
+    yaml.safe_dump(substituted, default_flow_style=False, sort_keys=False)
+)
 PY
 then
 	exit 1
@@ -235,14 +296,14 @@ if [[ "$skip_render" == true ]]; then
 fi
 
 chart_reference="${repository%/}/${chart}"
-values_arguments=(--values "$values_file")
+values_arguments=(--values "$substituted_values_file")
 if [[ "$server_dry_run" == true && "$preserve_values" == true ]]; then
 	if helm get values "$release_name" \
 		--namespace "$namespace" \
 		--all \
 		--output yaml \
 		>"$existing_values_file" 2>/dev/null; then
-		python3 - "$existing_values_file" "$values_file" "$resolved_values_file" <<'PY'
+		python3 - "$existing_values_file" "$substituted_values_file" "$resolved_values_file" <<'PY'
 import re
 import sys
 from pathlib import Path
