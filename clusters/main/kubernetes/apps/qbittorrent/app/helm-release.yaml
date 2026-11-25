@@ -105,29 +105,29 @@ spec:
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
       config:
-        volsync:
-          - name: config
-            type: restic
-            credentials: s3creds
-            dest:
-              enabled: true
-            src:
-              enabled: true 
-              trigger:
-                schedule: 30 0 * * *
+        # volsync:
+        #   - name: config
+        #     type: restic
+        #     credentials: s3creds
+        #     dest:
+        #       enabled: true
+        #     src:
+        #       enabled: true 
+        #       trigger:
+        #         schedule: 30 0 * * *
       vuetorrent:
         enabled: true
         mountPath: /config/vuetorrent
         volsync:
-          - name: vuetorrent
-            type: restic
-            credentials: s3creds
-            dest:
-              enabled: true
-            src:
-              enabled: true 
-              trigger:
-                schedule: 30 0 * * *
+          # - name: vuetorrent
+          #   type: restic
+          #   credentials: s3creds
+          #   dest:
+          #     enabled: true
+          #   src:
+          #     enabled: true 
+          #     trigger:
+          #       schedule: 30 0 * * *
       media-vol:
         enabled: true
         type: nfs
