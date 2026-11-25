@@ -29,6 +29,8 @@ spec:
     qbitportforward:
       enabled: true
     common:
+      gluetunImage:
+        tag: "3.41.2"
       addons:
         gluetun:
           enabled: true
