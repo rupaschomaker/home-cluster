@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Diagnose and optionally recover a faulted Longhorn WAL PVC for CNPG."""
+"""Diagnose and optionally recover faulted Longhorn PVCs for CNPG."""
 
 from __future__ import annotations
 
@@ -14,7 +14,9 @@ from typing import Any, Callable
 
 LONGHORN_NAMESPACE = "longhorn-system"
 FAILURE_VOLUME_STATES = {"detached", "detaching"}
+ENGINE_CREATION_FAILURE_STATES = {"attaching", "detached", "detaching"}
 FAILED_ENGINE_STATES = {"error", "stopped"}
+CNPG_PVC_ROLES = ("PG_DATA", "PG_WAL")
 LOGGER = logging.getLogger(__name__)
 
 
@@ -23,13 +25,20 @@ class RecoveryError(Exception):
 
 
 class Kubectl:
-    def __init__(self, executable: str = "kubectl") -> None:
+    def __init__(
+        self, executable: str = "kubectl", kubeconfig: str | None = None
+    ) -> None:
         self.executable = executable
+        self.kubeconfig = kubeconfig
 
     def run(self, *args: str) -> str:
+        command = [self.executable]
+        if self.kubeconfig:
+            command.extend(["--kubeconfig", self.kubeconfig])
+        command.extend(args)
         try:
             result = subprocess.run(
-                [self.executable, *args],
+                command,
                 check=False,
                 capture_output=True,
                 text=True,
@@ -44,14 +53,15 @@ class Kubectl:
     def get(
         self,
         resource: str,
-        namespace: str,
+        namespace: str | None = None,
         name: str | None = None,
         selector: str | None = None,
     ) -> dict[str, Any]:
         args = ["get", resource]
         if name:
             args.append(name)
-        args.extend(["-n", namespace])
+        if namespace:
+            args.extend(["-n", namespace])
         if selector:
             args.extend(["-l", selector])
         args.extend(["-o", "json"])
@@ -86,12 +96,25 @@ class Kubectl:
             f"--timeout={timeout}s",
         )
 
+    def wait_instance_manager_ready(
+        self, namespace: str, manager_name: str, timeout: int
+    ) -> None:
+        self.run(
+            "wait",
+            "--for=condition=PodReady",
+            f"instancemanager.longhorn.io/{manager_name}",
+            "-n",
+            namespace,
+            f"--timeout={timeout}s",
+        )
+
 
 @dataclass(frozen=True)
 class Target:
     namespace: str
     cluster: str
     pvc: str
+    pvc_role: str
     volume: str
     instance: str
     node: str
@@ -155,6 +178,18 @@ def replicas_for_volume(
     ]
 
 
+def has_failed_attachment(
+    attachments: list[dict[str, Any]], volume_name: str
+) -> bool:
+    return any(
+        attachment.get("spec", {}).get("source", {}).get("persistentVolumeName")
+        == volume_name
+        and attachment.get("status", {}).get("attached") is False
+        and attachment.get("status", {}).get("attachError")
+        for attachment in attachments
+    )
+
+
 def find_manager(
     node: str,
     engine: dict[str, Any],
@@ -212,6 +247,7 @@ def identify_target(
     engines: list[dict[str, Any]],
     replicas: list[dict[str, Any]],
     managers: list[dict[str, Any]],
+    attachments: list[dict[str, Any]] | None = None,
 ) -> tuple[Target | None, str]:
     pvc_meta = pvc.get("metadata", {})
     pvc_name = pvc_meta.get("name", "")
@@ -235,21 +271,51 @@ def identify_target(
     engine_state = engine.get("status", {}).get("currentState", "")
     volume_state = status.get("state", "")
     robustness = status.get("robustness", "")
-    failure_matches = (
+    standard_failure = (
         robustness == "faulted"
         and volume_state in FAILURE_VOLUME_STATES
         and engine_state in FAILED_ENGINE_STATES
     )
+    engine_creation_failure = any(
+        condition.get("type") == "InstanceCreation"
+        and condition.get("status") == "False"
+        and condition.get("reason") == "InstanceCreationFailure"
+        for condition in engine.get("status", {}).get("conditions", [])
+    )
+    failed_engine_start = (
+        engine_state == "error"
+        and engine_creation_failure
+        and volume_state in ENGINE_CREATION_FAILURE_STATES
+    )
+    volume_replicas = replicas_for_volume(replicas, volume_name)
+    failed_attachment = has_failed_attachment(attachments or [], volume_name)
+    pending_workload = any(
+        workload.get("podStatus") == "Pending"
+        for workload in status.get("kubernetesStatus", {}).get("workloadsStatus", [])
+    )
+    stuck_attachment = (
+        volume_state == "attaching"
+        and robustness in {"faulted", "unknown"}
+        and engine_state in FAILED_ENGINE_STATES
+        and failed_attachment
+        and pending_workload
+        and any(
+            replica.get("status", {}).get("currentState") == "running"
+            for replica in volume_replicas
+        )
+    )
+    failure_matches = standard_failure or failed_engine_start or stuck_attachment
     summary = (
-        f"{cluster}/{pvc_name}: volume={volume_state or 'unknown'}/{robustness or 'unknown'}, "
+        f"{cluster}/{pvc_name} ({labels.get('cnpg.io/pvcRole', 'unknown')}): "
+        f"volume={volume_state or 'unknown'}/{robustness or 'unknown'}, "
         f"engine={engine_state or 'unknown'}"
+        f"{', CSI attach failed' if failed_attachment else ''}"
     )
     if not failure_matches:
         return None, summary
     if not instance:
         raise RecoveryError(f"cannot determine CNPG instance for PVC {pvc_name}")
 
-    volume_replicas = replicas_for_volume(replicas, volume_name)
     node_ids = {
         value
         for value in (
@@ -269,7 +335,16 @@ def identify_target(
     node = next(iter(node_ids))
     manager = find_manager(node, engine, volume_replicas, managers)
     return (
-        Target(namespace, cluster, pvc_name, volume_name, instance, node, manager),
+        Target(
+            namespace,
+            cluster,
+            pvc_name,
+            labels.get("cnpg.io/pvcRole", "unknown"),
+            volume_name,
+            instance,
+            node,
+            manager,
+        ),
         summary,
     )
 
@@ -285,20 +360,28 @@ def find_targets(
     engines = items(kube.get("engines.longhorn.io", longhorn_namespace))
     replicas = items(kube.get("replicas.longhorn.io", longhorn_namespace))
     managers = items(kube.get("instancemanagers.longhorn.io", longhorn_namespace))
+    attachments = items(kube.get("volumeattachments.storage.k8s.io"))
     for cluster in cluster_names:
-        LOGGER.info("Checking WAL PVCs for CNPG cluster %s/%s", namespace, cluster)
-        pvcs = items(
-            kube.get(
-                "pvc",
-                namespace,
-                selector=f"cnpg.io/cluster={cluster},cnpg.io/pvcRole=PG_WAL",
+        LOGGER.info("Checking data and WAL PVCs for CNPG cluster %s/%s", namespace, cluster)
+        pvcs = []
+        for pvc_role in CNPG_PVC_ROLES:
+            pvcs.extend(
+                items(
+                    kube.get(
+                        "pvc",
+                        namespace,
+                        selector=f"cnpg.io/cluster={cluster},cnpg.io/pvcRole={pvc_role}",
+                    )
+                )
             )
-        )
         if not pvcs:
-            summaries.append(f"{cluster}: no CNPG WAL PVCs found")
-            LOGGER.info("No WAL PVCs found for cluster %s", cluster)
+            summaries.append(f"{cluster}: no CNPG data or WAL PVCs found")
+            LOGGER.info("No CNPG data or WAL PVCs found for cluster %s", cluster)
         for pvc in pvcs:
-            LOGGER.info("Inspecting WAL PVC %s/%s", namespace, obj_name(pvc))
+            pvc_role = pvc.get("metadata", {}).get("labels", {}).get(
+                "cnpg.io/pvcRole", "unknown"
+            )
+            LOGGER.info("Inspecting %s PVC %s/%s", pvc_role, namespace, obj_name(pvc))
             target, summary = identify_target(
                 kube,
                 namespace,
@@ -308,11 +391,13 @@ def find_targets(
                 engines,
                 replicas,
                 managers,
+                attachments,
             )
             summaries.append(summary)
             if target:
                 LOGGER.warning(
-                    "Detected failed Longhorn WAL volume %s for %s/%s",
+                    "Detected failed Longhorn %s volume %s for %s/%s",
+                    target.pvc_role,
                     target.volume,
                     namespace,
                     target.pvc,
@@ -418,8 +503,9 @@ def recover(
         )
         LOGGER.info("Deleting Longhorn instance-manager pod %s", manager_name)
         kube.delete_pod(longhorn_namespace, manager_name, timeout)
-        LOGGER.info("Waiting for Longhorn instance-manager pod %s to become Ready", manager_name)
-        kube.wait_ready(longhorn_namespace, manager_name, timeout)
+        LOGGER.info("Waiting for Longhorn instance-manager %s to become Ready", manager_name)
+        kube.wait_instance_manager_ready(longhorn_namespace, manager_name, timeout)
+        manager_pod(kube, longhorn_namespace, manager_name)
         LOGGER.info("Instance-manager pod %s is Ready", manager_name)
         for target in manager_targets:
             wait_for_volume(kube, longhorn_namespace, target.volume, timeout)
@@ -436,14 +522,18 @@ def recover(
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Check CNPG WAL PVCs and optionally restart a Longhorn instance-manager "
-            "for the faulted/detaching + stopped-engine failure signature."
+            "Check CNPG data and WAL PVCs and optionally restart a Longhorn "
+            "instance-manager for a detected failed-volume signature."
         )
     )
     parser.add_argument(
         "--namespace",
         default="bitmagnet",
         help="Kubernetes namespace containing CNPG (default: bitmagnet)",
+    )
+    parser.add_argument(
+        "--kubeconfig",
+        help="Path to kubeconfig; defaults to KUBECONFIG or kubectl's normal lookup",
     )
     parser.add_argument(
         "--cluster", help="CNPG cluster name (required if namespace has multiple)"
@@ -477,9 +567,9 @@ def main(argv: list[str] | None = None, kube: Kubectl | None = None) -> int:
         datefmt="%Y-%m-%d %H:%M:%S",
     )
     args = parse_args(argv)
-    kube = kube or Kubectl()
+    kube = kube or Kubectl(kubeconfig=args.kubeconfig)
     try:
-        LOGGER.info("Starting CNPG WAL PVC check for namespace %s", args.namespace)
+        LOGGER.info("Starting CNPG data and WAL PVC check for namespace %s", args.namespace)
         clusters = discover_clusters(kube, args.namespace, args.cluster)
         targets, summaries = find_targets(
             kube, args.namespace, args.longhorn_namespace, clusters
@@ -487,14 +577,15 @@ def main(argv: list[str] | None = None, kube: Kubectl | None = None) -> int:
         for summary in summaries:
             print(summary)
         if not targets:
-            print("No matching faulted CNPG WAL volume failure detected; no action taken.")
-            LOGGER.info("No affected WAL PVCs found; nothing to remediate")
+            print("No matching faulted CNPG data or WAL volume detected; no action taken.")
+            LOGGER.info("No affected CNPG PVCs found; nothing to remediate")
             return 0
 
         manager_names = sorted({target.manager for target in targets})
         for target in targets:
             print(
-                f"Failure detected: cluster={target.cluster} PVC={target.pvc} "
+                f"Failure detected: cluster={target.cluster} role={target.pvc_role} "
+                f"PVC={target.pvc} "
                 f"Longhorn volume={target.volume} node={target.node} "
                 f"instance-manager={target.manager}"
             )
