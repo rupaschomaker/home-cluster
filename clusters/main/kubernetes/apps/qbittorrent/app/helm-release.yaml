@@ -57,21 +57,19 @@ spec:
             HTTPPROXY_LOG: "on"
     service:
       torrent:
-        enabled: true
         ports:
           gluetun:
             enabled: false
           torrent:
-            enabled: true
             port: "${VPN_INBOUND_PORT}"
             targetPort: "6881"
-      gluetun:
+      proxy:
         enabled: true
         type: LoadBalancer
         annotations:
           external-dns.alpha.kubernetes.io/hostname: proxy.${DOMAIN_0}
         ports:
-          gluetun:
+          proxy:
             enabled: true
             port: "8888"
             targetPort: "8888"
