@@ -69,6 +69,16 @@ spec:
             # port: "57519"
             targetPort: "6881"
             protocol: udp
+      proxy:
+        enabled: true
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: proxy.${DOMAIN_0}
+        ports:
+          gluetun:
+            enabled: true
+            port: "8888"
+            targetPort: "8888"
     ingress:
       main:
         enabled: true
