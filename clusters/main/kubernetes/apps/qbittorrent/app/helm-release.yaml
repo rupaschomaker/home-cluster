@@ -30,7 +30,7 @@ spec:
       enabled: true
     common:
       gluetunImage:
-        tag: "3.41.2"
+        tag: "3.40.0"
       addons:
         gluetun:
           enabled: true
