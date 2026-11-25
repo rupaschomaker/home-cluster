@@ -45,6 +45,12 @@ spec:
             WIREGUARD_PRIVATE_KEY: ${WIREGUARD_PRIVATE_KEY}
             WIREGUARD_PUBLIC_KEY: ${WIREGUARD_PUBLIC_KEY}
             WIREGUARD_PERSISTENT_KEEPALIVE_INTERVAL: "25s"
+            HTTPPROXY: "on"
+            HTTPPROXY_LISTENING_ADDRESS: ":8888"
+            HTTPPROXY_USER: "${HTTPPROXY_USER}"
+            HTTPPROXY_PASSWORD: "${HTTPPROXY_PASSWORD}"
+            HTTPPROXY_STEALTH: "on"
+            HTTPPROXY_LOG: "on"
     workload:
       qbitportforward:
         enabled: true
