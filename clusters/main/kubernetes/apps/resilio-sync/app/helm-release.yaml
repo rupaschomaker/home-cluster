@@ -5,10 +5,12 @@ metadata:
   namespace: resilio-sync
 spec:
   interval: 15m
+  upgrade:
+    preserveValues: false
   chart:
     spec:
       chart: resilio-sync
-      version: 20.1.6
+      version: 21.0.0
       sourceRef:
         kind: HelmRepository
         name: truecharts
@@ -16,6 +18,10 @@ spec:
   releaseName: resilio-sync
   values:
     TZ: America/Chicago
+    common:
+      securityContext:
+        container:
+          UMASK: "0000"
     resources:
       requests:
         cpu: 20m
@@ -60,6 +66,3 @@ spec:
         mountPath: /sync/media
         path: /mnt/data/media
         server: nas.${DOMAIN_0}
-
-    securityContext:
-        UMASK: "0000"
