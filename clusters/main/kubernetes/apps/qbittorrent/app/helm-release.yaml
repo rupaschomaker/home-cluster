@@ -4,7 +4,6 @@ metadata:
   name: qbittorrent
   namespace: qbittorrent
 spec:
-  resetValues: true
   interval: 15m
   chart:
     spec:
@@ -55,6 +54,13 @@ spec:
             HTTPPROXY_STEALTH: "on"
             HTTPPROXY_LOG: "on"
     service:
+      torrent:
+        enabled: false
+        ports:
+          torrent:
+            enabled: false
+          torrentudp:
+            enabled: false
       gluetun:
         enabled: true
         ports:
