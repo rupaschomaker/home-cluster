@@ -57,13 +57,6 @@ spec:
             HTTPPROXY_LOG: "on"
     service:
       torrent:
-        enabled: false
-        ports:
-          torrent:
-            enabled: false
-          torrentudp:
-            enabled: false
-      gluetun:
         enabled: true
         ports:
           gluetun: null
@@ -78,18 +71,11 @@ spec:
             # port: "57519"
             targetPort: "6881"
             protocol: udp
-      proxy:
+      gluetun:
         enabled: true
         type: LoadBalancer
         annotations:
           external-dns.alpha.kubernetes.io/hostname: proxy.${DOMAIN_0}
-        ports:
-          gluetun:
-            enabled: false
-          proxy:
-            enabled: true
-            port: "8888"
-            targetPort: "8888"
     ingress:
       main:
         enabled: true
