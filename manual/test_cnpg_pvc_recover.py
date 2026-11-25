@@ -27,6 +27,9 @@ class FakeKubectl:
                 "robustness": "faulted" if faulted else "healthy",
                 "currentNodeID": "",
                 "currentEngineNodeID": "",
+                "kubernetesStatus": {
+                    "workloadsStatus": [{"podName": "app-db-2", "podStatus": "Pending"}]
+                },
             },
         }
         self.pvc = resource(
@@ -40,7 +43,11 @@ class FakeKubectl:
         )
         self.engine = resource(
             "wal-volume-e-0",
-            spec={"volumeName": "wal-volume", "nodeID": ""},
+            spec={
+                "volumeName": "wal-volume",
+                "nodeID": "",
+                "desireState": "running" if faulted else "stopped",
+            },
             status={
                 "currentState": "stopped" if faulted else "running",
                 "instanceManagerName": "",
@@ -66,20 +73,32 @@ class FakeKubectl:
             ownerReferences=[{"kind": "InstanceManager", "name": "im-a"}],
             status={"conditions": [{"type": "Ready", "status": "True"}]},
         )
+        self.attachment = resource(
+            "csi-wal-volume",
+            spec={"source": {"persistentVolumeName": "wal-volume"}},
+            status={
+                "attached": False,
+                "attachError": {"message": "attach failed"},
+            },
+        )
         self.deleted = []
         self.waited = []
 
-    def get(self, resource_name, namespace, name=None, selector=None):
+    def get(self, resource_name, namespace=None, name=None, selector=None):
         if resource_name == "clusters.postgresql.cnpg.io":
             return {"items": [resource(cluster) for cluster in self.cluster_names]}
         if resource_name == "pvc":
-            return {"items": [self.pvc]}
+            role = selector.rsplit("=", 1)[-1] if selector else None
+            pvc_role = self.pvc["metadata"]["labels"]["cnpg.io/pvcRole"]
+            return {"items": [self.pvc] if role == pvc_role else []}
         if resource_name == "engines.longhorn.io":
             return {"items": [self.engine, self.other_engine]}
         if resource_name == "replicas.longhorn.io":
             return {"items": [self.replica]}
         if resource_name == "instancemanagers.longhorn.io":
             return {"items": [self.manager]}
+        if resource_name == "volumeattachments.storage.k8s.io":
+            return {"items": [self.attachment]}
         if resource_name == "volumes.longhorn.io":
             return self.volume
         if resource_name == "pod":
@@ -92,6 +111,9 @@ class FakeKubectl:
 
     def wait_ready(self, namespace, pod_name, timeout):
         self.waited.append((namespace, pod_name, timeout))
+
+    def wait_instance_manager_ready(self, namespace, manager_name, timeout):
+        self.waited.append((namespace, manager_name, timeout))
 
 
 class DiscoveryTests(unittest.TestCase):
@@ -106,9 +128,70 @@ class DiscoveryTests(unittest.TestCase):
         targets, summaries = recover.find_targets(kube, "apps", "longhorn-system", ["app-db"])
         self.assertEqual(len(targets), 1)
         self.assertEqual(targets[0].volume, "wal-volume")
+        self.assertEqual(targets[0].pvc_role, "PG_WAL")
         self.assertEqual(targets[0].node, "node-a")
         self.assertEqual(targets[0].manager, "im-a")
         self.assertIn("detaching/faulted", summaries[0])
+
+    def test_detects_data_volume_with_engine_creation_failure(self):
+        kube = FakeKubectl()
+        kube.pvc["metadata"]["name"] = "app-db-2"
+        kube.pvc["metadata"]["labels"]["cnpg.io/pvcRole"] = "PG_DATA"
+        kube.volume["status"].update(state="detached", robustness="unknown")
+        kube.engine["status"].update(
+            currentState="error",
+            conditions=[
+                {
+                    "type": "InstanceCreation",
+                    "status": "False",
+                    "reason": "InstanceCreationFailure",
+                    "message": "exit status 1",
+                }
+            ],
+        )
+
+        targets, summaries = recover.find_targets(kube, "apps", "longhorn-system", ["app-db"])
+
+        self.assertEqual(len(targets), 1)
+        self.assertEqual(targets[0].pvc_role, "PG_DATA")
+        self.assertIn("PG_DATA", summaries[0])
+        self.assertIn("detached/unknown", summaries[0])
+
+    def test_detects_stuck_attach_with_stopped_engine_and_csi_error(self):
+        kube = FakeKubectl(faulted=False)
+        kube.pvc["metadata"]["name"] = "app-db-2"
+        kube.pvc["metadata"]["labels"]["cnpg.io/pvcRole"] = "PG_DATA"
+        kube.volume["spec"]["nodeID"] = "node-a"
+        kube.volume["status"].update(state="attaching", robustness="unknown")
+        kube.engine["spec"]["nodeID"] = "node-a"
+        kube.engine["spec"]["desireState"] = "running"
+        kube.engine["status"].update(
+            currentState="stopped",
+            instanceManagerName="im-a",
+        )
+
+        targets, summaries = recover.find_targets(kube, "apps", "longhorn-system", ["app-db"])
+
+        self.assertEqual(len(targets), 1)
+        self.assertEqual(targets[0].pvc_role, "PG_DATA")
+        self.assertIn("attaching/unknown", summaries[0])
+        self.assertIn("CSI attach failed", summaries[0])
+
+    def test_stopped_engine_without_failed_csi_attachment_is_not_remediated(self):
+        kube = FakeKubectl(faulted=False)
+        kube.volume["spec"]["nodeID"] = "node-a"
+        kube.volume["status"].update(state="attaching", robustness="unknown")
+        kube.engine["spec"]["nodeID"] = "node-a"
+        kube.engine["spec"]["desireState"] = "running"
+        kube.engine["status"].update(
+            currentState="stopped",
+            instanceManagerName="im-a",
+        )
+        kube.attachment["status"].pop("attachError")
+
+        targets, _ = recover.find_targets(kube, "apps", "longhorn-system", ["app-db"])
+
+        self.assertEqual(targets, [])
 
     def test_healthy_volume_does_not_trigger_remediation(self):
         kube = FakeKubectl(faulted=False)
@@ -184,6 +267,29 @@ class CliTests(unittest.TestCase):
         with patch("manual.cnpg_pvc_recover.subprocess.run", return_value=failed):
             with self.assertRaisesRegex(recover.RecoveryError, "forbidden"):
                 recover.Kubectl().get("pods", "apps")
+
+    def test_kubectl_uses_explicit_kubeconfig(self):
+        success = type(
+            "Result", (), {"returncode": 0, "stdout": '{"items":[]}', "stderr": ""}
+        )()
+        with patch(
+            "manual.cnpg_pvc_recover.subprocess.run", return_value=success
+        ) as run:
+            recover.Kubectl(kubeconfig="/tmp/cluster-config").get("pods", "apps")
+        self.assertEqual(
+            run.call_args.args[0],
+            [
+                "kubectl",
+                "--kubeconfig",
+                "/tmp/cluster-config",
+                "get",
+                "pods",
+                "-n",
+                "apps",
+                "-o",
+                "json",
+            ],
+        )
 
     def test_namespace_with_no_cluster_is_an_error(self):
         kube = FakeKubectl(cluster_names=[])
