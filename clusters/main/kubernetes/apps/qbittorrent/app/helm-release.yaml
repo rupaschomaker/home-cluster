@@ -59,23 +59,23 @@ spec:
       torrent:
         enabled: true
         ports:
-          gluetun: null
+          gluetun:
+            enabled: false
           torrent:
             enabled: true
             port: "${VPN_INBOUND_PORT}"
-            # port: "57519"
             targetPort: "6881"
-          torrentudp:
-            enabled: true
-            port: "${VPN_INBOUND_PORT}"
-            # port: "57519"
-            targetPort: "6881"
-            protocol: udp
       gluetun:
         enabled: true
         type: LoadBalancer
         annotations:
           external-dns.alpha.kubernetes.io/hostname: proxy.${DOMAIN_0}
+        ports:
+          gluetun:
+            enabled: true
+            port: "8888"
+            targetPort: "8888"
+            protocol: http
     ingress:
       main:
         enabled: true
