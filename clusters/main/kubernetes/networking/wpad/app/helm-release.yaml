@@ -45,6 +45,7 @@ spec:
             main:
               env:
                 SERVER_CONFIG_FILE: /etc/sws/sws.toml
+                SERVER_DISABLE_SYMLINKS: "false"
     persistence:
       config:
         enabled: true
