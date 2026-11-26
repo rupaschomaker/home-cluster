@@ -71,10 +71,47 @@ spec:
           config.toml: |
             [[roles]]
             name = "qbitportforward"
-            routes = ["GET /v1/portforward"]
+            routes = ["GET /v1/openvpn/portforwarded"]
             auth = "basic"
             username = "user"
             password = "pass"
+    configmap:
+      qbitportforward-script:
+        enabled: true
+        data:
+          main.sh: |
+            #!/bin/sh
+            set -e
+
+            qbt_username="$QBT_USERNAME"
+            qbt_password="$QBT_PASSWORD"
+            qbt_addr="$QBT_ADDR"
+            gtn_addr="$GTN_ADDR"
+
+            port_number=$(curl --fail --silent --show-error --user "$GTN_USERNAME:$GTN_PASSWORD" "$gtn_addr/v1/openvpn/portforwarded" | jq '.port')
+
+            if [ ! "$port_number" ] || [ "$port_number" = "0" ]; then
+                echo "Could not get current forwarded port from gluetun, exiting..."
+                exit 1
+            fi
+
+            curl --fail --silent --show-error --cookie-jar /tmp/cookies.txt --cookie /tmp/cookies.txt \
+              --header "Referer: $qbt_addr" --data "username=$qbt_username" \
+              --data "password=$qbt_password" "$qbt_addr/api/v2/auth/login" >/dev/null
+
+            listen_port=$(curl --fail --silent --show-error --cookie-jar /tmp/cookies.txt \
+              --cookie /tmp/cookies.txt "$qbt_addr/api/v2/app/preferences" | jq '.listen_port')
+
+            if [ "$port_number" = "$listen_port" ]; then
+                echo "Port already set, exiting..."
+                exit 0
+            fi
+
+            echo "Updating port to $port_number"
+            curl --fail --silent --show-error --cookie-jar /tmp/cookies.txt --cookie /tmp/cookies.txt \
+              --data-urlencode "json={\"listen_port\": $port_number}" \
+              "$qbt_addr/api/v2/app/setPreferences" >/dev/null
+            echo "Successfully updated port"
     workload:
       qbitportforward:
         podSpec:
@@ -89,6 +126,9 @@ spec:
                   secretKeyRef:
                     name: gluetun-auth
                     key: GTN_PASSWORD
+              command: /bin/sh
+              args:
+                - /shared/qbitportforward-script/main.sh
     service:
       torrent:
         ports:
@@ -142,6 +182,15 @@ spec:
         targetSelector:
           main:
             gluetun: {}
+      qbitportforward-script:
+        enabled: true
+        type: configmap
+        objectName: qbitportforward-script
+        mountPath: /shared/qbitportforward-script
+        targetSelectAll: false
+        targetSelector:
+          qbitportforward:
+            qbitportforward: {}
       config:
         volsync:
           - name: config
