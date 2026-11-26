@@ -120,7 +120,7 @@ spec:
               env:
                 QBT_SCHEDULE: "60"
                 QBT_STARTUP_DELAY: "30"
-                QBT_DRY_RUN: "true"
+                QBT_DRY_RUN: "false"
                 QBT_TAG_UPDATE: "true"
                 QBT_SHARE_LIMITS: "true"
                 QBT_SKIP_CLEANUP: "true"
