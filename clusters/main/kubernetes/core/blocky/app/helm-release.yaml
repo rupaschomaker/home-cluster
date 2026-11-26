@@ -71,10 +71,6 @@ spec:
         enabled: false
       datasource:
         enabled: false
-    secret:
-      datasource:
-        enabled: false
-
     dependencies:
       postgresql:
-        enabled: false
+        enabled: true
