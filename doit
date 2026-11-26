@@ -1,7 +1,13 @@
 #!/bin/bash -e
 
-if [ -z "$1" ]; then
-  echo "Must specify a commit log"
+push=true
+if [ "${1:-}" = "-no-push" ]; then
+  push=false
+  shift
+fi
+
+if [ -z "${1:-}" ]; then
+  echo "Usage: $0 [-no-push] <commit log>"
   exit 2
 fi
 
@@ -16,11 +22,14 @@ unfakeClustertool() {
 clustertool genconfig
 # unfakeClustertool
 
-git add clusters repositories
+git add doit clusters repositories .github
+git add -u manual
 clustertool encrypt
 git commit -m "$1"
-git pull
-git push
+if [ "$push" = true ]; then
+  git pull
+  git push
+fi
 clustertool decrypt
 # sleep 1
 # flux reconcile source git cluster -n flux-system
