@@ -8,12 +8,14 @@ spec:
   chart:
     spec:
       chart: sonarr
-      version: 28.1.9
+      version: 29.0.0
       sourceRef:
         kind: HelmRepository
         name: truecharts
         namespace: flux-system
   releaseName: sonarr
+  upgrade:
+    preserveValues: false
   values:
     TZ: America/Chicago
     resources:
