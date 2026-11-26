@@ -62,25 +62,43 @@ spec:
               HTTPPROXY_PASSWORD: ${HTTPPROXY_PASSWORD}
               HTTPPROXY_STEALTH: "on"
               HTTPPROXY_LOG: "on"
-    configmap:
+    secret:
       gluetun-auth:
         enabled: true
         data:
+          GTN_USERNAME: user
+          GTN_PASSWORD: pass
           config.toml: |
             [[roles]]
             name = "qbitportforward"
             routes = ["GET /v1/portforward"]
-            auth = "none"
+            auth = "basic"
+            username = "user"
+            password = "pass"
     persistence:
       gluetun-auth:
         enabled: true
-        type: configmap
+        type: secret
         objectName: gluetun-auth
         mountPath: /gluetun/auth
         targetSelectAll: false
         targetSelector:
           main:
             gluetun: {}
+    workload:
+      qbitportforward:
+        podSpec:
+          containers:
+            qbitportforward:
+              env:
+                GTN_USERNAME:
+                  secretKeyRef:
+                    name: gluetun-auth
+                    key: GTN_USERNAME
+                GTN_PASSWORD:
+                  secretKeyRef:
+                    name: gluetun-auth
+                    key: GTN_PASSWORD
     service:
       torrent:
         ports:
