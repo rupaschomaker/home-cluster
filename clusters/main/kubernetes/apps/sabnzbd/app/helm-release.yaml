@@ -8,12 +8,14 @@ spec:
   chart:
     spec:
       chart: sabnzbd
-      version: 26.0.6
+      version: 28.0.0
       sourceRef:
         kind: HelmRepository
         name: truecharts
         namespace: flux-system
   releaseName: sabnzbd
+  upgrade:
+    preserveValues: false
   values:
     TZ: America/Chicago
     resources:
