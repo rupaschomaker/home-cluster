@@ -62,6 +62,7 @@ spec:
               HTTPPROXY_PASSWORD: ${HTTPPROXY_PASSWORD}
               HTTPPROXY_STEALTH: "on"
               HTTPPROXY_LOG: "on"
+              HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE: '{"auth":"none"}'
     service:
       torrent:
         ports:
