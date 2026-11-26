@@ -4,7 +4,7 @@ metadata:
   name: webhook-receiver
   namespace: flux-system
   annotations:
-      cert-manager.io/cluster-issuer: domain-1-le-prod
+      cert-manager.io/cluster-issuer: ${CERT_ISSUER}
       cert-manager.io/private-key-rotation-policy: Always
       external-dns.alpha.kubernetes.io/hostname: services.${DOMAIN_0}
 spec:
