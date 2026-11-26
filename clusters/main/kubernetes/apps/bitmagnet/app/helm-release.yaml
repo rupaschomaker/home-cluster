@@ -22,6 +22,9 @@ spec:
         cpu: 20m
     global:
       stopAll: false
+      fallbackDefaults:
+        cnpg:
+          pgVersion: 16
     TZ: America/Chicago
     workload:
       main:
