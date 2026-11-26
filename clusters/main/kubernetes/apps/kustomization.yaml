@@ -21,4 +21,3 @@ resources:
   - jellyseerr/ks.yaml
   - profilarr/ks.yaml
   - chaptarr/ks.yaml
-  - jellystat/ks.yaml
