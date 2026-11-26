@@ -44,10 +44,11 @@ Use this skill when asked to upgrade a TrueCharts chart or HelmRelease.
 9. Display the committed chart diff:
 
    ```bash
-   git --no-pager diff HEAD^ HEAD -- <helm-release.yaml>
+   git fetch origin main
+   git --no-pager diff origin/main HEAD -- <helm-release.yaml>
    ```
 
-   Review the diff for unintended changes and report the chart version change, added or removed values, and any migrations. Do not print resolved values or secrets.
+   This compares the local committed HEAD with the current GitHub `main` HEAD. Review the diff for unintended changes and report the chart version change, added or removed values, and any migrations. Do not print resolved values or secrets.
 10. Ask the user whether the committed changes should be pushed. Do not push without confirmation. If the user confirms:
 
     ```bash
