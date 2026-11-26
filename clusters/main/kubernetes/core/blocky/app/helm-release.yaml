@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: blocky
-      version: 24.5.1
+      version: 25.0.0
       sourceRef:
         kind: HelmRepository
         name: truecharts
@@ -24,6 +24,7 @@ spec:
       retries: 3
   upgrade:
     cleanupOnFail: true
+    preserveValues: false
     remediation:
       retries: 3
   uninstall:
@@ -70,7 +71,10 @@ spec:
         enabled: false
       datasource:
         enabled: false
+    secret:
+      datasource:
+        enabled: false
 
-    cnpg:
-      main:
+    dependencies:
+      postgresql:
         enabled: false
