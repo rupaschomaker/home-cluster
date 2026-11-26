@@ -8,12 +8,14 @@ spec:
   chart:
     spec:
       chart: tailscale
-      version: 13.2.5
+      version: 14.0.0
       sourceRef:
         kind: HelmRepository
         name: truecharts
         namespace: flux-system
   releaseName: tailscale
+  upgrade:
+    preserveValues: false
   values:
     TZ: America/Chicago
     resources:
