@@ -9,6 +9,17 @@ resources:
   - ./flux.yaml
   # - sopssecret.secret.yaml
 patches:
+  # The controller Deployments are owned by the "flux" Kustomization (flux.yaml, OCI manifests with
+  # tuned settings). Rendering them here too makes both Kustomizations fight and restart the controllers.
+  - target:
+      kind: Deployment
+      name: (helm-controller|kustomize-controller|notification-controller|source-controller|source-watcher)
+    patch: |
+      $patch: delete
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: not-used
   # Remove the built-in network policies
   - target:
       group: networking.k8s.io
