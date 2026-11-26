@@ -5,10 +5,12 @@ metadata:
   namespace: lazylibrarian
 spec:
   interval: 15m
+  upgrade:
+    preserveValues: false
   chart:
     spec:
       chart: lazylibrarian
-      version: 23.1.4
+      version: 24.0.0
       sourceRef:
         kind: HelmRepository
         name: truecharts
