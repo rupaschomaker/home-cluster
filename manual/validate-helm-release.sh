@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-# Validate a Flux HelmRelease and, by default, render its chart with Helm.
+# Validate a Flux HelmRelease and, by default, render and server-side dry-run
+# its chart with Helm.
 #
 # Usage:
 #   validate-helm-release.sh [--skip-render] [--server-dry-run] [--repo OCI_REPOSITORY] helm-release.yaml
@@ -114,8 +115,8 @@ if [[ "$skip_render" == false ]] && ! command -v helm >/dev/null 2>&1; then
 	exit 1
 fi
 
-if [[ "$server_dry_run" == true && "$skip_render" == false ]] && ! command -v kubectl >/dev/null 2>&1; then
-	echo "error: kubectl is required for --server-dry-run" >&2
+if [[ "$server_dry_run" == true && "$skip_render" == false ]] && ! command -v helm >/dev/null 2>&1; then
+	echo "error: helm is required for --server-dry-run" >&2
 	exit 1
 fi
 
@@ -355,12 +356,13 @@ else
 fi
 
 if [[ "$server_dry_run" == true ]]; then
-	echo "Validating server-side apply with Kubernetes dry-run..." >&2
-	kubectl apply \
-		--server-side \
+	echo "Validating Helm upgrade with server-side dry-run..." >&2
+	helm upgrade "$release_name" "$chart_reference" \
+		--version "$version" \
+		--namespace "$namespace" \
+		"${values_arguments[@]}" \
 		--dry-run=server \
-		--field-manager=helm-controller \
-		--filename "$rendered_file" \
+		--skip-crds \
 		>/dev/null
-	echo "Kubernetes server-side apply dry-run succeeded."
+	echo "Helm server-side upgrade dry-run succeeded."
 fi
