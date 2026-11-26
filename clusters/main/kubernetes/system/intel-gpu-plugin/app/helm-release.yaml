@@ -29,5 +29,5 @@ spec:
   values:
     name: intel-gpu-plugin
     sharedDevNum: 5
-    nodeFeatureRule: true
+    nodeFeatureRule: false
     
