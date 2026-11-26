@@ -16,14 +16,14 @@ Use this skill when asked to upgrade a TrueCharts chart or HelmRelease.
    helm show chart oci://oci.trueforge.org/truecharts/<chart>
    ```
 
-3. Read the current TrueCharts documentation and the latest chart values:
+3. Read the current TrueCharts documentation, chart-specific guides/changelogs, and the latest chart values:
 
    ```bash
    helm show values oci://oci.trueforge.org/truecharts/<chart> \
      --version <version>
    ```
 
-   Use the chart documentation page and its linked common-chart documentation. Check the chart's values schema and dependency values, especially when a value belongs under the `common:` dependency key.
+   Use the chart documentation page, any setup or migration guide, its changelog, and linked common-chart documentation. Check the chart's values schema and dependency values, especially when a value belongs under the `common:` dependency key. Notify the user of every chart-specific upgrade instruction, breaking change, required migration, backup requirement, or manual post-upgrade action before proceeding. If an instruction requires a user decision or an irreversible action, stop and ask for confirmation.
 4. Compare the existing HelmRelease values with the new chart. Remove obsolete overrides only when the new chart default provides the same behavior. Correct invalid paths and migrate changed values. Do not change application image versions, credentials, networking behavior, persistence, or service exposure unless the request requires it.
 5. Set `spec.chart.spec.version` to the selected chart version. Set `spec.upgrade.preserveValues: false` unless the user explicitly requires preserving stored Helm values, so removed or renamed values do not survive the upgrade.
 6. Run the repository validator:

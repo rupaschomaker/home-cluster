@@ -8,12 +8,14 @@ spec:
   chart:
     spec:
       chart: prowlarr
-      version: 23.2.4
+      version: 25.1.0
       sourceRef:
         kind: HelmRepository
         name: truecharts
         namespace: flux-system
   releaseName: prowlarr
+  upgrade:
+    preserveValues: false
   values:
     TZ: America/Chicago
     resources:
