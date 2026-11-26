@@ -1,0 +1,68 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: wpad
+  namespace: wpad
+spec:
+  interval: 15m
+  upgrade:
+    preserveValues: false
+  chart:
+    spec:
+      chart: static-web-server
+      version: 10.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  releaseName: wpad
+  values:
+    resources:
+      requests:
+        cpu: 5m
+        memory: 16Mi
+      limits:
+        memory: 64Mi
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: internal
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-redirect: "false"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+        hosts:
+          - host: wpad.${DOMAIN_0}
+            paths:
+              - path: /wpad.dat
+                pathType: Exact
+        integrations:
+          traefik:
+            enabled: false
+    workload:
+      main:
+        podSpec:
+          containers:
+            main:
+              env:
+                SERVER_CONFIG_FILE: /etc/sws/sws.toml
+    persistence:
+      config:
+        enabled: true
+        type: configmap
+        objectName: wpad-files
+        expandObjectName: false
+        mountPath: /public
+        readOnly: true
+        items:
+          - key: wpad.dat
+            path: wpad.dat
+      server-config:
+        enabled: true
+        type: configmap
+        objectName: wpad-files
+        expandObjectName: false
+        mountPath: /etc/sws
+        readOnly: true
+        items:
+          - key: sws.toml
+            path: sws.toml

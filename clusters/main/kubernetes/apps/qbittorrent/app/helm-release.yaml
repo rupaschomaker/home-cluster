@@ -76,6 +76,7 @@ spec:
         type: LoadBalancer
         annotations:
           external-dns.alpha.kubernetes.io/hostname: proxy.${DOMAIN_0}
+          external-dns.kubernetes.io/hostname: proxy.${DOMAIN_0}
         ports:
           proxy:
             enabled: true

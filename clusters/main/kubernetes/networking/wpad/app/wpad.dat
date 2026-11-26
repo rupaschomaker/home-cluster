@@ -1,0 +1,12 @@
+function FindProxyForURL(url, host) {
+    host = host.toLowerCase();
+    if (host.charAt(host.length - 1) === ".") {
+        host = host.slice(0, -1);
+    }
+
+    if (host === "myanonamouse.net" || dnsDomainIs(host, ".myanonamouse.net") ||
+        host === "mrd.ninja" || dnsDomainIs(host, ".mrd.ninja")) {
+        return "PROXY proxy.${DOMAIN_0}:8888";
+    }
+    return "DIRECT";
+}

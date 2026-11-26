@@ -1,0 +1,3 @@
+[[advanced.headers]]
+source = "/wpad.dat"
+headers = { Content-Type = "application/x-ns-proxy-autoconfig", Cache-Control = "no-cache" }
