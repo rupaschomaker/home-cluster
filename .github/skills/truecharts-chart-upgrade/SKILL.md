@@ -26,24 +26,22 @@ Use this skill when asked to upgrade a TrueCharts chart or HelmRelease.
    Use the chart documentation page and its linked common-chart documentation. Check the chart's values schema and dependency values, especially when a value belongs under the `common:` dependency key.
 4. Compare the existing HelmRelease values with the new chart. Remove obsolete overrides only when the new chart default provides the same behavior. Correct invalid paths and migrate changed values. Do not change application image versions, credentials, networking behavior, persistence, or service exposure unless the request requires it.
 5. Set `spec.chart.spec.version` to the selected chart version. Set `spec.upgrade.preserveValues: false` unless the user explicitly requires preserving stored Helm values, so removed or renamed values do not survive the upgrade.
-6. Run the repository validator:
+6. Show the exact HelmRelease diff after editing:
+
+   ```bash
+   git --no-pager diff -- <helm-release.yaml>
+   ```
+
+   Review the diff for unintended changes and report the chart version change, added or removed values, and any migrations. Do not print resolved values or secrets.
+7. Run the repository validator:
 
    ```bash
    ./manual/validate-helm-release.sh <helm-release.yaml>
    ```
 
-   This must include Helm rendering and Kubernetes server-side apply dry-run. Treat schema errors, duplicate merge-key entries, unresolved substitutions, and API validation errors as blockers. PodSecurity warnings are reportable but are not automatically upgrade failures.
-7. Verify the rendered manifest contains the intended workload, image, services, ports, persistence, and migrated environment values without printing secrets.
-8. After the change is pushed or the user requests live verification, inspect Flux:
-
-   ```bash
-   kubectl -n flux-system get gitrepository cluster
-   kubectl -n flux-system get kustomization <name>
-   kubectl -n <namespace> get helmrelease <name>
-   kubectl -n <namespace> get deployment,pods
-   ```
-
-   Distinguish stale Git/Kustomization revisions, HelmChart artifact failures, Helm schema/render failures, controller connectivity failures, and workload readiness failures. Do not claim the upgrade is deployed until the HelmRelease is Ready and the workload is healthy.
+   This must include Helm rendering and Helm's server-side upgrade dry-run. Treat schema errors, duplicate merge-key entries, unresolved substitutions, and API validation errors as blockers. Do not replace this with server-side apply or disable OpenAPI validation. PodSecurity warnings are reportable but are not automatically upgrade failures.
+8. Verify the rendered manifest contains the intended workload, image, services, ports, persistence, and migrated environment values without printing secrets.
+9. After the change is pushed or the user requests live verification, use the `monitor-deploy` skill to verify Git, Flux synchronization, reconciliation, and workload rollout.
 
 ## Substitution and encryption
 
