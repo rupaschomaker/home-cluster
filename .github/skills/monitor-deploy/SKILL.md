@@ -38,11 +38,21 @@ Use this skill when asked to monitor deployment progress after a Git or Flux-man
 
    ```bash
    for i in $(seq 1 12); do
+     ready=$(kubectl -n <namespace> get helmrelease <name> \
+       -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}')
+     revision=$(kubectl -n <namespace> get helmrelease <name> \
+       -o jsonpath='{.status.lastAttemptedRevision}')
      kubectl -n <namespace> get helmrelease <name> -o wide
+     if [[ "$ready" == "True" && "$revision" == "<revision>" ]]; then
+       break
+     fi
      sleep 10
    done
    ```
 
+   Stop the loop immediately when the HelmRelease is Ready at the intended
+   revision; do not continue polling after success. If the loop expires without
+   success, report that readiness was not confirmed.
    Refresh every 10 seconds during the initial rollout. If the status is progressing
    normally after two minutes, use 15-30 second refreshes; do not wait 120 seconds
    between checks unless the user explicitly requests it.
@@ -54,8 +64,10 @@ Use this skill when asked to monitor deployment progress after a Git or Flux-man
    kubectl -n <namespace> get deployment,pods -o wide
    ```
 
-   Recheck workload status every 10-15 seconds while pods are starting, then widen
-   the interval only after readiness has stabilized.
+   If using a bounded polling loop instead of `rollout status`, break immediately
+   once the workload reaches the required ready/available state. Recheck workload
+   status every 10-15 seconds while pods are starting, then widen the interval
+   only after readiness has stabilized.
 
 6. If progress stalls, inspect the HelmChart and recent events. Distinguish stale Git/Kustomization revisions, HelmChart artifact failures, Helm schema/render failures, Flux controller connectivity failures, and workload readiness failures. Do not claim the deployment succeeded until the HelmRelease is Ready and the workload is healthy.
 
