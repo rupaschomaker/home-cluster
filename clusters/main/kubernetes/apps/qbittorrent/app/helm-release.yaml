@@ -118,7 +118,7 @@ spec:
                   fi
                   exec /sbin/tini -s /app/entrypoint.sh python3 qbit_manage.py
               env:
-                QBT_SCHEDULE: "60"
+                QBT_SCHEDULE: "15"
                 QBT_STARTUP_DELAY: "30"
                 QBT_DRY_RUN: "false"
                 QBT_TAG_UPDATE: "true"
