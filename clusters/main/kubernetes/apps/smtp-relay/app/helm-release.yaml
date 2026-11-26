@@ -10,12 +10,14 @@ spec:
   chart:
     spec:
       chart: smtp-relay
-      version: 8.1.4
+      version: 9.0.0
       sourceRef:
         kind: HelmRepository
         name: truecharts
         namespace: flux-system
   releaseName: smtp-relay
+  upgrade:
+    preserveValues: false
   values:
     TZ: America/Chicago
     resources:
