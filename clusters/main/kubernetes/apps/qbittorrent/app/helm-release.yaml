@@ -51,7 +51,7 @@ spec:
                 truechart.org/tun: 1
             env:
               FIREWALL: "on"
-              FIREWALL_INPUT_PORTS: "8888,5010"
+              FIREWALL_INPUT_PORTS: "8888,5010,8181"
               FIREWALL_OUTBOUND_SUBNETS: ${LOCALNET}
               FIREWALL_VPN_INPUT_PORTS: "${VPN_INBOUND_PORT}"
               VPN_TYPE: wireguard
@@ -113,7 +113,9 @@ spec:
                 - /bin/sh
                 - -c
                 - |
-                  cp /qbit-manage-config/config.yml /config/config.yml
+                  if [ ! -f /config/config.yml ]; then
+                    cp /qbit-manage-config/config.yml /config/config.yml
+                  fi
                   exec /sbin/tini -s /app/entrypoint.sh python3 qbit_manage.py
               env:
                 QBT_SCHEDULE: "60"
@@ -122,14 +124,26 @@ spec:
                 QBT_TAG_UPDATE: "true"
                 QBT_SHARE_LIMITS: "true"
                 QBT_SKIP_CLEANUP: "true"
-                QBT_WEB_SERVER: "false"
+                QBT_WEB_SERVER: "true"
               probes:
                 startup:
-                  enabled: false
+                  enabled: true
+                  type: http
+                  port: 8181
+                  path: /api/health
+                  spec:
+                    failureThreshold: 120
+                    periodSeconds: 5
                 readiness:
-                  enabled: false
+                  enabled: true
+                  type: http
+                  port: 8181
+                  path: /api/health
                 liveness:
-                  enabled: false
+                  enabled: true
+                  type: http
+                  port: 8181
+                  path: /api/health
             mousehole:
               enabled: true
               imageSelector: mouseholeImage
@@ -172,6 +186,15 @@ spec:
                   httpHeaders:
                     Host: mousehole.${DOMAIN_0}
     service:
+      qbit-manage:
+        enabled: true
+        type: ClusterIP
+        ports:
+          qbit-manage:
+            enabled: true
+            port: 8181
+            targetPort: 8181
+            protocol: http
       mousehole:
         enabled: true
         type: ClusterIP
@@ -201,6 +224,19 @@ spec:
             targetPort: "8888"
             protocol: http
     ingress:
+      qbit-manage:
+        enabled: true
+        ingressClassName: internal
+        targetSelector:
+          qbit-manage: qbit-manage
+        hosts:
+          - host: qbmanage.${DOMAIN_0}
+        integrations:
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
+          nginx:
+            enabled: true
       mousehole:
         enabled: true
         ingressClassName: internal
@@ -248,11 +284,24 @@ spec:
             qbit-manage: {}
       qbit-manage-data:
         enabled: true
-        type: emptyDir
+        type: pvc
+        storageClass: longhorn
+        accessModes: ReadWriteOnce
+        size: 1Gi
         mountPath: /config
         targetSelector:
           main:
             qbit-manage: {}
+        volsync:
+          - name: qbit-manage
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            src:
+              enabled: true
+              trigger:
+                schedule: 40 0 * * *
       mousehole:
         enabled: true
         type: pvc
