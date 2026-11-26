@@ -10,10 +10,10 @@ spec:
   chart:
     spec:
       chart: node-feature-discovery
-      version: 0.1.0
+      version: 0.20.1
       sourceRef:
         kind: HelmRepository
-        name: truecharts
+        name: nfd-official
         namespace: flux-system
   install:
     crds: CreateReplace
@@ -22,6 +22,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     crds: CreateReplace
+    preserveValues: false
     remediation:
       strategy: rollback
       retries: 3
@@ -29,6 +30,6 @@ spec:
     worker:
       config:
         core:
-          sources: ["pci", "system", "usb"]
+          featureSources: ["pci", "system", "usb"]
     prometheus:
       enable: true

@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: nfd-official
+  namespace: flux-system
+spec:
+  interval: 2h
+  provider: generic
+  type: oci
+  url: oci://registry.k8s.io/nfd/charts
