@@ -37,8 +37,15 @@ Use this skill when asked to monitor deployment progress after a Git or Flux-man
 4. Monitor the HelmRelease until it observes the intended chart revision and becomes Ready:
 
    ```bash
-   kubectl -n <namespace> get helmrelease <name> -w
+   for i in $(seq 1 12); do
+     kubectl -n <namespace> get helmrelease <name> -o wide
+     sleep 10
+   done
    ```
+
+   Refresh every 10 seconds during the initial rollout. If the status is progressing
+   normally after two minutes, use 15-30 second refreshes; do not wait 120 seconds
+   between checks unless the user explicitly requests it.
 
 5. Monitor the workload rollout and readiness:
 
@@ -46,6 +53,9 @@ Use this skill when asked to monitor deployment progress after a Git or Flux-man
    kubectl -n <namespace> rollout status deployment/<deployment> --timeout=10m
    kubectl -n <namespace> get deployment,pods -o wide
    ```
+
+   Recheck workload status every 10-15 seconds while pods are starting, then widen
+   the interval only after readiness has stabilized.
 
 6. If progress stalls, inspect the HelmChart and recent events. Distinguish stale Git/Kustomization revisions, HelmChart artifact failures, Helm schema/render failures, Flux controller connectivity failures, and workload readiness failures. Do not claim the deployment succeeded until the HelmRelease is Ready and the workload is healthy.
 
