@@ -3,5 +3,44 @@
   "extends": [
     "config:recommended",
     "github>trueforge-org/renovate-config"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "^clusters/main/kubernetes/apps/qbittorrent/app/helm-release\\.yaml$"
+      ],
+      "matchStrings": [
+        "\\n    image:\\n      tag: \"(?<currentValue>[^\"@\\s]+)@(?<currentDigest>sha256:[a-f0-9]{64})\""
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "oci.trueforge.org/containerforge/qbittorrent"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "^clusters/main/kubernetes/apps/qbittorrent/app/helm-release\\.yaml$"
+      ],
+      "matchStrings": [
+        "\\n      gluetunImage:\\n        repository: oci\\.trueforge\\.org/tccr/gluetun\\n        tag: \"(?<currentValue>[^\"@\\s]+)@(?<currentDigest>sha256:[a-f0-9]{64})\""
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "oci.trueforge.org/tccr/gluetun"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["oci.trueforge.org/containerforge/qbittorrent"],
+      "automerge": false,
+      "dependencyDashboardApproval": false
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["oci.trueforge.org/tccr/gluetun"],
+      "matchFileNames": ["clusters/main/kubernetes/apps/qbittorrent/app/helm-release.yaml"],
+      "automerge": false,
+      "dependencyDashboardApproval": false
+    }
   ]
 }
