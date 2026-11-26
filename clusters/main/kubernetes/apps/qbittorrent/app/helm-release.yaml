@@ -75,16 +75,6 @@ spec:
             auth = "basic"
             username = "user"
             password = "pass"
-    persistence:
-      gluetun-auth:
-        enabled: true
-        type: secret
-        objectName: gluetun-auth
-        mountPath: /gluetun/auth
-        targetSelectAll: false
-        targetSelector:
-          main:
-            gluetun: {}
     workload:
       qbitportforward:
         podSpec:
@@ -143,6 +133,15 @@ spec:
         secretKey: ${VOLSYNC_S3_SECRETKEY}
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
+      gluetun-auth:
+        enabled: true
+        type: secret
+        objectName: gluetun-auth
+        mountPath: /gluetun/auth
+        targetSelectAll: false
+        targetSelector:
+          main:
+            gluetun: {}
       config:
         volsync:
           - name: config
