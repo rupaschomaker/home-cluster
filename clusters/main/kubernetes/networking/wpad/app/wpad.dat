@@ -5,7 +5,8 @@ function FindProxyForURL(url, host) {
     }
 
     if (host === "myanonamouse.net" || dnsDomainIs(host, ".myanonamouse.net") ||
-        host === "mrd.ninja" || dnsDomainIs(host, ".mrd.ninja")) {
+        host === "mrd.ninja" || dnsDomainIs(host, ".mrd.ninja") ||
+        host === "m-tts.net" || dnsDomainIs(host, ".m-tts.net")) {
         return "PROXY proxy.${DOMAIN_0}:8888";
     }
     return "DIRECT";
