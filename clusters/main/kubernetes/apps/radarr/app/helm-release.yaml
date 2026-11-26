@@ -8,12 +8,14 @@ spec:
   chart:
     spec:
       chart: radarr
-      version: 27.13.4
+      version: 30.1.0
       sourceRef:
         kind: HelmRepository
         name: truecharts
         namespace: flux-system
   releaseName: radarr
+  upgrade:
+    preserveValues: false
   values:
     TZ: America/Chicago
     resources:
