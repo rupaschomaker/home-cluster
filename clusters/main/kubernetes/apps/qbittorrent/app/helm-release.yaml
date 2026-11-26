@@ -17,6 +17,10 @@ spec:
         namespace: flux-system
   releaseName: qbittorrent
   values:
+    mouseholeImage:
+      repository: docker.io/tmmrtn/mousehole
+      tag: "0.5.0@sha256:2fc02b12362581e60bfd6adba788bda9eda93f8f31ed089581eeabcee4518b0d"
+      pullPolicy: IfNotPresent
     resources:
       requests:
         cpu: 20m
@@ -41,11 +45,12 @@ spec:
                 truechart.org/tun: 1
             env:
               FIREWALL: "on"
-              FIREWALL_INPUT_PORTS: "8888"
+              FIREWALL_INPUT_PORTS: "8888,5010"
               FIREWALL_OUTBOUND_SUBNETS: ${LOCALNET}
               FIREWALL_VPN_INPUT_PORTS: "${VPN_INBOUND_PORT}"
               VPN_TYPE: wireguard
               VPN_SERVICE_PROVIDER: "custom"
+              LOG_LEVEL: info
               DOT: "on"
               DOT_VERBOSITY: "1"
               PPROF_ENABLED: "off"
@@ -62,8 +67,62 @@ spec:
               HTTPPROXY_USER: ""
               HTTPPROXY_PASSWORD: ""
               HTTPPROXY_STEALTH: "on"
-              HTTPPROXY_LOG: "on"
+              HTTPPROXY_LOG: "off"
+    workload:
+      main:
+        podSpec:
+          containers:
+            mousehole:
+              enabled: true
+              imageSelector: mouseholeImage
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  until curl -fsS --max-time 2 http://127.0.0.1:9999/ >/dev/null; do
+                    sleep 5
+                  done
+                  exec bun run src/index.ts
+              env:
+                MOUSEHOLE_INSECURE_ALLOW_NO_AUTH: "true"
+                MOUSEHOLE_ALLOWED_HOSTS: "mousehole.${DOMAIN_0},localhost,127.0.0.1"
+                MOUSEHOLE_ALLOWED_ORIGINS: "https://mousehole.${DOMAIN_0}"
+                MOUSEHOLE_HTTPS_ONLY_COOKIES: "true"
+              probes:
+                startup:
+                  enabled: true
+                  type: http
+                  port: 5010
+                  path: /health
+                  httpHeaders:
+                    Host: mousehole.${DOMAIN_0}
+                  spec:
+                    failureThreshold: 120
+                    periodSeconds: 5
+                readiness:
+                  enabled: true
+                  type: http
+                  port: 5010
+                  path: /health
+                  httpHeaders:
+                    Host: mousehole.${DOMAIN_0}
+                liveness:
+                  enabled: true
+                  type: http
+                  port: 5010
+                  path: /health
+                  httpHeaders:
+                    Host: mousehole.${DOMAIN_0}
     service:
+      mousehole:
+        enabled: true
+        type: ClusterIP
+        ports:
+          mousehole:
+            enabled: true
+            port: 5010
+            targetPort: 5010
+            protocol: http
       torrent:
         ports:
           gluetun:
@@ -84,6 +143,19 @@ spec:
             targetPort: "8888"
             protocol: http
     ingress:
+      mousehole:
+        enabled: true
+        ingressClassName: internal
+        targetSelector:
+          mousehole: mousehole
+        hosts:
+          - host: mousehole.${DOMAIN_0}
+        integrations:
+          certManager:
+            enabled: true
+            certificateIssuer: ${CERT_ISSUER}
+          nginx:
+            enabled: true
       main:
         enabled: true
         ingressClassName: internal
@@ -108,6 +180,26 @@ spec:
         secretKey: ${VOLSYNC_S3_SECRETKEY}
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
+      mousehole:
+        enabled: true
+        type: pvc
+        storageClass: longhorn
+        accessModes: ReadWriteOnce
+        size: 1Gi
+        mountPath: /var/lib/mousehole
+        targetSelector:
+          main:
+            mousehole: {}
+        volsync:
+          - name: mousehole
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            src:
+              enabled: true
+              trigger:
+                schedule: 30 0 * * *
       config:
         volsync:
           - name: config
