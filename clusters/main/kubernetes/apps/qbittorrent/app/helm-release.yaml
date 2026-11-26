@@ -41,6 +41,7 @@ spec:
                 truechart.org/tun: 1
             env:
               FIREWALL: "on"
+              FIREWALL_INPUT_PORTS: "8888"
               FIREWALL_OUTBOUND_SUBNETS: ${LOCALNET}
               FIREWALL_VPN_INPUT_PORTS: "${VPN_INBOUND_PORT}"
               VPN_TYPE: wireguard
