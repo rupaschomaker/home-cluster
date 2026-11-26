@@ -5,10 +5,12 @@ metadata:
   namespace: profilarr
 spec:
   interval: 15m
+  upgrade:
+    preserveValues: false
   chart:
     spec:
       chart: profilarr
-      version: 5.2.4
+      version: 6.0.0
       sourceRef:
         kind: HelmRepository
         name: truecharts
