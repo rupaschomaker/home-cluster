@@ -23,6 +23,10 @@ spec:
       repository: docker.io/tmmrtn/mousehole
       tag: "0.5.0@sha256:2fc02b12362581e60bfd6adba788bda9eda93f8f31ed089581eeabcee4518b0d"
       pullPolicy: IfNotPresent
+    qbitManageImage:
+      repository: ghcr.io/stuffanthings/qbit_manage
+      tag: "v4.15.0@sha256:f8db47d6533bac7c7f71d367545c5059d7228bcca188db1e059dbf4a693d8362"
+      pullPolicy: IfNotPresent
     resources:
       requests:
         cpu: 20m
@@ -70,10 +74,62 @@ spec:
               HTTPPROXY_PASSWORD: ""
               HTTPPROXY_STEALTH: "on"
               HTTPPROXY_LOG: "off"
+    configmap:
+      qbit-manage:
+        enabled: true
+        data:
+          config.yml: |
+            qbt:
+              host: "http://127.0.0.1:10095"
+            settings:
+              disable_qbt_default_share_limits: false
+            directory:
+              root_dir: /media/downloads/torrents
+            tracker:
+              myanonamouse:
+                tag: MyAnonAmouse
+            share_limits:
+              myanonamouse:
+                priority: 1
+                include_all_tags:
+                  - MyAnonAmouse
+                categories:
+                  - NaM-Seeding
+                max_ratio: 2.5
+                min_seeding_time: 75h
+                cleanup: false
+                resume_torrent_after_change: true
+                share_limit_action: Stop
+            recyclebin:
+              enabled: false
     workload:
       main:
         podSpec:
           containers:
+            qbit-manage:
+              enabled: true
+              imageSelector: qbitManageImage
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  cp /qbit-manage-config/config.yml /config/config.yml
+                  exec /sbin/tini -s /app/entrypoint.sh python3 qbit_manage.py
+              env:
+                QBT_SCHEDULE: "60"
+                QBT_STARTUP_DELAY: "30"
+                QBT_DRY_RUN: "true"
+                QBT_TAG_UPDATE: "true"
+                QBT_SHARE_LIMITS: "true"
+                QBT_SKIP_CLEANUP: "true"
+                QBT_WEB_SERVER: "false"
+              probes:
+                startup:
+                  enabled: false
+                readiness:
+                  enabled: false
+                liveness:
+                  enabled: false
             mousehole:
               enabled: true
               imageSelector: mouseholeImage
@@ -182,6 +238,21 @@ spec:
         secretKey: ${VOLSYNC_S3_SECRETKEY}
         encrKey: ${VOLSYNC_ENC_KEY}
     persistence:
+      qbit-manage-config:
+        enabled: true
+        type: configmap
+        objectName: qbit-manage
+        mountPath: /qbit-manage-config
+        targetSelector:
+          main:
+            qbit-manage: {}
+      qbit-manage-data:
+        enabled: true
+        type: emptyDir
+        mountPath: /config
+        targetSelector:
+          main:
+            qbit-manage: {}
       mousehole:
         enabled: true
         type: pvc
@@ -232,6 +303,11 @@ spec:
         mountPath: /media
         path: /mnt/data/media
         server: nas.${DOMAIN_0}
+        targetSelector:
+          main:
+            main: {}
+            qbit-manage:
+              readOnly: true
     securityContext:
       container:
         UMASK: "0000"
