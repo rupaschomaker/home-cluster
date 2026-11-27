@@ -6,7 +6,7 @@ metadata:
   name: flux-entry
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 15m
   path: ./clusters/main/kubernetes
   prune: true
   sourceRef:

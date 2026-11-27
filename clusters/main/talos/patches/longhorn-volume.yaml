@@ -1,0 +1,8 @@
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn
+provisioning:
+  diskSelector:
+    match: disk.serial == "longhorn" && !system_disk
+  maxSize: 100%
+  grow: true

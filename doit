@@ -22,9 +22,9 @@ unfakeClustertool() {
 clustertool genconfig
 # unfakeClustertool
 
+clustertool encrypt
 git add doit clusters repositories .github
 git add -u manual
-clustertool encrypt
 git commit -m "$1"
 if [ "$push" = true ]; then
   git pull
