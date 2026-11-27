@@ -28,8 +28,7 @@ nodes:
     nameservers:
       - 1.1.1.1
       - 8.8.8.8
-    installDiskSelector:
-      serial: talos-system
+    installDisk: /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
     networkInterfaces:
       # suffix is the adapter mac adres.
       - interface: eth0
