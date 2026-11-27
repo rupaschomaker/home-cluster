@@ -25,6 +25,7 @@ spec:
       sources:
         - "service"
         - "ingress"
+        - "gateway-httproute"
       domainFilters:
         - ${DOMAIN_0}
       provider: cloudflare
