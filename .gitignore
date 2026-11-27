@@ -9,6 +9,5 @@ sopssecret.yaml
 sopssecret*
 *sopssecret*
 
-apps-pending
-truenas_exports
+backups
 .*.swp
