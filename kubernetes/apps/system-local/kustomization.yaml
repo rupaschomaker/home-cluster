@@ -6,4 +6,3 @@ resources:
   - generic-device-plugin/ks.yaml
   - intel-device-plugin-operator/ks.yaml
   - intel-gpu-plugin/ks.yaml
-  - cloudnative-pg/ks.yaml
