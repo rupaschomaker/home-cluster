@@ -3,3 +3,10 @@ kind: Kustomization
 resources:
   - helm-release.yaml
   - namespace.yaml
+configMapGenerator:
+  - name: wpad-files
+    files:
+      - wpad.dat
+      - sws.toml
+generatorOptions:
+  disableNameSuffixHash: true
