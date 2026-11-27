@@ -17,4 +17,7 @@ spec:
       interval: 30m
   upgrade:
     preserveValues: false
-  values: {}
+  values:
+    workload:
+      main:
+        replicas: 1

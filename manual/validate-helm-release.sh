@@ -14,6 +14,7 @@ render_output=false
 server_dry_run=true
 server_dry_run_explicit=false
 repository="${TRUECHARTS_REPOSITORY:-${DEFAULT_TRUECHARTS_REPOSITORY}}"
+repository_explicit=false
 
 usage() {
 	cat <<'EOF'
@@ -55,6 +56,7 @@ while (($#)); do
 			exit 2
 		fi
 		repository="$2"
+		repository_explicit=true
 		shift 2
 		;;
 	-h | --help)
@@ -186,6 +188,7 @@ if not isinstance(spec, dict):
 
 chart = None
 version = None
+repository_url = None
 chart_spec = spec.get("chart", {}).get("spec")
 if isinstance(chart_spec, dict):
     source_ref = chart_spec.get("sourceRef")
@@ -199,6 +202,30 @@ if isinstance(chart_spec, dict):
     source_namespace = source_ref.get("namespace")
     if not all(isinstance(value, str) and value for value in (chart, version, source_name, source_namespace)):
         fail("spec.chart.spec requires chart, version, and sourceRef name/namespace")
+    repository_root = substitution_path.parents[1] / "repositories"
+    repository = None
+    for candidate in repository_root.rglob("*.yaml"):
+        try:
+            candidate_documents = list(yaml.safe_load_all(candidate.read_text()))
+        except (OSError, yaml.YAMLError):
+            continue
+        for document in candidate_documents:
+            if (
+                isinstance(document, dict)
+                and document.get("kind") == "HelmRepository"
+                and isinstance(document.get("metadata"), dict)
+                and document["metadata"].get("name") == source_name
+                and document["metadata"].get("namespace") == source_namespace
+            ):
+                repository = document
+                break
+        if repository:
+            break
+    if not repository:
+        fail(f"HelmRepository {source_namespace}/{source_name} not found")
+    repository_url = repository.get("spec", {}).get("url")
+    if not isinstance(repository_url, str) or not repository_url:
+        fail(f"HelmRepository {source_namespace}/{source_name} must define spec.url")
 else:
     chart_ref = spec.get("chartRef")
     if not isinstance(chart_ref, dict):
@@ -228,6 +255,7 @@ else:
         fail(f"OCIRepository {chart_ref.get('namespace')}/{chart_ref.get('name')} not found")
     chart = repository.get("spec", {}).get("url")
     version = repository.get("spec", {}).get("ref", {}).get("tag")
+    repository_url = chart
     if not isinstance(chart, str) or not chart or not isinstance(version, str) or not version:
         fail("OCIRepository must define spec.url and spec.ref.tag")
 
@@ -261,6 +289,7 @@ metadata_path.write_text(
             metadata["namespace"],
             release_name,
             str(upgrade.get("preserveValues", False)).lower(),
+            repository_url,
         ]
     )
     + "\n"
@@ -317,7 +346,7 @@ then
 	exit 1
 fi
 
-IFS=$'\t' read -r chart version namespace release_name preserve_values < "$metadata_file"
+IFS=$'\t' read -r chart version namespace release_name preserve_values repository_url < "$metadata_file"
 
 if [[ "$render_output" == true ]]; then
 	echo "HelmRelease structure is valid: $release_file" >&2
@@ -332,8 +361,16 @@ fi
 
 if [[ "$chart" == oci://* ]]; then
 	chart_reference="$chart"
-else
+	chart_repository_args=()
+elif [[ "$repository_url" == oci://* && "$repository_explicit" == false ]]; then
+	chart_reference="${repository_url%/}/${chart}"
+	chart_repository_args=()
+elif [[ "$repository_explicit" == true ]]; then
 	chart_reference="${repository%/}/${chart}"
+	chart_repository_args=()
+else
+	chart_reference="$chart"
+	chart_repository_args=(--repo "$repository_url")
 fi
 values_arguments=(--values "$substituted_values_file")
 if [[ "$server_dry_run" == true && "$preserve_values" == true ]]; then
@@ -381,6 +418,7 @@ echo "Rendering ${chart_reference}:${version} with Helm..." >&2
 helm template "$release_name" "$chart_reference" \
 	--version "$version" \
 	--namespace "$namespace" \
+	"${chart_repository_args[@]}" \
 	"${values_arguments[@]}" \
 	--include-crds \
 	--skip-tests \
@@ -398,6 +436,7 @@ if [[ "$server_dry_run" == true ]]; then
 	helm upgrade "$release_name" "$chart_reference" \
 		--version "$version" \
 		--namespace "$namespace" \
+		"${chart_repository_args[@]}" \
 		"${values_arguments[@]}" \
 		--dry-run=server \
 		--skip-crds \
