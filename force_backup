@@ -1,35 +1,226 @@
-#!/bin/bash -e
+#!/bin/bash
+set -euo pipefail
 
-if [ $# = 1 ]; then
-	wanted_namespace=$1
-else
+readonly KUBECTL_RETRY_TIMEOUT_SECONDS=${KUBECTL_RETRY_TIMEOUT_SECONDS:-1800}
+readonly KUBECTL_RETRY_DELAY_SECONDS=${KUBECTL_RETRY_DELAY_SECONDS:-1}
+
+retry_kubectl() {
+	local attempt=1
+	local start_seconds=$SECONDS
+	local elapsed_seconds
+	local remaining_seconds
+	local delay_seconds
+
+	while ! kubectl "$@"; do
+		elapsed_seconds=$((SECONDS - start_seconds))
+		if (( elapsed_seconds >= KUBECTL_RETRY_TIMEOUT_SECONDS )); then
+			echo "kubectl failed after ${KUBECTL_RETRY_TIMEOUT_SECONDS} seconds of retries." >&2
+			return 1
+		fi
+
+		attempt=$((attempt + 1))
+		remaining_seconds=$((KUBECTL_RETRY_TIMEOUT_SECONDS - elapsed_seconds))
+		delay_seconds=$KUBECTL_RETRY_DELAY_SECONDS
+		if (( delay_seconds > remaining_seconds )); then
+			delay_seconds=$remaining_seconds
+		fi
+		echo "kubectl failed; retrying in ${delay_seconds}s (attempt ${attempt})..." >&2
+		sleep "$delay_seconds"
+	done
+}
+
+monitor_backup() {
+	local namespace=$1
+	local source_name=$2
+	local manual_sync=$3
+	local job_name="volsync-src-$source_name"
+	local job_uid
+	local pod_selector
+	local pod_name
+	local job_status
+	local job_succeeded
+	local job_failed
+	local pod_phase
+	local containers_ready
+	local pod_reason
+	local pod_message
+	local condition
+	local last_manual_sync
+	local mover_result
+	local mover_logs
+	local status_summary=""
+	local last_status_summary=""
+	local wait_timeout_seconds=$KUBECTL_RETRY_DELAY_SECONDS
+
+	if (( wait_timeout_seconds < 1 )); then
+		wait_timeout_seconds=1
+	fi
+
+	printf 'Waiting on pod\n'
+	while true; do
+		job_status=$(retry_kubectl get jobs -n "$namespace" \
+			-o jsonpath="{range .items[?(@.metadata.name=='$job_name')]}{.status.active}/{.status.succeeded}/{.status.failed}{end}")
+		job_status=${job_status:-not-created}
+		job_succeeded=${job_status#*/}
+		job_succeeded=${job_succeeded%%/*}
+		job_failed=${job_status##*/}
+		job_uid=$(retry_kubectl get jobs -n "$namespace" \
+			-o jsonpath="{range .items[?(@.metadata.name=='$job_name')]}{.metadata.uid}{end}")
+
+		pod_selector="job-name=$job_name"
+		if [[ -n "$job_uid" ]]; then
+			pod_selector="controller-uid=$job_uid"
+		fi
+		pod_name=$(retry_kubectl get pods -n "$namespace" \
+			-l "$pod_selector" \
+			-o jsonpath='{range .items}{.metadata.name}{"\n"}{end}')
+		pod_name=${pod_name%%$'\n'*}
+
+		if [[ -n "$pod_name" ]]; then
+			pod_phase=$(retry_kubectl get pod "$pod_name" -n "$namespace" \
+				-o jsonpath='{.status.phase}')
+			containers_ready=$(retry_kubectl get pod "$pod_name" -n "$namespace" \
+				-o jsonpath='{range .status.containerStatuses[*]}{.ready}{"\n"}{end}')
+			pod_reason=$(retry_kubectl get pod "$pod_name" -n "$namespace" \
+				-o jsonpath='{.status.containerStatuses[0].state.waiting.reason}')
+			pod_message=$(retry_kubectl get pod "$pod_name" -n "$namespace" \
+				-o jsonpath='{.status.containerStatuses[0].state.waiting.message}')
+
+			if [[ "$pod_phase" == "Failed" ]]; then
+				printf '\n'
+				echo "VolSync mover pod $pod_name failed." >&2
+				retry_kubectl logs "$pod_name" -n "$namespace" --all-containers --tail=100 >&2 || true
+				return 1
+			fi
+
+			if [[ "$pod_phase" == "Running" ]]; then
+				printf '\n'
+				echo "VolSync mover $pod_name is running; following backup logs..."
+				kubectl logs "$pod_name" -n "$namespace" --all-containers -f
+				return $?
+			fi
+
+			status_summary="job=${job_status}, pod=${pod_name}, phase=${pod_phase:-<none>}, ready=${containers_ready:-<none>}, waiting=${pod_reason:-<none>}: ${pod_message:-<none>}"
+			printf 'VolSync mover is not ready:\n'
+			printf '  waiting: %s\n  message: %s\n' \
+				"${pod_reason:-<none>}" \
+				"${pod_message:-<none>}"
+			if [[ "$status_summary" != "$last_status_summary" ]]; then
+				printf 'Pod events:\n' >&2
+				retry_kubectl describe pod "$pod_name" -n "$namespace" |
+					sed -n '/Events:/,$p' >&2 || true
+				last_status_summary=$status_summary
+			fi
+
+			if kubectl wait --for=jsonpath='{.status.phase}'=Running "pod/$pod_name" \
+				-n "$namespace" --timeout="${wait_timeout_seconds}s" >/dev/null 2>&1; then
+				continue
+			fi
+		else
+			condition=$(retry_kubectl get replicationsource "$source_name" -n "$namespace" \
+				-o jsonpath='{range .status.conditions[*]}{.type}={.status} ({.reason}: {.message}); {end}')
+			last_manual_sync=$(retry_kubectl get replicationsource "$source_name" -n "$namespace" \
+				-o jsonpath='{.status.lastManualSync}')
+			mover_result=$(retry_kubectl get replicationsource "$source_name" -n "$namespace" \
+				-o jsonpath='{.status.latestMoverStatus.result}')
+			status_summary="job=${job_status}, condition=${condition:-<none>}, lastManualSync=${last_manual_sync:-<none>}, moverResult=${mover_result:-<none>}"
+
+			printf '%s\n' "$source_name"
+			printf '  job (active/succeeded/failed): %s\n  condition: %s\n' \
+				"$job_status" \
+				"${condition:-<none>}" \
+
+			if [[ "$last_manual_sync" == "$manual_sync" && "$mover_result" == "Successful" ]]; then
+				mover_logs=$(retry_kubectl get replicationsource "$source_name" -n "$namespace" \
+					-o jsonpath='{.status.latestMoverStatus.logs}')
+				printf '\nVolSync completed before the mover pod was observed.\n%s\n' "$mover_logs"
+				return 0
+			fi
+
+			if [[ "$job_succeeded" == "1" && "$last_manual_sync" == "$manual_sync" ]]; then
+				mover_logs=$(retry_kubectl get replicationsource "$source_name" -n "$namespace" \
+					-o jsonpath='{.status.latestMoverStatus.logs}')
+				printf '\nVolSync Job completed successfully despite the stale condition.\n%s\n' "$mover_logs"
+				return 0
+			fi
+
+			if [[ "$job_failed" == "1" && "$last_manual_sync" == "$manual_sync" ]]; then
+				echo "VolSync Job $job_name failed." >&2
+				return 1
+			fi
+		fi
+
+		sleep 5
+	done
+}
+
+if [[ "${1:-}" == "--source" ]]; then
+	if (( $# != 2 )); then
+		echo "Usage: $0 --source <source-to-skip-through>" >&2
+		exit 2
+	fi
 	wanted_namespace=""
+	skip_through_source=$2
+elif (( $# > 2 )); then
+	echo "Usage: $0 [namespace] [source-to-skip-through]" >&2
+	exit 2
+else
+	wanted_namespace=${1:-}
+	skip_through_source=${2:-}
 fi
 
+source_reached=$([[ -z "$skip_through_source" ]] && echo true || echo false)
+
 # Get all replicationsource names and namespaces
-if [ -z ${wanted_namespace} ]; then 
-	replicationsources=$(kubectl get replicationsource -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}')
+if [[ -z "$wanted_namespace" ]]; then
+	replicationsources=$(retry_kubectl get replicationsource -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}')
 else
-	replicationsources=$(kubectl get replicationsource -n "${wanted_namespace}" -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}')
+	replicationsources=$(retry_kubectl get replicationsource -n "${wanted_namespace}" -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}')
+fi
+
+if [[ -z "$replicationsources" ]]; then
+	if [[ -n "$skip_through_source" ]]; then
+		echo "ReplicationSource not found: $skip_through_source" >&2
+		exit 1
+	fi
+	echo "No replicationsources found${wanted_namespace:+ in namespace $wanted_namespace}."
+	exit 0
 fi
 
 # Loop through each replicationsource and set spec
-while IFS= read -r line; do
-    namespace=$(echo $line | awk '{print $1}')
-    if [ -z "${wanted_namespace}" -o "${wanted_namespace}" == "${namespace}" ]; then
-	    name=$(echo $line | awk '{print $2}')
-	    if [ -z "$app" -o "$namespace" == "${app}" ]; then
-			echo "Patching replicationsource $name in namespace $namespace..."
-			trigger=$(kubectl get replicationsource ${name} -n ${namespace} -o jsonpath='{.spec.trigger.manual}')
+while read -r namespace name; do
+	if [[ -z "$namespace" || -z "$name" ]]; then
+		continue
+	fi
 
-			MANUAL=$(date --iso-8601=seconds | sed 's/://g')
+	if [[ -z "$wanted_namespace" || "$wanted_namespace" == "$namespace" ]]; then
+		if [[ "$source_reached" == false ]]; then
+			echo "Skipping source ${namespace}/${name}"
+			if [[ "$name" == "$skip_through_source" ]]; then
+				source_reached=true
+			fi
+			continue
+		fi
 
-			# patch to trigger a manual backup
-			kubectl patch replicationsource ${name} -n ${namespace} --type='merge' -p '{"spec":{"trigger":{"manual":"'${MANUAL}'"}}}'
+		echo "Patching replicationsource $name in namespace $namespace..."
 
-			sleep 30
+		manual=$(date --iso-8601=seconds | tr -d ':')
 
-			kubectl patch replicationsource ${name} -n ${namespace} --type=json -p='[{"op": "remove", "path": "/spec/trigger/manual"}]' 
-	    fi
-    fi
+		# Patch to trigger a manual backup.
+		retry_kubectl patch replicationsource "$name" -n "$namespace" \
+			--type='merge' \
+			-p "{\"spec\":{\"trigger\":{\"manual\":\"$manual\"}}}"
+
+		monitor_backup "$namespace" "$name" "$manual"
+
+		# Remove the transient trigger while preserving other trigger fields.
+		retry_kubectl patch replicationsource "$name" -n "$namespace" \
+			--type='merge' \
+			-p '{"spec":{"trigger":{"manual":null}}}'
+	fi
 done <<< "$replicationsources"
+
+if [[ -n "$skip_through_source" && "$source_reached" == false ]]; then
+	echo "ReplicationSource not found: $skip_through_source" >&2
+	exit 1
+fi
