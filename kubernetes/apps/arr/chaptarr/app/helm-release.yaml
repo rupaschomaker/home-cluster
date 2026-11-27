@@ -27,18 +27,18 @@ spec:
         memory: 2Gi
       limits:
         memory: 4Gi
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: internal
-        hosts:
-          - host: chaptarr.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - chaptarr.${DOMAIN_0}
         integrations:
-          traefik:
+          homepage:
             enabled: false
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
     service:
       main:
         ports:

@@ -20,16 +20,16 @@ spec:
       requests:
         cpu: 1m
     TZ: America/Chicago
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: internal
-        hosts:
-          - host: uptime-kuma.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - uptime-kuma.${DOMAIN_0}
         integrations:
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
           homepage:
             enabled: true
             group: Infra

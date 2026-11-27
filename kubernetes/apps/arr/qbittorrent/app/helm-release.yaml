@@ -223,45 +223,47 @@ spec:
             port: "8888"
             targetPort: "8888"
             protocol: http
-    ingress:
+    route:
       qbit-manage:
         enabled: true
-        ingressClassName: internal
-        targetSelector:
-          qbit-manage: qbit-manage
-        hosts:
-          - host: qbmanage.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - qbmanage.${DOMAIN_0}
+        rules:
+          - backendRefs:
+              - targetSelector: qbit-manage
+                port: qbit-manage
         integrations:
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
-          nginx:
-            enabled: true
+          homepage:
+            enabled: false
       mousehole:
         enabled: true
-        ingressClassName: internal
-        targetSelector:
-          mousehole: mousehole
-        hosts:
-          - host: mousehole.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - mousehole.${DOMAIN_0}
+        rules:
+          - backendRefs:
+              - targetSelector: mousehole
+                port: mousehole
         integrations:
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
-          nginx:
-            enabled: true
+          homepage:
+            enabled: false
       main:
         enabled: true
-        ingressClassName: internal
-        hosts:
-          - host: qb.${DOMAIN_0}
-          - host: qbittorrent.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - qb.${DOMAIN_0}
+          - qbittorrent.${DOMAIN_0}
         integrations:
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
-          nginx:
-            enabled: true
           homepage:
             enabled: true
             group: Arr

@@ -23,20 +23,22 @@ spec:
         memory: 16Mi
       limits:
         memory: 64Mi
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: internal
-        annotations:
-          nginx.ingress.kubernetes.io/ssl-redirect: "false"
-          nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-        hosts:
-          - host: wpad.${DOMAIN_0}
-            paths:
-              - path: /wpad.dat
-                pathType: Exact
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - wpad.${DOMAIN_0}
+        rules:
+          - matches:
+              - path:
+                  type: Exact
+                  value: /wpad.dat
         integrations:
-          traefik:
+          homepage:
             enabled: false
     workload:
       main:

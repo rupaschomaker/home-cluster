@@ -20,18 +20,16 @@ spec:
       requests:
         cpu: 10m
 
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: internal
-        annotations:
-          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-        hosts:
-          - host: truenas.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - truenas.${DOMAIN_0}
         integrations:
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
           homepage:
             enabled: true
             group: Infra

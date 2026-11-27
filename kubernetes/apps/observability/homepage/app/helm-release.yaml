@@ -22,31 +22,30 @@ spec:
       requests:
         cpu: 10m
     TZ: America/Chicago
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: internal
-        hosts:
-          - host: homepage.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - homepage.${DOMAIN_0}
         integrations:
-          traefik:
+          homepage:
             enabled: false
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
 
     addons:
       codeserver:
         enabled: true
-        ingress:
+        route:
           enabled: true
-          ingressClassName: internal
-          hosts:
-            - host: cs-homepage.${DOMAIN_0}
-          integrations:
-            certManager:
-              enabled: true
-              certificateIssuer: ${CERT_ISSUER}
+          parentRefs:
+            - name: envoy-internal
+              namespace: envoy-gateway
+              sectionName: https
+          hostnames:
+            - cs-homepage.${DOMAIN_0}
 
     credentials:
       s3creds:

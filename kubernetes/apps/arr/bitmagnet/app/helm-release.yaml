@@ -69,18 +69,18 @@ spec:
             WIREGUARD_PRIVATE_KEY: ${BM_WIREGUARD_PRIVATE_KEY}
             WIREGUARD_PUBLIC_KEY: ${BM_WIREGUARD_PUBLIC_KEY}
             WIREGUARD_PERSISTENT_KEEPALIVE_INTERVAL: "25s"
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: internal
-        hosts:
-          - host: bitmagnet.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - bitmagnet.${DOMAIN_0}
         integrations:
-          nginx:
-            enabled: true
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
+          homepage:
+            enabled: false
     dependencies:
       postgresql:
         enabled: true

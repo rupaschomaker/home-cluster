@@ -28,18 +28,16 @@ spec:
             main:
               env:
                 SABNZBD__HOST_WHITELIST_ENTRIES: "sabnzbd.${DOMAIN_0}, sabnzbd.sabnzbd.svc"
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: internal
-        hosts:
-          - host: sabnzbd.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - sabnzbd.${DOMAIN_0}
         integrations:
-          traefik:
-            enabled: false
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
           homepage:
             enabled: true
             group: Arr

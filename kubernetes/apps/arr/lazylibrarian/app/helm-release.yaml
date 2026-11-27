@@ -23,19 +23,17 @@ spec:
       requests:
         cpu: 10m
     TZ: America/Chicago
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: internal
-        hosts:
-          - host: lazylibrarian.${DOMAIN_0}
-          - host: ll.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - lazylibrarian.${DOMAIN_0}
+          - ll.${DOMAIN_0}
         integrations:
-          traefik:
-            enabled: false
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
           homepage:
             enabled: true
             group: Media

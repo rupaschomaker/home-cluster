@@ -31,18 +31,18 @@ spec:
             main:
               env:
                 AUTH: "off"
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: internal
-        hosts:
-          - host: profilarr.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - profilarr.${DOMAIN_0}
         integrations:
-          nginx:
-            enabled: true
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
+          homepage:
+            enabled: false
     credentials:
       s3creds:
         type: s3

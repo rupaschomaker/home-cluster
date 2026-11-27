@@ -22,23 +22,16 @@ spec:
       limits:
         memory: 8Gi
     TZ: America/Chicago
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: external
-        hosts:
-          - host: tv.${DOMAIN_0}
-          - host: jellyfin.${DOMAIN_0}
-        integrations:
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
-          homepage:
-            enabled: true
-            group: Media
-            widget:
-              custom:
-                key: ${API_JELLYFIN}
+        parentRefs:
+          - name: envoy-external
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - tv.${DOMAIN_0}
+          - jellyfin.${DOMAIN_0}
     credentials:
       s3creds:
         type: s3

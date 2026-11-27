@@ -24,18 +24,18 @@ spec:
     resources:
       requests:
         cpu: 10m
-    ingress:
+    route:
       main:
         enabled: true
-        ingressClassName: internal
-        hosts:
-          - host: ladder.${DOMAIN_0}
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - ladder.${DOMAIN_0}
         integrations:
-          traefik:
+          homepage:
             enabled: false
-          certManager:
-            enabled: true
-            certificateIssuer: ${CERT_ISSUER}
     service:
       main:
         ports:
