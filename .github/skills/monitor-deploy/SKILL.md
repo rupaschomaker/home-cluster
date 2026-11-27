@@ -9,7 +9,18 @@ Use this skill when asked to monitor deployment progress after a Git or Flux-man
 
 ## Required workflow
 
-1. Ensure the intended change is committed and pushed. Fetch the current GitHub `main` branch and record its commit:
+1. Ensure the intended change is committed and pushed through the repository deployment workflow. Run:
+
+   ```bash
+   ./doit "<commit message>"
+   ```
+
+   Trust `doit` to render, encrypt, commit, and push the change. Do not use
+   `git commit`, `git push`, or another direct commit/push workflow unless the
+   user explicitly instructs you to do so. Direct Git read-only commands such
+   as `git fetch` and `git rev-parse` remain allowed for verification.
+
+   Fetch the current GitHub `main` branch and record its commit:
 
    ```bash
    git fetch origin main
@@ -29,7 +40,7 @@ Use this skill when asked to monitor deployment progress after a Git or Flux-man
 3. If Flux is not synchronized to the current GitHub revision, explicitly reconcile the Git source and Kustomization:
 
    ```bash
-   flux reconcile source git cluster --with-source
+   flux reconcile source git cluster
    flux reconcile kustomization <name> --with-source
    ```
 

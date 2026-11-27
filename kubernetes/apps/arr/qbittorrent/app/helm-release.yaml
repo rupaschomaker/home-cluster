@@ -235,7 +235,7 @@ spec:
         rules:
           - backendRefs:
               - targetSelector: qbit-manage
-                port: qbit-manage
+                port: 8181
         integrations:
           homepage:
             enabled: false
@@ -250,7 +250,7 @@ spec:
         rules:
           - backendRefs:
               - targetSelector: mousehole
-                port: mousehole
+                port: 5010
         integrations:
           homepage:
             enabled: false
