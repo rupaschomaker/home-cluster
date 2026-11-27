@@ -1,13 +1,10 @@
-## Do not edit between this and DO NOT REMOVE
+stores:
+  yaml:
+    indent: 2
 creation_rules:
-  - path_regex: ^clusters.*kubernetes.*values.ya?ml$
+  - path_regex: ^kubernetes/.*\.(secret|sops)\.ya?ml$
+    encrypted_regex: "^(data|stringData)$"
+    mac_only_encrypted: true
     age: age1k5uw4306gahsg2a57y845fypz2yedlepk75r6dp96dhv8w59z3vqrvl895
-    encrypted_regex: "((?i)(displayname|email|pass|ca|id|bootstraptoken|secretboxencryptionsecret|secrets|secrets|password|cert|secret($|[^N])|key|token|^data$|^stringData))"
-  - path_regex: ^clusters.*kubernetes.*\.secret.ya?ml
+  - path_regex: ^talos/secrets\.sops\.ya?ml$
     age: age1k5uw4306gahsg2a57y845fypz2yedlepk75r6dp96dhv8w59z3vqrvl895
-    encrypted_regex: "((?i)(displayname|email|pass|ca|id|bootstraptoken|secretboxencryptionsecret|secrets|secrets|password|cert|secret($|[^N])|key|token|^data$|^stringData))"
-  - path_regex: clusterenv.yaml
-    age: age1k5uw4306gahsg2a57y845fypz2yedlepk75r6dp96dhv8w59z3vqrvl895
-  - path_regex: talsecret.yaml
-    age: age1k5uw4306gahsg2a57y845fypz2yedlepk75r6dp96dhv8w59z3vqrvl895
-## DO NOT REMOVE: Personal setting go under this line

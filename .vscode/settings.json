@@ -1,20 +1,15 @@
 {
     "files.associations": {
-        "*.json5": "jsonc",
-        "./kubernetes/**/*.sops.toml": "plaintext"
+      "*.json5": "json5"
     },
-    "sops.defaults.ageKeyFile": "age.key",
-    "yaml.schemas": {
-        "Kubernetes": "./kubernetes/*.yaml"
-    },
-    "vs-kubernetes": {
-        "vs-kubernetes.kubeconfig": "/workspaces/cluster/kubeconfig",
-        "vs-kubernetes.knownKubeconfigs": ["/workspaces/cluster/kubeconfig"]
-    },
+    "sops.defaults.ageKeyFile": "age.agekey",
     "terminal.integrated.profiles.linux": {
         "bash": {
           "path": "/usr/bin/fish"
         }
       },
-    "terminal.integrated.defaultProfile.linux": "fish"
+    "terminal.integrated.defaultProfile.linux": "fish",
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false,
+    "search.useIgnoreFiles": false
 }

@@ -8,7 +8,7 @@
     {
       "customType": "regex",
       "fileMatch": [
-        "^clusters/main/kubernetes/apps/qbittorrent/app/helm-release\\.yaml$"
+        "^kubernetes/apps/qbittorrent/app/helm-release\\.yaml$"
       ],
       "matchStrings": [
         "\\n    image:\\n      tag: \"(?<currentValue>[^\"@\\s]+)@(?<currentDigest>sha256:[a-f0-9]{64})\""
@@ -19,7 +19,7 @@
     {
       "customType": "regex",
       "fileMatch": [
-        "^clusters/main/kubernetes/apps/qbittorrent/app/helm-release\\.yaml$"
+        "^kubernetes/apps/qbittorrent/app/helm-release\\.yaml$"
       ],
       "matchStrings": [
         "\\n      gluetunImage:\\n        repository: oci\\.trueforge\\.org/tccr/gluetun\\n        tag: \"(?<currentValue>[^\"@\\s]+)@(?<currentDigest>sha256:[a-f0-9]{64})\""
@@ -38,7 +38,7 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["oci.trueforge.org/tccr/gluetun"],
-      "matchFileNames": ["clusters/main/kubernetes/apps/qbittorrent/app/helm-release.yaml"],
+      "matchFileNames": ["kubernetes/apps/qbittorrent/app/helm-release.yaml"],
       "automerge": false,
       "dependencyDashboardApproval": false
     }

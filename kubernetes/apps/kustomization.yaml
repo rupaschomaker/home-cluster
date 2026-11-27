@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - bitmagnet/app
+  - chaptarr/app
+  - external-dns/app
+  - flaresolverr/app
+  - flux-system
+  - generic-device-plugin/app
+  - homepage/app
+  - jellyfin/app
+  - jellyseerr/app
+  - kube-system
+  - ladder/app
+  - lazylibrarian/app
+  - minecraft-dynmap/app
+  - networking
+  - observability
+  - other
+  - profilarr/app
+  - prowlarr/app
+  - qbittorrent/app
+  - radarr/app
+  - resilio-sync/app
+  - sabnzbd/app
+  - smtp-relay/app
+  - sonarr/app
+  - system
+  - system-local
+  - tailscale/app

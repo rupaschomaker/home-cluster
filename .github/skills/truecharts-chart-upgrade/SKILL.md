@@ -59,7 +59,7 @@ Use this skill when asked to upgrade a TrueCharts chart or HelmRelease.
 
 ## Substitution and encryption
 
-The repository uses Flux `postBuild.substituteFrom` with `cluster-config` for `${...}` variables. The validator reads `clusters/main/clusterenv.yaml` to emulate this locally. If that file is SOPS-encrypted, validation must fail and instruct the user to run:
+The repository uses Flux `postBuild.substituteFrom` with the `cluster-secrets` Secret for `${...}` variables. The validator reads `kubernetes/config/cluster-secrets.sops.yaml` and uses its nested `stringData` mapping to emulate this locally. If that file is SOPS-encrypted, validation must fail and instruct the user to run:
 
 ```bash
 clustertool decrypt

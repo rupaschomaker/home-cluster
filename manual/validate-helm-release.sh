@@ -130,7 +130,7 @@ existing_values_file="$temporary_directory/existing-values.yaml"
 resolved_values_file="$temporary_directory/resolved-values.yaml"
 rendered_file="$temporary_directory/rendered.yaml"
 script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-substitution_file="${CLUSTER_ENV_FILE:-$script_directory/../clusters/main/clusterenv.yaml}"
+substitution_file="${CLUSTER_ENV_FILE:-$script_directory/../kubernetes/config/cluster-secrets.sops.yaml}"
 
 if [[ ! -f "$substitution_file" ]]; then
 	echo "error: substitution file not found: $substitution_file" >&2
@@ -184,28 +184,60 @@ spec = release.get("spec")
 if not isinstance(spec, dict):
     fail("spec must be a mapping")
 
+chart = None
+version = None
 chart_spec = spec.get("chart", {}).get("spec")
-if not isinstance(chart_spec, dict):
-    fail("spec.chart.spec must be a mapping")
-
-source_ref = chart_spec.get("sourceRef")
-if not isinstance(source_ref, dict):
-    fail("spec.chart.spec.sourceRef must be a mapping")
+if isinstance(chart_spec, dict):
+    source_ref = chart_spec.get("sourceRef")
+    if not isinstance(source_ref, dict):
+        fail("spec.chart.spec.sourceRef must be a mapping")
+    chart = chart_spec.get("chart")
+    version = chart_spec.get("version")
+    if source_ref.get("kind", "HelmRepository") != "HelmRepository":
+        fail("spec.chart.spec.sourceRef.kind must be HelmRepository")
+    source_name = source_ref.get("name")
+    source_namespace = source_ref.get("namespace")
+    if not all(isinstance(value, str) and value for value in (chart, version, source_name, source_namespace)):
+        fail("spec.chart.spec requires chart, version, and sourceRef name/namespace")
+else:
+    chart_ref = spec.get("chartRef")
+    if not isinstance(chart_ref, dict):
+        fail("spec.chart.spec or spec.chartRef must be a mapping")
+    if chart_ref.get("kind") != "OCIRepository":
+        fail("chartRef validation currently supports OCIRepository only")
+    repository_root = substitution_path.parents[1] / "repositories"
+    repository = None
+    for candidate in repository_root.rglob("*.yaml"):
+        try:
+            documents = list(yaml.safe_load_all(candidate.read_text()))
+        except (OSError, yaml.YAMLError):
+            continue
+        for document in documents:
+            if (
+                isinstance(document, dict)
+                and document.get("kind") == "OCIRepository"
+                and isinstance(document.get("metadata"), dict)
+                and document["metadata"].get("name") == chart_ref.get("name")
+                and document["metadata"].get("namespace") == chart_ref.get("namespace")
+            ):
+                repository = document
+                break
+        if repository:
+            break
+    if not repository:
+        fail(f"OCIRepository {chart_ref.get('namespace')}/{chart_ref.get('name')} not found")
+    chart = repository.get("spec", {}).get("url")
+    version = repository.get("spec", {}).get("ref", {}).get("tag")
+    if not isinstance(chart, str) or not chart or not isinstance(version, str) or not version:
+        fail("OCIRepository must define spec.url and spec.ref.tag")
 
 required = {
     "metadata.name": metadata.get("name"),
     "metadata.namespace": metadata.get("namespace"),
-    "spec.chart.spec.chart": chart_spec.get("chart"),
-    "spec.chart.spec.version": chart_spec.get("version"),
-    "spec.chart.spec.sourceRef.name": source_ref.get("name"),
-    "spec.chart.spec.sourceRef.namespace": source_ref.get("namespace"),
 }
 missing = [name for name, value in required.items() if not isinstance(value, str) or not value]
 if missing:
     fail("missing required fields: " + ", ".join(missing))
-
-if source_ref.get("kind", "HelmRepository") != "HelmRepository":
-    fail("spec.chart.spec.sourceRef.kind must be HelmRepository")
 
 values = spec.get("values", {})
 if values is None:
@@ -224,8 +256,8 @@ if not isinstance(upgrade, dict):
 metadata_path.write_text(
     "\t".join(
         [
-            chart_spec["chart"],
-            chart_spec["version"],
+            chart,
+            version,
             metadata["namespace"],
             release_name,
             str(upgrade.get("preserveValues", False)).lower(),
@@ -242,6 +274,8 @@ except (OSError, yaml.YAMLError) as exc:
 
 if not isinstance(substitutions, dict):
     fail(f"substitution file {substitution_path} must contain a mapping")
+if substitutions.get("kind") == "Secret" and isinstance(substitutions.get("stringData"), dict):
+    substitutions = substitutions["stringData"]
 
 placeholder = re.compile(r"^\$\{([^}]+)\}$")
 missing = set()
@@ -296,7 +330,11 @@ if [[ "$skip_render" == true ]]; then
 	exit 0
 fi
 
-chart_reference="${repository%/}/${chart}"
+if [[ "$chart" == oci://* ]]; then
+	chart_reference="$chart"
+else
+	chart_reference="${repository%/}/${chart}"
+fi
 values_arguments=(--values "$substituted_values_file")
 if [[ "$server_dry_run" == true && "$preserve_values" == true ]]; then
 	if helm get values "$release_name" \
