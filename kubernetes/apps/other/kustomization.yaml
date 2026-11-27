@@ -5,13 +5,12 @@ resources:
   - ext-proxmox/app
   - ext-truenas/app
   - ladder/app
-  - librespeed/app
   - minecraft-dynmap/app
   - resilio-sync/app
   - ext-homeassistant/ks.yaml
   - ext-proxmox/ks.yaml
   - ext-truenas/ks.yaml
   - ladder/ks.yaml
-  - librespeed/ks.yaml
   - minecraft-dynmap/ks.yaml
   - resilio-sync/ks.yaml
+  - librespeed/ks.yaml
