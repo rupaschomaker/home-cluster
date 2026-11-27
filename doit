@@ -20,6 +20,7 @@ unfakeClustertool() {
 
 # fakeClustertool
 clustertool genconfig
+clustertool genks
 # unfakeClustertool
 
 clustertool encrypt
