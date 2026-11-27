@@ -6,3 +6,5 @@ resources:
   - namespace.yaml
   - sops-age.sops.yaml
   - webhooks
+  - flux-instance/ks.yaml
+  - flux-operator/ks.yaml

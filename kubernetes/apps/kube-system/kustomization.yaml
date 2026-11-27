@@ -7,3 +7,8 @@ resources:
   - metrics-server/app
   - namespace.yaml
   - node-feature-discovery/app
+  - cilium/ks.yaml
+  - descheduler/ks.yaml
+  - kubelet-csr-approver/ks.yaml
+  - metrics-server/ks.yaml
+  - node-feature-discovery/ks.yaml

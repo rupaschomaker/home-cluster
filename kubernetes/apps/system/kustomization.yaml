@@ -13,3 +13,13 @@ resources:
   - system-upgrade
   - valkey-operator/app
   - volsync/app
+  - cert-manager/ks.yaml
+  - clusterissuer/ks.yaml
+  - kubernetes-reflector/ks.yaml
+  - longhorn/ks.yaml
+  - metallb/ks.yaml
+  - metallb-config/ks.yaml
+  - openebs/ks.yaml
+  - snapshot-controller/ks.yaml
+  - valkey-operator/ks.yaml
+  - volsync/ks.yaml

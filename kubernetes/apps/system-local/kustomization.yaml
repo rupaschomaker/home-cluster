@@ -4,3 +4,6 @@ resources:
   - generic-device-plugin/app
   - intel-device-plugin-operator/app
   - intel-gpu-plugin/app
+  - generic-device-plugin/ks.yaml
+  - intel-device-plugin-operator/ks.yaml
+  - intel-gpu-plugin/ks.yaml

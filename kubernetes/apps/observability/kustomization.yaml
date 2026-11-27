@@ -5,3 +5,7 @@ resources:
   - homepage/app
   - kube-prometheus-stack/app
   - uptime-kuma/app
+  - headlamp/ks.yaml
+  - homepage/ks.yaml
+  - kube-prometheus-stack/ks.yaml
+  - uptime-kuma/ks.yaml

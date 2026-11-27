@@ -4,3 +4,5 @@ resources:
   - cloudnative-pg/app
   - namespace.yaml
   - plugin-barman-cloud/app
+  - cloudnative-pg/ks.yaml
+  - plugin-barman-cloud/ks.yaml
