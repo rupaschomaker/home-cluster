@@ -1,10 +1,16 @@
-# Store application data in directories on the existing EPHEMERAL volume.
-# These volumes do not create separate partitions or reserve disk space.
-# Keep the Longhorn and OpenEBS HelmRelease data paths aligned with these names.
+# Store Longhorn data on the dedicated data disk and OpenEBS data in a directory
+# on the existing EPHEMERAL volume. Keep the HelmRelease paths aligned with
+# these volume names.
 apiVersion: v1alpha1
 kind: UserVolumeConfig
 name: longhorn
-volumeType: directory
+volumeType: partition
+provisioning:
+  diskSelector:
+    match: disk.dev_path == "/dev/sdb"
+  maxSize: 100%
+filesystem:
+  type: xfs
 ---
 apiVersion: v1alpha1
 kind: UserVolumeConfig

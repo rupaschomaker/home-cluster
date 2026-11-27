@@ -52,9 +52,10 @@ Custom OpenEBS StorageClasses with an explicit `BasePath` must also use the inte
 path. Flux/Helm must apply the changed values; `clustertool genconfig` alone does not
 update an installed chart.
 
-The Talos patch `patches/all/31-storage.yaml` creates directory-type user volumes
-at these paths on the existing EPHEMERAL filesystem. They do not create separate
-partitions or reserve disk space. Talos makes these directories available to
+The Talos patch `patches/all/31-storage.yaml` provisions the Longhorn user volume
+as an XFS partition on the dedicated `/dev/sdb` disk and mounts it at
+`/var/mnt/longhorn`. OpenEBS remains a directory-type user volume on the existing
+EPHEMERAL filesystem at `/var/mnt/openebs`. Talos makes both paths available to
 kubelet, replacing the old `machine.kubelet.extraMounts` configuration.
 
 **Changing these defaults does not move existing data.** Existing Longhorn disks
