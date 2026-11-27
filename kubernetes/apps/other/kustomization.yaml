@@ -4,4 +4,7 @@ resources:
   - ext-homeassistant/app
   - ext-proxmox/app
   - ext-truenas/app
+  - ladder/app
   - librespeed/app
+  - minecraft-dynmap/app
+  - resilio-sync/app

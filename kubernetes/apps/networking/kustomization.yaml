@@ -3,5 +3,7 @@ kind: Kustomization
 resources:
   - blocky/app
   - envoy-gateway/app
-  - uptime-kuma/app
+  - external-dns/app
+  - smtp-relay/app
+  - tailscale/app
   - wpad/app
