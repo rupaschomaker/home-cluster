@@ -92,7 +92,7 @@ spec:
         size: 1Gi
         mountPath: /config/logs
         volsync:
-          - name: logs
+          - name: logs-v2
             type: restic
             credentials: s3creds
             dest:
