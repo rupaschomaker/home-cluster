@@ -73,6 +73,17 @@ spec:
         accessModes: ReadWriteOnce
         size: 1Gi
         mountPath: /config/Backups
+        volsync:
+          - name: backups
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            copyMethod: Direct
+            src:
+              enabled: true
+              trigger:
+                schedule: 00 1 * * *
       logs:
         enabled: true
         type: pvc
@@ -80,6 +91,17 @@ spec:
         accessModes: ReadWriteOnce
         size: 1Gi
         mountPath: /config/logs
+        volsync:
+          - name: logs
+            type: restic
+            credentials: s3creds
+            dest:
+              enabled: true
+            copyMethod: Direct
+            src:
+              enabled: true
+              trigger:
+                schedule: 00 1 * * *
       media-vol:
         enabled: true
         type: nfs
