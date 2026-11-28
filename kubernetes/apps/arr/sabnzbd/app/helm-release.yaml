@@ -80,7 +80,7 @@ spec:
               enabled: false
             copyMethod: Direct
             src:
-              enabled: false
+              enabled: true
               trigger:
                 schedule: 30 1 * * *
       media-vol:
