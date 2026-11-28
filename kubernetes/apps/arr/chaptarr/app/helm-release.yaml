@@ -4,6 +4,7 @@ metadata:
   name: chaptarr
   namespace: chaptarr
 spec:
+  suspend: false
   interval: 15m
   upgrade:
     preserveValues: false

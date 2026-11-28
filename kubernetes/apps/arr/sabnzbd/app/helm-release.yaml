@@ -4,6 +4,7 @@ metadata:
   name: sabnzbd
   namespace: sabnzbd
 spec:
+  suspend: false
   interval: 15m
   chart:
     spec:
