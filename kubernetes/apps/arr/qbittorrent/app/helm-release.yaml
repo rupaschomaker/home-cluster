@@ -95,7 +95,8 @@ spec:
                   - MyAnonAmouse
                 categories:
                   - NaM-Seeding
-                max_ratio: 2.5
+                max_ratio: -1
+                max_seeding_time: -1
                 min_seeding_time: 75h
                 cleanup: false
                 resume_torrent_after_change: true
