@@ -4,6 +4,10 @@ function FindProxyForURL(url, host) {
         host = host.slice(0, -1);
     }
 
+    if (shExpMatch(host, "webirc*.myanonamouse.net")) {
+        return "DIRECT";
+    }
+
     if (host === "myanonamouse.net" || dnsDomainIs(host, ".myanonamouse.net") ||
         host === "mrd.ninja" || dnsDomainIs(host, ".mrd.ninja") ||
         host === "m-tts.net" || dnsDomainIs(host, ".m-tts.net")) {

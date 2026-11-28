@@ -44,6 +44,9 @@ Use this skill when asked to monitor deployment progress after a Git or Flux-man
    flux reconcile kustomization <name> --with-source
    ```
 
+   The `source git` subcommand does not accept `--with-source`; that flag
+   belongs on the Kustomization reconciliation.
+
    Recheck both revisions before proceeding.
 4. Monitor the HelmRelease until it observes the intended chart revision and becomes Ready:
 
