@@ -69,6 +69,14 @@ spec:
               enabled: true 
               trigger:
                 schedule: 30 1 * * *
+      backups:
+        enabled: true
+        type: pvc
+        mountPath: /config/Backups
+      logs:
+        enabled: true
+        type: pvc
+        mountPath: /config/logs
       media-vol:
         enabled: true
         type: nfs

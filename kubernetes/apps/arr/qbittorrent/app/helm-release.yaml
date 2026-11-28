@@ -211,7 +211,7 @@ spec:
             enabled: false
           torrent:
             port: "${VPN_INBOUND_PORT}"
-            targetPort: "6881"
+            targetPort: "${VPN_INBOUND_PORT}"
       proxy:
         enabled: true
         type: LoadBalancer
