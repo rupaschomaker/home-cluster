@@ -32,7 +32,7 @@ spec:
       engineReplicaTimeout: "30"
       concurrentReplicaRebuildPerNodeLimit: "2"
       # Overprovisioning might be needed when using volsync
-      storageOverProvisioningPercentage: "200"
+      storageOverProvisioningPercentage: "1600"
       # v2DataEngine: true
     persistence:
       # Set to false to pick another CSI as default
