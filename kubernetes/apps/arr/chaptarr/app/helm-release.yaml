@@ -89,7 +89,7 @@ spec:
               trigger:
                 schedule: 17 15 * * *
       backups:
-        enabled: true
+        enabled: false
         type: pvc
         storageClass: longhorn
         accessModes: ReadWriteOnce
@@ -107,7 +107,7 @@ spec:
               trigger:
                 schedule: 17 10 * * *
       logs:
-        enabled: true
+        enabled: false
         type: pvc
         storageClass: longhorn
         accessModes: ReadWriteOnce

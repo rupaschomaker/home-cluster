@@ -67,7 +67,7 @@ spec:
               trigger:
                 schedule: 00 1 * * *
       backups:
-        enabled: true
+        enabled: false
         type: pvc
         storageClass: longhorn
         accessModes: ReadWriteOnce
@@ -85,14 +85,14 @@ spec:
               trigger:
                 schedule: 00 1 * * *
       logs:
-        enabled: true
+        enabled: false
         type: pvc
         storageClass: longhorn
         accessModes: ReadWriteOnce
         size: 1Gi
         mountPath: /config/logs
         volsync:
-          - name: logs-v2
+          - name: logs
             type: restic
             credentials: s3creds
             dest:
