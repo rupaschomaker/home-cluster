@@ -72,10 +72,16 @@ spec:
       backups:
         enabled: true
         type: pvc
+        storageClass: longhorn
+        accessModes: ReadWriteOnce
+        size: 1Gi
         mountPath: /config/Backups
       logs:
         enabled: true
         type: pvc
+        storageClass: longhorn
+        accessModes: ReadWriteOnce
+        size: 1Gi
         mountPath: /config/logs
       media-vol:
         enabled: true
