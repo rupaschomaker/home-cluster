@@ -97,7 +97,7 @@ spec:
             type: restic
             credentials: s3creds
             dest:
-              enabled: true
+              enabled: false
             copyMethod: Direct
             src:
               enabled: false
