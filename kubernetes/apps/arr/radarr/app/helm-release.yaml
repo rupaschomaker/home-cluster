@@ -67,7 +67,7 @@ spec:
               trigger:
                 schedule: 00 1 * * *
       backups:
-        enabled: false
+        enabled: true
         type: pvc
         storageClass: longhorn
         accessModes: ReadWriteOnce
@@ -78,14 +78,14 @@ spec:
             type: restic
             credentials: s3creds
             dest:
-              enabled: false
+              enabled: true
             copyMethod: Direct
             src:
-              enabled: true
+              enabled: false
               trigger:
                 schedule: 00 1 * * *
       logs:
-        enabled: false
+        enabled: true
         type: pvc
         storageClass: longhorn
         accessModes: ReadWriteOnce
@@ -96,10 +96,10 @@ spec:
             type: restic
             credentials: s3creds
             dest:
-              enabled: false
+              enabled: true
             copyMethod: Direct
             src:
-              enabled: true
+              enabled: false
               trigger:
                 schedule: 00 1 * * *
       media-vol:
