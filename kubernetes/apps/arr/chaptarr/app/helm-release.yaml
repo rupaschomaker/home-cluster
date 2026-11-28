@@ -70,7 +70,7 @@ spec:
             type: restic
             credentials: s3creds
             dest:
-              enabled: true
+              enabled: false
             src:
               enabled: true 
               trigger:
@@ -83,7 +83,7 @@ spec:
             type: restic
             credentials: s3creds
             dest:
-              enabled: true
+              enabled: false
             src:
               enabled: true 
               trigger:
