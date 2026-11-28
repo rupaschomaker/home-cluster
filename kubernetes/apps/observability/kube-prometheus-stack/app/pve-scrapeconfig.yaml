@@ -1,0 +1,44 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: pve-node-exporter
+  namespace: kube-prometheus-stack
+spec:
+  metricsPath: /metrics
+  staticConfigs:
+    - labels:
+        cluster: pve
+        service: node-exporter
+      targets:
+        - pve.rupa.com:9100
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: pve-zfs-exporter
+  namespace: kube-prometheus-stack
+spec:
+  metricsPath: /metrics
+  staticConfigs:
+    - labels:
+        cluster: pve
+        service: zfs-exporter
+      targets:
+        - pve.rupa.com:9134
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: pve-exporter
+  namespace: kube-prometheus-stack
+spec:
+  metricsPath: /pve
+  params:
+    target:
+      - pve.rupa.com
+  staticConfigs:
+    - labels:
+        cluster: pve
+        service: proxmox-exporter
+      targets:
+        - pve.rupa.com:9221

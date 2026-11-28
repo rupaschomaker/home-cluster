@@ -4,3 +4,4 @@ resources:
   - alertmanagerconfig.yaml
   - helm-release.yaml
   - namespace.yaml
+  - pve-scrapeconfig.yaml
