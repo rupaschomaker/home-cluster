@@ -1,0 +1,116 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: grafana
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: grafana
+      version: 25.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+      interval: 15m
+  timeout: 20m
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
+    route:
+      main:
+        enabled: true
+        parentRefs:
+          - name: envoy-internal
+            namespace: envoy-gateway
+            sectionName: https
+        hostnames:
+          - grafana.${DOMAIN_0}
+    persistence:
+      data:
+        enabled: true
+        type: pvc
+        storageClass: longhorn
+        size: 10Gi
+    secret:
+      env-secrets:
+        data:
+          GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    workload:
+      main:
+        podSpec:
+          containers:
+            main:
+              env:
+                GF_SECURITY_ADMIN_USER: admin
+                GF_AUTH_ANONYMOUS_ENABLED: true
+                GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+                GF_AUTH_DISABLE_LOGIN_FORM: true
+                GF_SERVER_ROOT_URL: https://grafana.${DOMAIN_0}
+                GF_DATABASE_TYPE: postgres
+                GF_DATABASE_NAME: grafana
+                GF_DATABASE_USER: grafana
+                GF_DATABASE_SSL_MODE: disable
+    dependencies:
+      postgresql:
+        operator:
+          cluster:
+            singleNode: true
+            instances: 1
+          monitoring:
+            enablePodMonitor: true
+    configmap:
+      datasource-prometheus:
+        enabled: true
+        labels:
+          grafana_datasource: "1"
+        data:
+          datasource-prometheus.yaml: |-
+            apiVersion: 1
+            datasources:
+              - name: Prometheus
+                type: prometheus
+                uid: prometheus
+                url: http://kube-prometheus-stack-prometheus.kube-prometheus-stack.svc.cluster.local:9090
+                access: proxy
+                isDefault: true
+                jsonData:
+                  httpMethod: POST
+    dashboards:
+      grafana:
+        cert-manager:
+          enabled: true
+          marketplace:
+            # renovate: depName="Cert-manager-Kubernetes"
+            id: 20842
+            revision: 3
+        flux-cluster:
+          enabled: true
+          url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/refs/heads/main/monitoring/configs/dashboards/cluster.json
+        flux-control-plane:
+          enabled: true
+          url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/refs/heads/main/monitoring/configs/dashboards/control-plane.json
+        node:
+          enabled: true
+          marketplace:
+            # renovate: depName="Node Exporter Full"
+            id: 1860
+            revision: 46

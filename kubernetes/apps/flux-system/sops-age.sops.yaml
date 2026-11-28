@@ -4,22 +4,22 @@ metadata:
   name: sops-age
   namespace: flux-system
 stringData:
-  age.agekey: ENC[AES256_GCM,data:gX66fkX/LUDlRUpg3AClZcsmlhYFC2bIiZ9FV89Dfb09YzUyNbiEUR1YvKL91hlZbbIxqBJci1dpN9Q1raKjczPgiV/htnJGhw4=,iv:VmkIgCkqKvQCL52pg0VXnhFoaFV+peM24gI4wkG46DU=,tag:y0syTNqtCf8+Dv4zTOPILw==,type:str]
+  age.agekey: ENC[AES256_GCM,data:vTo+cgupGE6tjxAH0jXw1x0lye5oZk5v8ttU5uONARsnWCyazgeYkvApQnqc+l+FDxKMIggAcpfDxMtE1AHwWHq+i0azP+01YbI=,iv:j0FKQu3ry5zVl5aypWP/23CxHkXWxhbMYjta3h4ik6s=,tag:mbkNKS5ieW3tgmgvcxvhog==,type:str]
 type: Opaque
 sops:
   age:
     - enc: |
         -----BEGIN AGE ENCRYPTED FILE-----
-        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyZ0VlclhLLzA3RjZxNUtH
-        alM5UlFyVzdzendwVmR6MDg0OTdjVDU1aWtJCjFwQnlobWpTWU5iK2traDJtUS83
-        REs5RzV6bUZpN3J6KzdQMlNiVlVsVHcKLS0tIHhHRU1mWU1La09neHdkOEtTQ2NJ
-        WTl5ZmJpOTZaek0yNzd3YW9PVGNrbncKNi0Fk06fpkVzdk0jSElgNBgE3elnB0Xk
-        19nA2Ww0+CHAADZ88mLQ0ggh+UtZSQXWGlT5250czKa/pbMCTDc6mw==
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBwSUJCcnZ3TVg2cXFpRjVU
+        bFpKV2VDME0zWFJlVnNsZHlLa0hYQnU0TWpVCmVMU3R5Tkt3cWJLYmhlNlVLd2Vl
+        cy93QjZpT1RvMUZtU251Uyt6ekpPWnMKLS0tIFdUSVF6ME5TcE5SZG1yUm9pNy9X
+        Y21Gelo4Zi9RUTBEeHR4YlhrRytBYUkKtMgVuPU311oVj6Yktdx3gBYJMXa2KxzG
+        Kqs0c8L5sTDGi8Y3t7prYyBPKYlmSvlXokz7Fbofbm5CPNL5Twpggw==
         -----END AGE ENCRYPTED FILE-----
       recipient: age1k5uw4306gahsg2a57y845fypz2yedlepk75r6dp96dhv8w59z3vqrvl895
   encrypted_regex: ^(data|stringData)$
-  lastmodified: "2026-11-28T18:49:31Z"
-  mac: ENC[AES256_GCM,data:FOdZ29aiBrDULCCkaWA8GNuXZIlL3Xw1qHu4TubP9Ra+RKOKONNmvxsh9IZswftPjVItv3NoYKuKxyN69dQuLHeoU8q554v6x5UQAR2Eltv2nTuNguOdANLt9On/HKqu6Fbgaet9miycEwlNC0HK5LnZK3Up8O0x/KKaAu0wlak=,iv:5EClaDljnh/1SbYLNpSRNt8i+NBljdn1d5+6XIklNx0=,tag:C0bkHVMXO/BJb51IGPO/7Q==,type:str]
+  lastmodified: "2026-11-28T19:06:19Z"
+  mac: ENC[AES256_GCM,data:bA0ZWTpnt7iMmEJir1KsmtKik3VUzxzuOND0GwcXU4sYVocuS5cc31+UQo6Kwmv2ZRm/wKjppVmy2Rlf+eUhl6Z//RqzQ97N0GEHZVNcynaaz6FOmLVO0K6fRwnkomTyziGFQ3/IRjGMiP/V0MgfeGAHfKm3k9YokuHLkLRjP/U=,iv:DBXmtg8SbTaMOXNUoG5I0YlfTwJ1zLVT2RbOWlmSWZw=,tag:APG3nGO5PxIWv+uzM+XmJA==,type:str]
   mac_only_encrypted: true
   shamir_threshold: 3
   version: 3.13.3
